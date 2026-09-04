@@ -40,44 +40,38 @@ function toast(msg){
 async function loadProfile(){
 
   const {
-    data:{session}
-  }=
-    await sb.auth.getSession();
+    data:{session},
+    error:sessionError
+  } = await sb.auth.getSession();
+
+  if(sessionError){
+    alert(sessionError.message);
+    return;
+  }
 
   if(!session){
-
     location.href="index.html";
-
     return;
   }
 
   const {
     data,
     error
-  }=
-    await sb
-      .from("profiles")
-      .select("*")
-      .eq("id",session.user.id)
-      .single();
+  } = await sb
+    .from("profiles")
+    .select("id,username,role,balance,is_suspended")
+    .eq("id",session.user.id)
+    .single();
 
   if(error){
-
-    alert(error.message);
-
+    alert("Không tải được số dư: "+error.message);
     return;
   }
 
   if(data.is_suspended){
-
     await sb.auth.signOut();
-
-    alert(
-      "Tài khoản đang bị khóa."
-    );
-
+    alert("Tài khoản đang bị khóa.");
     location.href="index.html";
-
     return;
   }
 
@@ -85,7 +79,9 @@ async function loadProfile(){
 
   renderBalance();
 
-  renderHistory();
+  if(typeof renderHistory==="function"){
+    renderHistory();
+  }
 }
 
 function renderBalance(){

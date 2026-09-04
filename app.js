@@ -135,15 +135,19 @@ $("logoutBtn")?.addEventListener("click",async()=>{
   showLoggedOut();
 });
 
-$("loginTab")?.addEventListener("click",()=>{
-  $("loginForm")?.classList.remove("hidden");
-  $("signupForm")?.classList.add("hidden");
-});
+$("loginTab").onclick=()=>{
+ $("loginForm").classList.remove("hidden");
+ $("signupForm").classList.add("hidden");
+ $("loginTab").classList.add("active");
+ $("signupTab").classList.remove("active");
+};
 
-$("signupTab")?.addEventListener("click",()=>{
-  $("signupForm")?.classList.remove("hidden");
-  $("loginForm")?.classList.add("hidden");
-});
+$("signupTab").onclick=()=>{
+ $("signupForm").classList.remove("hidden");
+ $("loginForm").classList.add("hidden");
+ $("signupTab").classList.add("active");
+ $("loginTab").classList.remove("active");
+};
 
 sb.auth.onAuthStateChange(()=>{
   setTimeout(refresh,0);

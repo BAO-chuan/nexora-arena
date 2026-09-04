@@ -1,90 +1,115 @@
 <!doctype html>
 <html lang="vi">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>NEXORA Arena</title>
-<style>
-:root{--bg:#04150f;--panel:#0b2a20;--line:#285441;--gold:#e7c46f;--text:#fff9e9;--muted:#a9beb4;--green:#17684c;--red:#a74343}
-*{box-sizing:border-box}body{margin:0;background:linear-gradient(180deg,#03120d,#061b14);color:var(--text);font-family:system-ui,-apple-system,Arial,sans-serif}
-header{position:sticky;top:0;z-index:5;background:#061912ee;border-bottom:1px solid var(--line);padding:16px 20px;display:flex;align-items:center;justify-content:space-between;backdrop-filter:blur(12px)}
-.brand{font-size:27px;font-weight:900;letter-spacing:1px}.badge{font-size:13px;color:var(--muted)}
-main{width:min(900px,100%);margin:auto;padding:22px 18px 70px}.panel{background:linear-gradient(180deg,#0c2d22,#082219);border:1px solid #315543;border-radius:26px;padding:22px;margin-bottom:18px;box-shadow:0 18px 45px #0004}
-h1,h2{margin:0 0 10px}.hero h1{font-size:42px}.muted{color:var(--muted);line-height:1.55}.status{display:flex;gap:10px;align-items:center;font-weight:800}.dot{width:11px;height:11px;border-radius:50%;background:#777}.dot.ok{background:#35d07f}.dot.bad{background:#ff665f}
-.tabs{display:flex;gap:10px;margin:18px 0}.tab,button{border:0;border-radius:16px;padding:14px 17px;font-weight:800;font-size:16px;cursor:pointer}.tab{background:#14372b;color:#d9e7df}.tab.active,.primary{background:var(--gold);color:#102019}.secondary{background:var(--green);color:white}.danger{background:var(--red);color:white}
-form{display:grid;gap:13px}input{width:100%;padding:15px;border-radius:15px;border:1px solid #35614e;background:#061b14;color:white;font-size:16px;outline:none}label{display:grid;gap:7px;color:#dce8e2;font-weight:700}
-.hidden{display:none!important}.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.stat{background:#061d16;border:1px solid #2e5645;border-radius:18px;padding:16px}.stat span{display:block;color:var(--muted);font-size:13px}.stat strong{display:block;margin-top:7px;font-size:18px}
-.row{display:flex;gap:10px;align-items:center;justify-content:space-between;padding:13px 0;border-bottom:1px solid #23483a}.row:last-child{border-bottom:0}.actions{display:flex;gap:7px;flex-wrap:wrap}.actions button{padding:9px 11px;font-size:13px}
-.note{font-size:13px;color:#9eb3a9}.top-actions{display:flex;gap:8px;align-items:center}.top-actions button{padding:10px 13px;font-size:14px}
-@media(max-width:620px){.hero h1{font-size:34px}.grid{grid-template-columns:1fr}.row{align-items:flex-start;flex-direction:column}.actions{width:100%}header{padding:14px}.brand{font-size:23px}}
-</style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#06130f">
+  <title>NEXORA Arena</title>
+  <link rel="stylesheet" href="styles.css?v=10">
 </head>
 <body>
-<header>
-  <div class="brand">NEXORA</div>
-  <div class="top-actions">
-    <span id="sessionBadge" class="badge">Khách</span>
-    <button id="logoutBtn" class="secondary hidden">Đăng xuất</button>
-  </div>
-</header>
-
-<main>
-  <section class="panel hero">
-    <h1>NEXORA Arena</h1>
-    <p class="muted">Tài khoản người chơi, NXC ảo và khu vực quản trị. NXC chỉ là điểm trong game, không có giá trị tiền mặt và không thể nạp/rút.</p>
-  </section>
-
-  <section class="panel">
-    <div class="status"><span id="statusDot" class="dot"></span><span id="connectionStatus">Đang kiểm tra Supabase...</span></div>
-  </section>
-
-  <section id="authArea" class="panel">
-    <div class="tabs">
-      <button id="loginTab" class="tab active" type="button">Đăng nhập</button>
-      <button id="signupTab" class="tab" type="button">Tạo tài khoản</button>
+  <header class="topbar">
+    <div class="brand"><span class="brand-mark">N</span><span>NEXORA</span></div>
+    <div class="top-actions">
+      <div id="walletChip" class="wallet-chip hidden"><span>NXC</span><strong id="headerBalance">0</strong></div>
+      <span id="sessionBadge" class="session-badge">Khách</span>
+      <button id="logoutBtn" class="icon-btn hidden" type="button">↗</button>
     </div>
+  </header>
 
-    <form id="loginForm">
-      <label>Email<input id="loginEmail" type="email" required autocomplete="email"></label>
-      <label>Mật khẩu<input id="loginPassword" type="password" required minlength="6" autocomplete="current-password"></label>
-      <button class="secondary" type="submit">Đăng nhập</button>
-    </form>
+  <main>
+    <div class="connection-bar"><span id="statusDot" class="status-dot"></span><span id="connectionStatus">Đang kiểm tra Supabase...</span></div>
 
-    <form id="signupForm" class="hidden">
-      <label>Username<input id="signupUsername" required minlength="3" maxlength="24"></label>
-      <label>Email<input id="signupEmail" type="email" required autocomplete="email"></label>
-      <label>Mật khẩu<input id="signupPassword" type="password" required minlength="6" autocomplete="new-password"></label>
-      <button class="primary" type="submit">Tạo tài khoản</button>
-    </form>
-    <p class="note">Nếu Supabase bật xác nhận email, bạn cần mở email xác nhận trước khi đăng nhập.</p>
-  </section>
-
-  <section id="accountArea" class="hidden">
-    <div class="panel">
-      <h2>Tài khoản</h2>
-      <div class="grid">
-        <div class="stat"><span>Username</span><strong id="profileUsername">—</strong></div>
-        <div class="stat"><span>Số dư</span><strong id="profileBalance">0 NXC</strong></div>
-        <div class="stat"><span>Quyền</span><strong id="profileRole">PLAYER</strong></div>
+    <section id="authArea" class="auth-wrap">
+      <div class="auth-card panel">
+        <h1>Chào mừng đến NEXORA</h1>
+        <p class="muted">Đăng nhập để vào Arena và sử dụng NXC ảo.</p>
+        <div class="tabs">
+          <button id="loginTab" class="tab active" type="button">Đăng nhập</button>
+          <button id="signupTab" class="tab" type="button">Tạo tài khoản</button>
+        </div>
+        <form id="loginForm" class="auth-form">
+          <label>Email<input id="loginEmail" type="email" required autocomplete="email"></label>
+          <label>Mật khẩu<input id="loginPassword" type="password" required minlength="6" autocomplete="current-password"></label>
+          <button class="btn primary" type="submit">Vào Arena</button>
+        </form>
+        <form id="signupForm" class="auth-form hidden">
+          <label>Username<input id="signupUsername" required minlength="3" maxlength="24"></label>
+          <label>Email<input id="signupEmail" type="email" required autocomplete="email"></label>
+          <label>Mật khẩu<input id="signupPassword" type="password" required minlength="6" autocomplete="new-password"></label>
+          <button class="btn gold" type="submit">Tạo tài khoản</button>
+        </form>
+        <p class="tiny-note">NXC là điểm ảo trong game, không có giá trị tiền mặt và không thể nạp/rút hay quy đổi.</p>
       </div>
-      <p id="profileEmail" class="muted"></p>
-    </div>
+    </section>
 
-    <div class="panel">
-      <h2>Lịch sử NXC</h2>
-      <div id="transactionList"><p class="muted">Chưa có giao dịch.</p></div>
-    </div>
-  </section>
+    <section id="appArea" class="hidden">
+      <section id="home" class="hero">
+        <div class="hero-copy">
+          <span class="eyebrow">NEXORA ARENA</span>
+          <h1>Chơi. Leo hạng.<br><span>Thống trị Arena.</span></h1>
+          <p>Giao diện premium tối ưu cho điện thoại, kết nối trực tiếp với tài khoản NXC hiện tại.</p>
+          <div class="hero-actions"><a class="btn gold" href="#games">Khám phá game</a><a class="btn ghost" href="#leaderboard">Xem xếp hạng</a></div>
+        </div>
+        <div class="hero-card">
+          <div class="hero-orb"></div>
+          <div class="hero-stat"><span>Số dư</span><strong id="heroBalance">0 NXC</strong></div>
+          <div class="hero-stat"><span>Vai trò</span><strong id="heroRole">PLAYER</strong></div>
+        </div>
+      </section>
 
-  <section id="adminArea" class="panel hidden">
-    <h2>Admin Dashboard</h2>
-    <p class="muted">Chỉ tài khoản có role = admin mới thấy khu vực này.</p>
-    <input id="playerSearch" placeholder="Tìm theo username...">
-    <div id="playerList" style="margin-top:12px"></div>
-  </section>
-</main>
+      <section class="section">
+        <div class="section-head"><div><span class="eyebrow">DANH MỤC</span><h2>Chọn trải nghiệm</h2></div></div>
+        <div class="category-row">
+          <button class="category active" data-filter="all">Tất cả</button>
+          <button class="category" data-filter="table">Bàn chơi</button>
+          <button class="category" data-filter="quick">Nhanh</button>
+          <button class="category" data-filter="arcade">Arcade</button>
+        </div>
+      </section>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="app.js?v=7"></script>
+      <section id="games" class="section">
+        <div class="section-head"><div><span class="eyebrow">GAME NỔI BẬT</span><h2>NEXORA Games</h2></div><span class="live-pill">● LIVE UI</span></div>
+        <div class="game-grid">
+          <article class="game-card featured" data-category="table">
+            <div class="game-art baccarat-art"><div class="playing-card card-a">A♠</div><div class="playing-card card-k">K♦</div><div class="table-glow"></div></div>
+            <div class="game-info"><div><span class="game-tag">TABLE</span><h3>Baccarat Royale</h3><p>Emerald premium.</p></div><button class="play-btn" data-game="Baccarat">Chơi</button></div>
+          </article>
+          <article class="game-card" data-category="table"><div class="game-art blackjack-art"><div class="chip-stack">21</div></div><div class="game-info"><div><span class="game-tag">TABLE</span><h3>Blackjack 21</h3><p>Đạt 21 thật chuẩn.</p></div><button class="play-btn" data-game="Blackjack">Sắp có</button></div></article>
+          <article class="game-card" data-category="quick"><div class="game-art roulette-art"><div class="roulette-wheel">◆</div></div><div class="game-info"><div><span class="game-tag">QUICK</span><h3>Roulette</h3><p>Vòng quay tốc độ cao.</p></div><button class="play-btn" data-game="Roulette">Sắp có</button></div></article>
+          <article class="game-card" data-category="arcade"><div class="game-art dice-art"><div class="dice">⚄</div><div class="dice second">⚂</div></div><div class="game-info"><div><span class="game-tag">ARCADE</span><h3>Dice Duel</h3><p>Nhanh, gọn, nhiều hiệu ứng.</p></div><button class="play-btn" data-game="Dice Duel">Sắp có</button></div></article>
+        </div>
+      </section>
+
+      <section id="leaderboard" class="section split">
+        <div class="panel">
+          <div class="section-head"><div><span class="eyebrow">XẾP HẠNG</span><h2>Top NXC</h2></div><button id="refreshLeaderboard" class="mini-btn">Làm mới</button></div>
+          <div id="leaderboardList"><p class="muted">Đang tải...</p></div>
+        </div>
+        <div id="account" class="panel">
+          <span class="eyebrow">TÀI KHOẢN</span><h2>Hồ sơ Arena</h2>
+          <div class="profile-card"><div class="avatar" id="profileAvatar">N</div><div><strong id="profileUsername">—</strong><span id="profileEmail">—</span></div></div>
+          <div class="profile-stats"><div><span>Số dư</span><strong id="profileBalance">0 NXC</strong></div><div><span>Quyền</span><strong id="profileRole">PLAYER</strong></div></div>
+          <h3 class="subhead">Lịch sử NXC</h3><div id="transactionList"><p class="muted">Chưa có giao dịch.</p></div>
+        </div>
+      </section>
+
+      <section id="adminArea" class="section panel hidden">
+        <div class="section-head"><div><span class="eyebrow">ADMIN ONLY</span><h2>Quản lý người chơi</h2></div><span class="admin-pill">ADMIN</span></div>
+        <input id="playerSearch" placeholder="Tìm theo username...">
+        <div id="playerList" class="player-list"></div>
+      </section>
+    </section>
+  </main>
+
+  <nav id="bottomNav" class="bottom-nav hidden">
+    <a href="#home" class="nav-item active"><span>⌂</span><small>Trang chủ</small></a>
+    <a href="#games" class="nav-item"><span>♠</span><small>Game</small></a>
+    <a href="#leaderboard" class="nav-item"><span>★</span><small>Xếp hạng</small></a>
+    <a href="#account" class="nav-item"><span>●</span><small>Tài khoản</small></a>
+  </nav>
+  <div id="toast" class="toast"></div>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="app.js?v=10"></script>
 </body>
 </html>

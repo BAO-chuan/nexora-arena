@@ -6,3 +6,7 @@ async function checkConnection(){
  console.log("Supabase connected",data);
 }
 checkConnection();
+document.addEventListener("DOMContentLoaded",()=>{
+ const s=document.getElementById("connectionStatus");
+ if(s)s.innerHTML="Đã cấu hình Supabase ✓";
+});

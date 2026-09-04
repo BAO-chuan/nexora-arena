@@ -1139,3 +1139,17 @@ async()=>{
 };
 
 loadProfile();
+
+window.addEventListener("pageshow",()=>{
+  loadProfile();
+});
+
+window.addEventListener("focus",()=>{
+  loadProfile();
+});
+
+document.addEventListener("visibilitychange",()=>{
+  if(document.visibilityState==="visible"){
+    loadProfile();
+  }
+});

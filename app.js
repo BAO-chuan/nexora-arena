@@ -74,6 +74,7 @@ async function refresh(){
 
     if(p.role==="admin"){
       $("adminArea")?.classList.remove("hidden");
+      await loadPlayers();
     }else{
       $("adminArea")?.classList.add("hidden");
     }
@@ -154,3 +155,86 @@ sb.auth.onAuthStateChange(()=>{
 });
 
 refresh();
+async function loadPlayers(search=""){
+  let q=sb
+    .from("profiles")
+    .select("id,username,role,balance,is_suspended")
+    .order("username");
+
+  if(search.trim()){
+    q=q.ilike("username",`%${search.trim()}%`);
+  }
+
+  const {data,error}=await q;
+
+  if(error){
+    alert(error.message);
+    return;
+  }
+
+  $("playerList").innerHTML=data.map(p=>`
+    <div class="row">
+      <div>
+        <strong>${p.username}</strong>
+        <div class="note">
+          ${Number(p.balance||0).toLocaleString("vi-VN")} NXC · ${p.is_suspended?"Đã khóa":p.role}
+        </div>
+      </div>
+
+      ${p.role==="admin" ? "<strong>ADMIN</strong>" : `
+      <div class="actions">
+        <button onclick="adjustNxc('${p.id}',1000)">+1K</button>
+        <button onclick="adjustNxc('${p.id}',-1000)">-1K</button>
+        <button onclick="setSuspended('${p.id}',${!p.is_suspended})">
+          ${p.is_suspended?"Mở khóa":"Khóa"}
+        </button>
+      </div>
+      `}
+    </div>
+  `).join("");
+}
+
+window.adjustNxc=async(id,amount)=>{
+  const reason=prompt("Lý do điều chỉnh NXC:","Admin adjustment");
+
+  if(reason===null)return;
+
+  const {error}=await sb.rpc("admin_adjust_balance",{
+    target_player_id:id,
+    delta_amount:amount,
+    adjustment_reason:reason||"Admin adjustment"
+  });
+
+  if(error){
+    alert(error.message);
+    return;
+  }
+
+  await loadPlayers($("playerSearch")?.value||"");
+};
+
+window.setSuspended=async(id,suspended)=>{
+  const ok=confirm(
+    suspended
+      ?"Khóa tài khoản này?"
+      :"Mở khóa tài khoản này?"
+  );
+
+  if(!ok)return;
+
+  const {error}=await sb.rpc("admin_set_suspended",{
+    target_player_id:id,
+    suspended:suspended
+  });
+
+  if(error){
+    alert(error.message);
+    return;
+  }
+
+  await loadPlayers($("playerSearch")?.value||"");
+};
+
+$("playerSearch")?.addEventListener("input",e=>{
+  loadPlayers(e.target.value);
+});

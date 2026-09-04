@@ -867,19 +867,65 @@ function flashResult(
   );
 }
 
-$("dealBtn").onclick=
-async()=>{
+function sleep(ms){
+  return new Promise(resolve=>setTimeout(resolve,ms));
+}
 
-  if(dealing)
-    return;
+function lockBetting(locked){
 
-  if(
-    totalBet()<=0
-  ){
+  document
+    .querySelectorAll(".chip,.bet-zone")
+    .forEach(el=>{
+      el.disabled=locked;
+    });
 
-    toast(
-      "Hãy đặt cược trước"
-    );
+  $("clearBets").disabled=locked;
+}
+
+async function bettingCountdown(){
+
+  lockBetting(false);
+
+  $("dealBtn").disabled=true;
+  $("dealBtn").textContent="ĐANG NHẬN CƯỢC";
+
+  for(let i=15;i>=1;i--){
+
+    $("roundState").textContent=
+      `NHẬN CƯỢC ${i}s`;
+
+    await sleep(1000);
+  }
+
+  $("roundState").textContent=
+    "KHÓA CƯỢC";
+
+  $("dealBtn").textContent=
+    "ĐÃ KHÓA CƯỢC";
+
+  lockBetting(true);
+
+  await sleep(800);
+}
+
+async function playAutomaticRound(){
+
+  if(dealing)return;
+
+  dealing=true;
+
+  await bettingCountdown();
+
+  if(totalBet()<=0){
+
+    $("roundState").textContent=
+      "KHÔNG CÓ CƯỢC";
+
+    await sleep(1800);
+
+    dealing=false;
+
+    startAutoRound();
 
     return;
   }
@@ -887,45 +933,40 @@ async()=>{
   if(
     totalBet()
     >
-    Number(
-      profile.balance||0
-    )
+    Number(profile.balance||0)
   ){
 
-    toast(
-      "Số dư không đủ"
-    );
+    toast("Số dư không đủ");
+
+    bets={
+      player:0,
+      tie:0,
+      banker:0
+    };
+
+    renderBets();
+
+    await sleep(1500);
+
+    dealing=false;
+
+    startAutoRound();
 
     return;
   }
 
-  dealing=true;
-
-  $("dealBtn").disabled=true;
-
-  $("clearBets").disabled=true;
-
-  $("replayBtn").disabled=true;
+  $("roundState").textContent=
+    "ĐANG CHIA";
 
   $("resultBanner")
     .classList
     .add("hidden");
 
-  $("roundState")
-    .textContent=
-    "ĐANG CHIA";
+  $("playerHand").innerHTML="";
+  $("bankerHand").innerHTML="";
 
-  $("playerHand")
-    .innerHTML="";
-
-  $("bankerHand")
-    .innerHTML="";
-
-  $("playerScore")
-    .textContent="0";
-
-  $("bankerScore")
-    .textContent="0";
+  $("playerScore").textContent="0";
+  $("bankerScore").textContent="0";
 
   const roundBets={
     ...bets
@@ -938,64 +979,47 @@ async()=>{
   const round=
     baccaratRound();
 
-  round.player
-    .forEach(
-      (
-        card,
-        i
-      )=>{
-
-        setTimeout(
-          ()=>{
-
-            $("playerHand")
-              .insertAdjacentHTML(
-                "beforeend",
-                cardHtml(card)
-              );
-
-          },
-          180*i
-        );
-      }
+  const maxCards=
+    Math.max(
+      round.player.length,
+      round.banker.length
     );
 
-  round.banker
-    .forEach(
-      (
-        card,
-        i
-      )=>{
+  for(let i=0;i<maxCards;i++){
 
-        setTimeout(
-          ()=>{
+    if(round.player[i]){
 
-            $("bankerHand")
-              .insertAdjacentHTML(
-                "beforeend",
-                cardHtml(card)
-              );
-
-          },
-          180*i+90
+      $("playerHand")
+        .insertAdjacentHTML(
+          "beforeend",
+          cardHtml(
+            round.player[i]
+          )
         );
-      }
-    );
 
-  await new Promise(
-    resolve=>
-      setTimeout(
-        resolve,
-        900
-      )
-  );
+      await sleep(1200);
+    }
 
-  $("playerScore")
-    .textContent=
+    if(round.banker[i]){
+
+      $("bankerHand")
+        .insertAdjacentHTML(
+          "beforeend",
+          cardHtml(
+            round.banker[i]
+          )
+        );
+
+      await sleep(1200);
+    }
+  }
+
+  await sleep(400);
+
+  $("playerScore").textContent=
     round.p;
 
-  $("bankerScore")
-    .textContent=
+  $("bankerScore").textContent=
     round.b;
 
   try{
@@ -1007,108 +1031,72 @@ async()=>{
       );
 
     const labels={
-
-      player:
-        "PLAYER THẮNG",
-
-      banker:
-        "BANKER THẮNG",
-
-      tie:
-        "HÒA"
+      player:"PLAYER THẮNG",
+      banker:"BANKER THẮNG",
+      tie:"HÒA"
     };
 
     $("resultBanner")
       .textContent=
-      labels[
-        round.winner
-      ]
-      +
-      " · "
-      +
-      (
-        summary.delta>=0
-        ?
-        "+"
-        :
-        ""
-      )
-      +
-      summary.delta
-        .toLocaleString(
-          "vi-VN"
-        )
-      +
-      " NXC";
+      labels[round.winner]
+      +" · "
+      +(summary.delta>=0?"+":"")
+      +summary.delta.toLocaleString("vi-VN")
+      +" NXC";
 
     $("resultBanner")
       .classList
-      .remove(
-        "hidden"
-      );
+      .remove("hidden");
 
-    $("roundState")
-      .textContent=
+    $("roundState").textContent=
       "KẾT QUẢ";
 
-    flashResult(
-      summary.delta
-    );
-
-    saveRound(
-      round,
-      summary
-    );
+    if(
+      typeof flashResult==="function"
+    ){
+      flashResult(
+        summary.delta
+      );
+    }
 
     if(
-      summary.delta>0
+      typeof saveRound==="function"
     ){
+      saveRound(
+        round,
+        summary
+      );
+    }
+
+    if(summary.delta>0){
 
       toast(
         "Thắng "
-        +
-        summary.delta
-          .toLocaleString(
-            "vi-VN"
-          )
-        +
-        " NXC"
+        +summary.delta.toLocaleString("vi-VN")
+        +" NXC"
       );
 
-    }else if(
-      summary.delta<0
-    ){
+    }else if(summary.delta<0){
 
       toast(
         "Thua "
-        +
-        Math.abs(
-          summary.delta
-        )
-        .toLocaleString(
-          "vi-VN"
-        )
-        +
-        " NXC"
+        +Math.abs(summary.delta).toLocaleString("vi-VN")
+        +" NXC"
       );
 
     }else{
 
-      toast(
-        "Hòa vốn"
-      );
+      toast("Hòa vốn");
     }
 
   }catch(err){
 
     alert(
       "Không thể cập nhật NXC: "
-      +
-      err.message
+      +err.message
     );
 
-    $("roundState")
-      .textContent=
+    $("roundState").textContent=
       "LỖI";
   }
 
@@ -1120,25 +1108,35 @@ async()=>{
 
   renderBets();
 
-  $("replayBtn")
-    .classList
-    .remove(
-      "hidden"
-    );
+  document
+    .querySelectorAll(".bet-zone")
+    .forEach(el=>{
+      el.classList.remove("selected");
+    });
+
+  await sleep(3000);
 
   dealing=false;
 
-  $("dealBtn")
-    .disabled=false;
+  startAutoRound();
+}
 
-  $("clearBets")
-    .disabled=false;
+async function startAutoRound(){
 
-  $("replayBtn")
-    .disabled=false;
-};
+  if(!profile){
 
-loadProfile();
+    await sleep(500);
+
+    startAutoRound();
+
+    return;
+  }
+
+  playAutomaticRound();
+}
+    loadProfile().then(()=>{
+  startAutoRound();
+});
 
 window.addEventListener("pageshow",()=>{
   loadProfile();
@@ -1146,10 +1144,4 @@ window.addEventListener("pageshow",()=>{
 
 window.addEventListener("focus",()=>{
   loadProfile();
-});
-
-document.addEventListener("visibilitychange",()=>{
-  if(document.visibilityState==="visible"){
-    loadProfile();
-  }
 });

@@ -1400,3 +1400,103 @@ body{
     transition:none;
   }
 }
+
+/* =========================================================
+   LS79win Baccarat V19 — Squeeze Reveal
+   Visual-only. Result/score still come from backend.
+========================================================= */
+
+/* The peek layer duplicates the real face and is gradually
+   uncovered while the actual card remains face-down. */
+.bo-card-peek{
+  position:absolute!important;
+  inset:0;
+  width:100%!important;
+  height:100%!important;
+  z-index:4;
+  opacity:0;
+  pointer-events:none;
+  transform:none!important;
+  backface-visibility:visible!important;
+  -webkit-backface-visibility:visible!important;
+  clip-path:polygon(100% 100%,100% 100%,100% 100%,100% 100%);
+  transition:
+    clip-path .5s cubic-bezier(.2,.7,.2,1),
+    opacity .18s ease,
+    transform .5s cubic-bezier(.2,.7,.2,1);
+}
+
+/* Keep peek layer invisible after the normal face is up. */
+.bo-deal-card.face-up .bo-card-peek,
+.bo-deal-card.flipping .bo-card-peek{
+  opacity:0;
+}
+
+/* A small "dealer pressure" motion before the corner opens. */
+.bo-deal-card.squeeze-ready{
+  animation:boSqueezeReady .52s ease-in-out infinite alternate;
+  transform-origin:50% 100%;
+}
+@keyframes boSqueezeReady{
+  from{transform:rotate(-.7deg) translateY(0)}
+  to{transform:rotate(.7deg) translateY(1px)}
+}
+
+/* Reveal starts at the lower-right corner, similar to squeezing
+   the edge of a Baccarat card. */
+.bo-deal-card.squeeze-1 .bo-card-peek{
+  opacity:1;
+  clip-path:polygon(72% 72%,100% 67%,100% 100%,67% 100%);
+  transform:translate(-1px,-1px) rotate(-.4deg);
+}
+.bo-deal-card.squeeze-2 .bo-card-peek{
+  opacity:1;
+  clip-path:polygon(42% 45%,100% 35%,100% 100%,32% 100%);
+  transform:translate(-1px,-2px) rotate(-.7deg);
+}
+.bo-deal-card.squeeze-3 .bo-card-peek{
+  opacity:1;
+  clip-path:polygon(10% 14%,100% 4%,100% 100%,3% 100%);
+  transform:translate(0,-2px) rotate(-.3deg);
+}
+
+/* Back card slightly bends/lifts while being squeezed. */
+.bo-deal-card.squeeze-1 .bo-card-back,
+.bo-deal-card.squeeze-2 .bo-card-back,
+.bo-deal-card.squeeze-3 .bo-card-back{
+  box-shadow:
+    0 12px 24px rgba(0,0,0,.44),
+    -5px -3px 12px rgba(242,196,90,.12);
+}
+.bo-deal-card.squeeze-1 .bo-card-back{
+  transform:rotateY(180deg) rotateZ(.8deg) translate(-1px,-1px);
+}
+.bo-deal-card.squeeze-2 .bo-card-back{
+  transform:rotateY(180deg) rotateZ(1.2deg) translate(-2px,-2px);
+}
+.bo-deal-card.squeeze-3 .bo-card-back{
+  transform:rotateY(180deg) rotateZ(.7deg) translate(-1px,-3px);
+}
+
+/* Gold highlight around the currently opened card. */
+.bo-deal-card.squeeze-ready,
+.bo-deal-card.squeeze-1,
+.bo-deal-card.squeeze-2,
+.bo-deal-card.squeeze-3{
+  filter:drop-shadow(0 0 9px rgba(242,196,90,.26));
+}
+
+/* Stronger message during squeeze phase. */
+.bo-table.opening-cards #boResult{
+  text-shadow:0 0 12px rgba(242,196,90,.28);
+}
+
+/* Reduce motion accessibility: reveal immediately. */
+@media(prefers-reduced-motion:reduce){
+  .bo-deal-card.squeeze-ready{
+    animation:none;
+  }
+  .bo-card-peek{
+    transition:none;
+  }
+}

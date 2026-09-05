@@ -137,6 +137,10 @@ function dealCardHTML(card) {
         <div class="bo-card-back">
           <div class="bo-card-back-mark">LS79</div>
         </div>
+        <div class="bo-card-peek bo-card ${isRed ? "red" : ""}">
+          <span class="bo-card-rank">${card.rank || "?"}</span>
+          <span class="bo-card-suit">${suit}</span>
+        </div>
         <div class="bo-card-front bo-card ${isRed ? "red" : ""}">
           <span class="bo-card-rank">${card.rank || "?"}</span>
           <span class="bo-card-suit">${suit}</span>
@@ -193,18 +197,38 @@ async function appendAnimatedCard(card, container, token) {
   dealt.classList.remove("dealing");
   dealt.classList.add("landed");
 
-  // Dừng ngắn như dealer chuẩn bị mở bài.
-  await sleep(360);
+  // Dừng ngắn như dealer đặt bài xuống bàn.
+  await sleep(300);
   if (token !== dealAnimationToken) return;
 
   boTableMessage.textContent = "Đang mở bài";
   boResult.textContent = "ĐANG MỞ BÀI...";
+  dealt.classList.add("squeeze-ready");
 
-  // Lật lá từ từ.
-  dealt.classList.remove("face-down");
+  // Bước 1: hé một góc lá bài.
+  await sleep(260);
+  if (token !== dealAnimationToken) return;
+  dealt.classList.add("squeeze-1");
+
+  // Bước 2: kéo mở thêm, mô phỏng kiểu squeeze Baccarat.
+  await sleep(520);
+  if (token !== dealAnimationToken) return;
+  dealt.classList.remove("squeeze-1");
+  dealt.classList.add("squeeze-2");
+
+  // Bước 3: mở gần hết mặt bài.
+  await sleep(520);
+  if (token !== dealAnimationToken) return;
+  dealt.classList.remove("squeeze-2");
+  dealt.classList.add("squeeze-3");
+
+  // Cuối cùng lật hẳn mặt bài lên.
+  await sleep(420);
+  if (token !== dealAnimationToken) return;
+  dealt.classList.remove("face-down", "squeeze-ready", "squeeze-3");
   dealt.classList.add("flipping");
 
-  await sleep(760);
+  await sleep(680);
   if (token !== dealAnimationToken) return;
 
   dealt.classList.remove("flipping");
@@ -246,7 +270,7 @@ async function animateFinishedRound(round) {
     boResult.textContent = "ĐANG CHIA BÀI...";
     await appendAnimatedCard(card, container, token);
     if (token !== dealAnimationToken) return;
-    await sleep(420);
+    await sleep(260);
   }
 
   if (token !== dealAnimationToken) return;

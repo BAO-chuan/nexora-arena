@@ -1081,8 +1081,7 @@ function subscribeRoom() {
 
       schema: "public",
 
-      table:
-        "baccarat_rounds",
+      table: "baccarat_rounds",
 
       filter:
         `room_id=eq.${currentRoom.id}`
@@ -1091,12 +1090,13 @@ function subscribeRoom() {
 
     async () => {
 
-  await loadCurrentRound();
+      await loadCurrentRound();
 
-  await loadProfile();
+      await loadProfile();
 
-  await loadMyBets();
-}
+      await loadMyBets();
+
+    }
   )
 
   .subscribe(status => {
@@ -1105,6 +1105,7 @@ function subscribeRoom() {
       "Realtime:",
       status
     );
+
   });
 }
 

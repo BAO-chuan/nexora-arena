@@ -1127,3 +1127,328 @@ window.addEventListener(
   "pageshow",
   loadPlayerInfo
 );
+
+// =========================================
+// NXC WITHDRAW
+// =========================================
+
+function formatWithdrawNXC(value){
+
+  return Number(value || 0)
+    .toLocaleString("vi-VN");
+}
+
+
+async function loadNxcWithdrawRequests(){
+
+  const list =
+    document.getElementById(
+      "nxcWithdrawList"
+    );
+
+  if(!list) return;
+
+
+  try{
+
+    const {
+      data: { session }
+    } = await sb.auth.getSession();
+
+
+    if(!session){
+
+      list.innerHTML =
+        '<p class="muted">Vui lòng đăng nhập.</p>';
+
+      return;
+    }
+
+
+    const {
+      data,
+      error
+    } = await sb
+      .from("nxc_withdraw_requests")
+      .select(
+        "id,amount,status,created_at"
+      )
+      .eq(
+        "user_id",
+        session.user.id
+      )
+      .order(
+        "created_at",
+        {
+          ascending:false
+        }
+      );
+
+
+    if(error){
+      throw error;
+    }
+
+
+    if(!data || !data.length){
+
+      list.innerHTML =
+        '<p class="muted">Chưa có lệnh rút nào.</p>';
+
+      return;
+    }
+
+
+    list.innerHTML =
+      data.map(item => {
+
+        let label =
+          "Chờ duyệt";
+
+        if(item.status === "approved"){
+          label = "Đã duyệt";
+        }
+
+        if(item.status === "rejected"){
+          label = "Từ chối";
+        }
+
+
+        const date =
+          new Date(
+            item.created_at
+          ).toLocaleString(
+            "vi-VN"
+          );
+
+
+        return `
+          <div class="withdraw-request-card">
+
+            <div class="withdraw-request-top">
+
+              <strong class="withdraw-request-amount">
+                ${formatWithdrawNXC(item.amount)} NXC
+              </strong>
+
+              <span
+                class="
+                  withdraw-status
+                  ${item.status}
+                "
+              >
+                ${label}
+              </span>
+
+            </div>
+
+            <p class="muted">
+              ${date}
+            </p>
+
+          </div>
+        `;
+
+      }).join("");
+
+
+  }catch(error){
+
+    console.error(
+      "Load withdraw:",
+      error
+    );
+
+    list.innerHTML =
+      '<p class="muted">Không thể tải lệnh rút.</p>';
+  }
+}
+
+
+
+document
+  .querySelectorAll(
+    "[data-withdraw-nxc]"
+  )
+  .forEach(button => {
+
+    button.addEventListener(
+      "click",
+      () => {
+
+        const input =
+          document.getElementById(
+            "nxcWithdrawAmount"
+          );
+
+        if(input){
+
+          input.value =
+            button.dataset.withdrawNxc;
+        }
+      }
+    );
+
+  });
+
+
+
+const nxcWithdrawForm =
+  document.getElementById(
+    "nxcWithdrawForm"
+  );
+
+
+if(nxcWithdrawForm){
+
+  nxcWithdrawForm.addEventListener(
+    "submit",
+    async event => {
+
+      event.preventDefault();
+
+
+      const input =
+        document.getElementById(
+          "nxcWithdrawAmount"
+        );
+
+      const message =
+        document.getElementById(
+          "nxcWithdrawMessage"
+        );
+
+
+      const amount =
+        Number(
+          input?.value || 0
+        );
+
+
+      if(
+        !Number.isInteger(amount)
+        ||
+        amount <= 0
+      ){
+
+        if(message){
+
+          message.textContent =
+            "Số NXC không hợp lệ.";
+        }
+
+        return;
+      }
+
+
+      if(message){
+
+        message.textContent =
+          "Đang gửi lệnh...";
+      }
+
+
+      try{
+
+        const {
+          error
+        } = await sb.rpc(
+          "player_create_nxc_withdraw",
+          {
+            p_amount:
+              amount
+          }
+        );
+
+
+        if(error){
+          throw error;
+        }
+
+
+        if(input){
+          input.value = "";
+        }
+
+
+        if(message){
+
+          message.textContent =
+            "✓ Đã gửi lệnh rút";
+        }
+
+
+        await loadNxcWithdrawRequests();
+
+
+        if(
+          typeof syncWalletPage
+          ===
+          "function"
+        ){
+
+          await syncWalletPage();
+        }
+
+
+        if(
+          typeof syncNXC
+          ===
+          "function"
+        ){
+
+          await syncNXC();
+        }
+
+
+      }catch(error){
+
+        console.error(
+          "Create withdraw:",
+          error
+        );
+
+
+        if(message){
+
+          message.textContent =
+            error?.message
+            ||
+            "Không thể gửi lệnh rút.";
+        }
+      }
+
+    }
+  );
+}
+
+
+
+const refreshWithdrawRequests =
+  document.getElementById(
+    "refreshWithdrawRequests"
+  );
+
+
+if(refreshWithdrawRequests){
+
+  refreshWithdrawRequests.addEventListener(
+    "click",
+    loadNxcWithdrawRequests
+  );
+}
+
+
+loadNxcWithdrawRequests();
+
+
+window.addEventListener(
+  "pageshow",
+  loadNxcWithdrawRequests
+);
+
+
+window.addEventListener(
+  "focus",
+  loadNxcWithdrawRequests
+);

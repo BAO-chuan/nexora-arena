@@ -310,3 +310,84 @@
   min-height:18px;
   margin:0;
 }
+
+/* =========================================
+   NXC WITHDRAW
+========================================= */
+
+.nxc-withdraw-card{
+  margin-top:22px;
+  padding:18px;
+
+  border-radius:20px;
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(16,55,41,.92),
+      rgba(7,27,20,.96)
+    );
+
+  border:
+    1px solid rgba(224,192,108,.15);
+}
+
+#nxcWithdrawForm{
+  display:grid;
+  gap:14px;
+  margin-top:16px;
+}
+
+.nxc-quick-row{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:8px;
+}
+
+.withdraw-request-card{
+  margin-top:10px;
+  padding:14px;
+
+  border-radius:15px;
+
+  background:
+    rgba(255,255,255,.035);
+
+  border:
+    1px solid rgba(255,255,255,.07);
+}
+
+.withdraw-request-top{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+}
+
+.withdraw-request-amount{
+  color:#f5dc94;
+  font-weight:900;
+}
+
+.withdraw-status{
+  font-size:11px;
+  font-weight:900;
+
+  padding:6px 9px;
+  border-radius:999px;
+}
+
+.withdraw-status.pending{
+  color:#f6d27a;
+  background:rgba(246,210,122,.10);
+}
+
+.withdraw-status.approved{
+  color:#8be0bb;
+  background:rgba(80,190,140,.10);
+}
+
+.withdraw-status.rejected{
+  color:#ff9999;
+  background:rgba(220,80,80,.10);
+}

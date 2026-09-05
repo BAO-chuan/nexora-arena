@@ -50,6 +50,9 @@ const boPlayerScore = $("boPlayerScore");
 const boBankerScore = $("boBankerScore");
 const boResult = $("boResult");
 
+const boPlayerCards = $("boPlayerCards");
+const boBankerCards = $("boBankerCards");
+
 const boBetAmount = $("boBetAmount");
 const boPlaceBet = $("boPlaceBet");
 const boBetMessage = $("boBetMessage");
@@ -64,6 +67,58 @@ const boCreateRound = $("boCreateRound");
 // ================================
 // HELPERS
 // ================================
+
+function cardHTML(card) {
+
+  if (!card) return "";
+
+
+  const suit =
+    String(card.suit || "");
+
+
+  const isRed =
+    suit === "♥" ||
+    suit === "♦";
+
+
+  return `
+    <div class="bo-card ${isRed ? "red" : ""}">
+
+      <span class="bo-card-rank">
+        ${card.rank || "?"}
+      </span>
+
+      <span class="bo-card-suit">
+        ${suit}
+      </span>
+
+    </div>
+  `;
+}
+
+
+function renderCards(cards, container) {
+
+  if (!container) return;
+
+
+  if (
+    !Array.isArray(cards) ||
+    !cards.length
+  ) {
+
+    container.innerHTML = "";
+
+    return;
+  }
+
+
+  container.innerHTML =
+    cards
+      .map(cardHTML)
+      .join("");
+}
 
 function formatNXC(value) {
 

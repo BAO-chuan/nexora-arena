@@ -33,6 +33,13 @@ let currentShoeState = null;
 let lastSeenShoeNumber = null;
 let shuffleFxTimer = null;
 
+// V21 — Casino Sound + Dealer Flow + Win/Lose FX
+let boAudioContext = null;
+let boSoundEnabled = localStorage.getItem("ls79win_baccarat_sound") !== "off";
+let boDealerOverlay = null;
+let boResultFxTimer = null;
+let lastOwnRoundTotals = { player: 0, banker: 0, tie: 0 };
+
 const AUTO_BETTING_SECONDS = 20;
 const MIN_BET_AMOUNT = 10000;
 const MAX_BET_AMOUNT = 1000000;
@@ -106,6 +113,322 @@ const boCreateRound = $("boCreateRound");
 // ================================
 // HELPERS
 // ================================
+
+
+function ensureV21UI() {
+  if (!document.getElementById("boV21Style")) {
+    const style = document.createElement("style");
+    style.id = "boV21Style";
+    style.textContent = `
+      .bo-sound-toggle{
+        width:34px;height:34px;border-radius:50%;border:1px solid rgba(242,196,90,.35);
+        background:linear-gradient(180deg,#1a0607,#090303);color:#ffe39a;
+        display:grid;place-items:center;font-size:15px;cursor:pointer;flex:0 0 auto;
+        box-shadow:0 5px 16px rgba(0,0,0,.28)
+      }
+      .bo-sound-toggle.is-off{opacity:.5;filter:grayscale(.5)}
+      .bo-dealer-overlay{
+        position:absolute;left:50%;top:54px;transform:translate(-50%,-8px);
+        z-index:12;pointer-events:none;opacity:0;
+        min-width:148px;padding:6px 12px;border-radius:999px;text-align:center;
+        border:1px solid rgba(242,196,90,.38);
+        background:linear-gradient(180deg,rgba(34,7,8,.96),rgba(8,3,3,.96));
+        color:#ffe39a;font-size:9px;font-weight:950;letter-spacing:.8px;
+        box-shadow:0 10px 28px rgba(0,0,0,.42),0 0 20px rgba(217,11,22,.12);
+        transition:opacity .2s ease,transform .2s ease
+      }
+      .bo-dealer-overlay.show{opacity:1;transform:translate(-50%,0)}
+      .bo-dealer-overlay strong{color:#fff3cf}
+      .bo-hand.dealer-focus{
+        position:relative;z-index:3;
+        filter:drop-shadow(0 0 10px rgba(242,196,90,.26));
+        transform:translateY(-2px);
+        transition:transform .18s ease,filter .18s ease
+      }
+      .bo-hand.dealer-focus .bo-hand-label{
+        text-shadow:0 0 12px rgba(255,220,120,.65)
+      }
+      .bo-result-fx{
+        position:fixed;left:50%;top:46%;transform:translate(-50%,-50%) scale(.86);
+        z-index:9999;min-width:min(82vw,310px);max-width:90vw;
+        padding:18px 20px;border-radius:18px;text-align:center;pointer-events:none;
+        opacity:0;background:linear-gradient(180deg,rgba(27,5,6,.97),rgba(6,2,2,.98));
+        border:1px solid rgba(242,196,90,.46);
+        box-shadow:0 24px 70px rgba(0,0,0,.6),0 0 35px rgba(217,11,22,.18);
+        transition:opacity .22s ease,transform .28s cubic-bezier(.2,.8,.2,1)
+      }
+      .bo-result-fx.show{opacity:1;transform:translate(-50%,-50%) scale(1)}
+      .bo-result-fx .bo-rfx-kicker{
+        color:#cbb783;font-size:9px;font-weight:900;letter-spacing:1.2px
+      }
+      .bo-result-fx .bo-rfx-title{
+        margin-top:4px;color:#ffe39a;font-size:23px;font-weight:1000;letter-spacing:.5px
+      }
+      .bo-result-fx .bo-rfx-sub{
+        margin-top:5px;color:#fff4dc;font-size:11px;font-weight:850
+      }
+      .bo-result-fx.win{
+        box-shadow:0 24px 70px rgba(0,0,0,.6),0 0 44px rgba(242,196,90,.32)
+      }
+      .bo-result-fx.lose{
+        border-color:rgba(217,11,22,.55);
+        box-shadow:0 24px 70px rgba(0,0,0,.6),0 0 34px rgba(217,11,22,.26)
+      }
+      .bo-result-fx.neutral{opacity:.96}
+      .bo-table.v21-result-player .bo-hand:first-child,
+      .bo-table.v21-result-banker .bo-hand:last-child{
+        animation:boV21WinnerPulse .72s ease 2
+      }
+      .bo-table.v21-result-tie .bo-vs{
+        animation:boV21WinnerPulse .72s ease 2
+      }
+      @keyframes boV21WinnerPulse{
+        0%,100%{filter:none}
+        50%{filter:drop-shadow(0 0 16px rgba(255,211,105,.7));transform:translateY(-3px)}
+      }
+      @media(prefers-reduced-motion:reduce){
+        .bo-dealer-overlay,.bo-result-fx,.bo-hand.dealer-focus{transition:none}
+        .bo-table.v21-result-player .bo-hand:first-child,
+        .bo-table.v21-result-banker .bo-hand:last-child,
+        .bo-table.v21-result-tie .bo-vs{animation:none}
+      }
+    `;
+    document.head.appendChild(style);
+  }
+
+  const topbar = document.querySelector(".bo-topbar");
+  if (topbar && !document.getElementById("boSoundToggle")) {
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.id = "boSoundToggle";
+    btn.className = "bo-sound-toggle";
+    btn.setAttribute("aria-label", "Bật/tắt âm thanh Baccarat");
+    topbar.insertBefore(btn, topbar.querySelector(".bo-wallet") || null);
+    btn.addEventListener("click", async () => {
+      boSoundEnabled = !boSoundEnabled;
+      localStorage.setItem("ls79win_baccarat_sound", boSoundEnabled ? "on" : "off");
+      updateSoundButton();
+      if (boSoundEnabled) {
+        await unlockBaccaratAudio();
+        playCasinoSound("chip");
+      }
+    });
+  }
+  updateSoundButton();
+
+  const tableInner = document.querySelector(".bo-table-inner");
+  if (tableInner && !document.getElementById("boDealerOverlay")) {
+    const overlay = document.createElement("div");
+    overlay.id = "boDealerOverlay";
+    overlay.className = "bo-dealer-overlay";
+    overlay.innerHTML = `DEALER • <strong>ĐANG CHỜ</strong>`;
+    tableInner.appendChild(overlay);
+    boDealerOverlay = overlay;
+  } else {
+    boDealerOverlay = document.getElementById("boDealerOverlay");
+  }
+
+  if (!document.getElementById("boResultFx")) {
+    const fx = document.createElement("div");
+    fx.id = "boResultFx";
+    fx.className = "bo-result-fx";
+    document.body.appendChild(fx);
+  }
+}
+
+function updateSoundButton() {
+  const btn = document.getElementById("boSoundToggle");
+  if (!btn) return;
+  btn.textContent = boSoundEnabled ? "🔊" : "🔇";
+  btn.classList.toggle("is-off", !boSoundEnabled);
+  btn.title = boSoundEnabled ? "Tắt âm thanh" : "Bật âm thanh";
+}
+
+async function unlockBaccaratAudio() {
+  try {
+    if (!boAudioContext) {
+      const Ctx = window.AudioContext || window.webkitAudioContext;
+      if (!Ctx) return null;
+      boAudioContext = new Ctx();
+    }
+    if (boAudioContext.state === "suspended") {
+      await boAudioContext.resume();
+    }
+    return boAudioContext;
+  } catch (error) {
+    console.warn("Audio unavailable:", error);
+    return null;
+  }
+}
+
+function playTone(freq, duration = .08, type = "sine", volume = .03, delay = 0) {
+  if (!boSoundEnabled || !boAudioContext || boAudioContext.state !== "running") return;
+
+  const now = boAudioContext.currentTime + delay;
+  const osc = boAudioContext.createOscillator();
+  const gain = boAudioContext.createGain();
+
+  osc.type = type;
+  osc.frequency.setValueAtTime(freq, now);
+  gain.gain.setValueAtTime(.0001, now);
+  gain.gain.exponentialRampToValueAtTime(Math.max(.0002, volume), now + .008);
+  gain.gain.exponentialRampToValueAtTime(.0001, now + duration);
+
+  osc.connect(gain);
+  gain.connect(boAudioContext.destination);
+  osc.start(now);
+  osc.stop(now + duration + .02);
+}
+
+function playCasinoSound(kind) {
+  if (!boSoundEnabled) return;
+
+  switch (kind) {
+    case "chip":
+      playTone(920, .045, "square", .018);
+      playTone(1260, .04, "square", .012, .035);
+      break;
+    case "deal":
+      playTone(190, .065, "triangle", .018);
+      playTone(135, .09, "sine", .012, .035);
+      break;
+    case "flip":
+      playTone(420, .055, "triangle", .018);
+      playTone(760, .065, "sine", .012, .045);
+      break;
+    case "shuffle":
+      playTone(150, .11, "triangle", .016);
+      playTone(220, .1, "triangle", .012, .11);
+      playTone(170, .1, "triangle", .012, .22);
+      break;
+    case "win":
+      playTone(523.25, .14, "sine", .025);
+      playTone(659.25, .14, "sine", .025, .11);
+      playTone(783.99, .22, "sine", .03, .22);
+      break;
+    case "lose":
+      playTone(220, .16, "triangle", .018);
+      playTone(174.61, .24, "triangle", .018, .12);
+      break;
+    case "result":
+      playTone(392, .12, "sine", .02);
+      playTone(523.25, .16, "sine", .02, .1);
+      break;
+  }
+}
+
+function setDealerMessage(message, container = null) {
+  ensureV21UI();
+  if (boDealerOverlay) {
+    boDealerOverlay.innerHTML = `DEALER • <strong>${message}</strong>`;
+    boDealerOverlay.classList.add("show");
+  }
+
+  document.querySelectorAll(".bo-hand").forEach(hand => {
+    hand.classList.remove("dealer-focus");
+  });
+
+  if (container) {
+    container.closest(".bo-hand")?.classList.add("dealer-focus");
+  }
+}
+
+function hideDealerMessage(delay = 0) {
+  window.setTimeout(() => {
+    boDealerOverlay?.classList.remove("show");
+    document.querySelectorAll(".bo-hand").forEach(hand => {
+      hand.classList.remove("dealer-focus");
+    });
+  }, delay);
+}
+
+function resultLabel(result) {
+  if (result === "player") return "PLAYER THẮNG";
+  if (result === "banker") return "BANKER THẮNG";
+  if (result === "tie") return "HÒA";
+  return "KẾT QUẢ";
+}
+
+async function showV21ResultFx(round) {
+  if (!round) return;
+  ensureV21UI();
+
+  const fx = document.getElementById("boResultFx");
+  const table = document.querySelector(".bo-table");
+  if (!fx) return;
+
+  table?.classList.remove("v21-result-player", "v21-result-banker", "v21-result-tie");
+  if (["player", "banker", "tie"].includes(round.result)) {
+    table?.classList.add(`v21-result-${round.result}`);
+  }
+
+  let stake = 0;
+  let payout = 0;
+
+  if (currentUser) {
+    try {
+      const { data, error } = await sb
+        .from("baccarat_bets")
+        .select("amount,payout")
+        .eq("user_id", currentUser.id)
+        .eq("round_id", round.id);
+
+      if (!error) {
+        (data || []).forEach(bet => {
+          stake += Number(bet.amount || 0);
+          payout += Number(bet.payout || 0);
+        });
+      }
+    } catch (error) {
+      console.warn("V21 result lookup:", error);
+    }
+  }
+
+  const net = payout - stake;
+  let state = "neutral";
+  let sub = "Kết quả đã được công bố";
+
+  if (stake > 0 && net > 0) {
+    state = "win";
+    sub = `THẮNG +${formatVNC(net)} VNC`;
+    playCasinoSound("win");
+  } else if (stake > 0 && net < 0) {
+    state = "lose";
+    sub = `THUA ${formatVNC(Math.abs(net))} VNC`;
+    playCasinoSound("lose");
+  } else {
+    playCasinoSound("result");
+  }
+
+  fx.className = `bo-result-fx ${state}`;
+  fx.innerHTML = `
+    <div class="bo-rfx-kicker">LS79win BACCARAT</div>
+    <div class="bo-rfx-title">${resultLabel(round.result)}</div>
+    <div class="bo-rfx-sub">${sub}</div>
+  `;
+
+  clearTimeout(boResultFxTimer);
+  requestAnimationFrame(() => fx.classList.add("show"));
+
+  boResultFxTimer = window.setTimeout(() => {
+    fx.classList.remove("show");
+    table?.classList.remove("v21-result-player", "v21-result-banker", "v21-result-tie");
+  }, 2600);
+}
+
+// Unlock WebAudio on the first genuine user gesture — important for iPhone Safari.
+["pointerdown", "touchstart", "click"].forEach(eventName => {
+  document.addEventListener(eventName, () => {
+    if (boSoundEnabled) unlockBaccaratAudio();
+  }, { once: true, passive: true });
+});
+
+// Casino chip/select feedback without changing existing betting logic.
+document.addEventListener("click", event => {
+  const target = event.target.closest?.(".bo-chip, .bo-bet-option, [data-bo-amount]");
+  if (target) playCasinoSound("chip");
+});
+
 
 function cardHTML(card, extraClass = "") {
 
@@ -193,6 +516,10 @@ function sleep(ms) {
 async function appendAnimatedCard(card, container, token) {
   if (!card || !container) return;
 
+  const sideName = container === boPlayerCards ? "PLAYER" : "BANKER";
+  setDealerMessage(`CHIA CHO ${sideName}`, container);
+  playCasinoSound("deal");
+
   boCardShoe?.classList.add("is-dealing");
 
   container.insertAdjacentHTML(
@@ -240,6 +567,8 @@ async function appendAnimatedCard(card, container, token) {
   if (token !== dealAnimationToken) return;
   dealt.classList.remove("face-down", "squeeze-ready", "squeeze-3");
   dealt.classList.add("flipping");
+  setDealerMessage(`MỞ BÀI ${sideName}`, container);
+  playCasinoSound("flip");
 
   await sleep(680);
   if (token !== dealAnimationToken) return;
@@ -247,6 +576,7 @@ async function appendAnimatedCard(card, container, token) {
   dealt.classList.remove("flipping");
   dealt.classList.add("face-up");
   boCardShoe?.classList.remove("is-dealing");
+  hideDealerMessage(180);
 }
 
 async function animateFinishedRound(round) {
@@ -268,6 +598,8 @@ async function animateFinishedRound(round) {
   document.querySelector(".bo-table")?.classList.add("opening-cards");
   boCardShoe?.classList.add("active");
   boTableMessage.textContent = "Đang chia bài";
+  ensureV21UI();
+  setDealerMessage("BẮT ĐẦU CHIA BÀI");
 
   const dealOrder = [
     [playerCards[0], boPlayerCards],
@@ -305,6 +637,9 @@ async function animateFinishedRound(round) {
   boCardShoe?.classList.remove("active", "is-dealing");
   renderResult();
   boTableMessage.textContent = "Ván đã kết thúc";
+  setDealerMessage(resultLabel(round.result));
+  await showV21ResultFx(round);
+  hideDealerMessage(1400);
 
   if (activeDealRoundId === round.id) {
     activeDealRoundId = null;
@@ -1520,7 +1855,8 @@ async function loadMyBets() {
         <span>TIE <b>${formatVNC(roundTotals.tie)}</b></span>
         <span>BANKER <b>${formatVNC(roundTotals.banker)}</b></span>
       `;
-    renderOwnRoundBets({ player: player, tie: tie, banker: banker });
+    renderOwnRoundBets(roundTotals);
+    lastOwnRoundTotals = { ...roundTotals };
     }
 
     if (
@@ -2013,6 +2349,8 @@ async function loadShoeState({ animate = false } = {}) {
 
 function playShuffleEffect() {
   clearTimeout(shuffleFxTimer);
+  playCasinoSound("shuffle");
+  setDealerMessage("ĐANG XÀO BÀI");
 
   const table = document.querySelector(".bo-table");
   table?.classList.add("is-shuffling");
@@ -2149,6 +2487,7 @@ document.addEventListener(
 // START
 // ================================
 
+ensureV21UI();
 initAuth();
 
 

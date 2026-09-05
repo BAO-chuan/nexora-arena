@@ -482,6 +482,85 @@ function startCountdown() {
     );
 }
 
+// ================================
+// SETTLE ROUND
+// ================================
+
+async function settleCurrentRound() {
+
+  if (!currentRound) return;
+
+
+  if (
+    currentRound.status ===
+    "finished"
+  ) {
+
+    return;
+  }
+
+
+  if (
+    settlingRoundId ===
+    currentRound.id
+  ) {
+
+    return;
+  }
+
+
+  settlingRoundId =
+    currentRound.id;
+
+
+  try {
+
+    const {
+      data,
+      error
+    } = await sb.rpc(
+      "baccarat_settle_round",
+      {
+        p_round_id:
+          currentRound.id
+      }
+    );
+
+
+    if (error) throw error;
+
+
+    console.log(
+      "Round settled:",
+      data
+    );
+
+
+    await loadCurrentRound();
+
+    await loadProfile();
+
+    await loadMyBets();
+
+
+  } catch (error) {
+
+    console.error(
+      "Settle round:",
+      error
+    );
+
+
+    boTableMessage.textContent =
+      error?.message ||
+      "Không thể xử lý kết quả.";
+
+
+  } finally {
+
+    settlingRoundId = null;
+  }
+}
 
 // ================================
 // RESULT

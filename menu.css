@@ -220,3 +220,41 @@
 body.nx-menu-open{
   overflow:hidden;
 }
+
+/* =========================================
+   ADMIN REQUEST BADGE
+========================================= */
+
+.nx-admin-link{
+  position:relative;
+}
+
+.nx-admin-text{
+  flex:1;
+  width:auto;
+  height:auto;
+  display:block;
+  background:transparent;
+  color:inherit;
+}
+
+.nx-admin-badge{
+  min-width:25px;
+  height:25px;
+
+  padding:0 7px;
+
+  border-radius:999px;
+
+  display:grid;
+  place-items:center;
+
+  background:#b83a3a;
+  color:#fff;
+
+  font-size:11px;
+  font-weight:950;
+
+  box-shadow:
+    0 0 0 3px rgba(184,58,58,.12);
+}

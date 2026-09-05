@@ -358,7 +358,7 @@ async function loadRoom() {
     currentRoom = data;
 
     boRoomName.textContent =
-      data.name;
+      data.name === "NEXORA Room 1" ? "LS79win Room 1" : data.name;
 
     boRoomCode.textContent =
       data.room_code;

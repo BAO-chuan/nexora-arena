@@ -92,7 +92,7 @@ document.addEventListener("visibilitychange", ()=>{
 });
 
 /* =====================================================
-   NEXORA - NXC REQUESTS
+   LS79win - NXC REQUESTS
 ===================================================== */
 
 function formatRequestNXC(value){
@@ -495,7 +495,7 @@ document.addEventListener(
 refreshNxcWallet();
 
 /* =====================================================
-   NEXORA ADMIN - NXC REQUESTS
+   LS79win ADMIN - NXC REQUESTS
 ===================================================== */
 
 async function loadAdminNxcRequests(){

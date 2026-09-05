@@ -1,4 +1,4 @@
-# NEXORA Account + Admin
+# LS79win Account + Admin
 
 Hệ thống đăng ký/đăng nhập thật bằng Supabase, ví NXC riêng cho từng người chơi, lịch sử giao dịch và Admin Dashboard để cộng/trừ NXC hoặc khóa tài khoản.
 

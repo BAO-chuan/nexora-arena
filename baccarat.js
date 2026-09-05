@@ -1,5 +1,5 @@
 /* =========================================================
-   NEXORA BACCARAT ROYALE
+   LS79win BACCARAT ROYALE
    NXC = điểm ảo trong game
 ========================================================= */
 const SUPABASE_URL =
@@ -149,7 +149,7 @@ async function loadProfile() {
     renderBalance();
 
     console.log(
-      "NEXORA PROFILE:",
+      "LS79win PROFILE:",
       profile
     );
 

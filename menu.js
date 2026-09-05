@@ -54,11 +54,11 @@
           <div class="nx-menu-brand">
 
             <div class="nx-menu-logo">
-              N
+              L
             </div>
 
             <div>
-              <strong>NEXORA</strong>
+              <strong>LS79win</strong>
 
               <small id="nxMenuUsername">
                 Player
@@ -480,7 +480,7 @@ if(data.role === "admin"){
     }catch(error){
 
       console.error(
-        "NEXORA menu:",
+        "LS79win menu:",
         error
       );
     }

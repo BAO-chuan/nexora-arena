@@ -25,6 +25,8 @@ let countdownTimer = null;
 let settlingRoundId = null;
 let autoRoundTimer = null;
 let creatingNextRound = false;
+let lastAnimatedRoundId = null;
+let dealAnimationToken = 0;
 
 const AUTO_BETTING_SECONDS = 30;
 const RESULT_DISPLAY_MS = 5000;
@@ -53,6 +55,8 @@ const boResult = $("boResult");
 const boPlayerCards = $("boPlayerCards");
 const boBankerCards = $("boBankerCards");
 const boRoadHistory = $("boRoadHistory");
+const boBigRoad = $("boBigRoad");
+const boRoadStats = $("boRoadStats");
 
 const boBetAmount = $("boBetAmount");
 const boPlaceBet = $("boPlaceBet");
@@ -69,7 +73,7 @@ const boCreateRound = $("boCreateRound");
 // HELPERS
 // ================================
 
-function cardHTML(card) {
+function cardHTML(card, extraClass = "") {
 
   if (!card) return "";
 
@@ -84,7 +88,7 @@ function cardHTML(card) {
 
 
   return `
-    <div class="bo-card ${isRed ? "red" : ""}">
+    <div class="bo-card ${isRed ? "red" : ""} ${extraClass}">
 
       <span class="bo-card-rank">
         ${card.rank || "?"}
@@ -119,6 +123,61 @@ function renderCards(cards, container) {
     cards
       .map(cardHTML)
       .join("");
+}
+
+
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+function appendAnimatedCard(card, container) {
+  if (!card || !container) return;
+  container.insertAdjacentHTML(
+    "beforeend",
+    cardHTML(card, "dealing")
+  );
+}
+
+async function animateFinishedRound(round) {
+  if (!round) return;
+
+  const token = ++dealAnimationToken;
+  const playerCards = Array.isArray(round.player_cards) ? round.player_cards : [];
+  const bankerCards = Array.isArray(round.banker_cards) ? round.banker_cards : [];
+
+  renderCards([], boPlayerCards);
+  renderCards([], boBankerCards);
+
+  boPlayerScore.textContent = "—";
+  boBankerScore.textContent = "—";
+  boResult.textContent = "Đang chia bài...";
+  boResult.classList.add("dealing-result");
+  document.querySelector(".bo-hands")?.classList.add("is-dealing");
+  boTableMessage.textContent = "Đang chia bài";
+
+  const dealOrder = [
+    [playerCards[0], boPlayerCards],
+    [bankerCards[0], boBankerCards],
+    [playerCards[1], boPlayerCards],
+    [bankerCards[1], boBankerCards],
+    [playerCards[2], boPlayerCards],
+    [bankerCards[2], boBankerCards]
+  ].filter(([card]) => card);
+
+  for (const [card, container] of dealOrder) {
+    if (token !== dealAnimationToken) return;
+    appendAnimatedCard(card, container);
+    await sleep(360);
+  }
+
+  if (token !== dealAnimationToken) return;
+
+  boPlayerScore.textContent = round.player_score ?? "—";
+  boBankerScore.textContent = round.banker_score ?? "—";
+  boResult.classList.remove("dealing-result");
+  document.querySelector(".bo-hands")?.classList.remove("is-dealing");
+  renderResult();
+  boTableMessage.textContent = "Ván đã kết thúc";
 }
 
 function formatNXC(value) {
@@ -380,6 +439,12 @@ function renderRound() {
     );
   }
 
+  if (currentRound?.status !== "finished") {
+    ++dealAnimationToken;
+    boResult?.classList.remove("dealing-result");
+    document.querySelector(".bo-hands")?.classList.remove("is-dealing");
+  }
+
   if (!currentRound) {
 
     boRoundNumber.textContent = "—";
@@ -432,26 +497,46 @@ function renderRound() {
 
     boCountdown.textContent = "0s";
 
-    boPlayerScore.textContent =
-      currentRound.player_score ?? "—";
+    const finishedAt = currentRound.finished_at
+      ? new Date(currentRound.finished_at).getTime()
+      : 0;
 
-    boBankerScore.textContent =
-      currentRound.banker_score ?? "—";
+    const isFreshResult =
+      finishedAt > 0 &&
+      Date.now() - finishedAt < 8000;
 
-    renderCards(
-      currentRound.player_cards || [],
-      boPlayerCards
-    );
+    const shouldAnimate =
+      isFreshResult &&
+      lastAnimatedRoundId !== currentRound.id;
 
-    renderCards(
-      currentRound.banker_cards || [],
-      boBankerCards
-    );
+    if (shouldAnimate) {
+      lastAnimatedRoundId = currentRound.id;
+      animateFinishedRound(currentRound);
+    } else {
+      ++dealAnimationToken;
+      boPlayerScore.textContent =
+        currentRound.player_score ?? "—";
 
-    renderResult();
+      boBankerScore.textContent =
+        currentRound.banker_score ?? "—";
 
-    boTableMessage.textContent =
-      "Ván đã kết thúc";
+      renderCards(
+        currentRound.player_cards || [],
+        boPlayerCards
+      );
+
+      renderCards(
+        currentRound.banker_cards || [],
+        boBankerCards
+      );
+
+      boResult.classList.remove("dealing-result");
+      document.querySelector(".bo-hands")?.classList.remove("is-dealing");
+      renderResult();
+
+      boTableMessage.textContent =
+        "Ván đã kết thúc";
+    }
 
     scheduleNextRound();
 
@@ -1285,6 +1370,95 @@ boCreateRound?.addEventListener(
 // BACCARAT ROAD HISTORY
 // ================================
 
+function buildBigRoad(rounds) {
+  const cells = [];
+  let lastBase = null;
+  let row = 0;
+  let col = -1;
+  const occupied = new Set();
+  let pendingTies = 0;
+
+  for (const round of rounds) {
+    const result = round.result;
+
+    if (result === "tie") {
+      if (cells.length) {
+        cells[cells.length - 1].ties += 1;
+      } else {
+        pendingTies += 1;
+      }
+      continue;
+    }
+
+    if (result !== "player" && result !== "banker") continue;
+
+    if (lastBase === null || result !== lastBase) {
+      col += 1;
+      row = 0;
+      while (occupied.has(`${row}:${col}`)) col += 1;
+    } else {
+      const downKey = `${row + 1}:${col}`;
+      if (row < 5 && !occupied.has(downKey)) {
+        row += 1;
+      } else {
+        col += 1;
+        while (occupied.has(`${row}:${col}`)) col += 1;
+      }
+    }
+
+    const cell = {
+      row,
+      col,
+      result,
+      ties: pendingTies,
+      roundNumber: round.round_number
+    };
+
+    pendingTies = 0;
+    cells.push(cell);
+    occupied.add(`${row}:${col}`);
+    lastBase = result;
+  }
+
+  return cells;
+}
+
+function renderBigRoad(rounds) {
+  if (!boBigRoad) return;
+
+  const cells = buildBigRoad(rounds);
+
+  if (!cells.length) {
+    boBigRoad.innerHTML =
+      '<p class="bo-road-empty">Chưa có dữ liệu đại lộ.</p>';
+    return;
+  }
+
+  boBigRoad.innerHTML = cells.map(cell => {
+    const label = cell.result === "player" ? "P" : "B";
+    const tieBadge = cell.ties > 0
+      ? `<span class="tie-badge">${cell.ties}</span>`
+      : "";
+
+    return `
+      <div
+        class="bo-big-dot ${cell.result}"
+        style="grid-row:${cell.row + 1};grid-column:${cell.col + 1}"
+        title="Ván #${cell.roundNumber}"
+      >
+        ${label}${tieBadge}
+      </div>
+    `;
+  }).join("");
+
+  const scroller = boBigRoad.parentElement;
+  if (scroller) {
+    requestAnimationFrame(() => {
+      scroller.scrollLeft = scroller.scrollWidth;
+    });
+  }
+}
+
 async function loadRoadHistory() {
   if (!currentRoom || !boRoadHistory) return;
 
@@ -1295,19 +1469,25 @@ async function loadRoadHistory() {
       .eq("room_id", currentRoom.id)
       .eq("status", "finished")
       .order("round_number", { ascending: false })
-      .limit(30);
+      .limit(80);
 
     if (error) throw error;
 
     if (!data || !data.length) {
       boRoadHistory.innerHTML =
         '<p class="bo-road-empty">Chưa có lịch sử ván.</p>';
+      if (boBigRoad) {
+        boBigRoad.innerHTML =
+          '<p class="bo-road-empty">Chưa có dữ liệu đại lộ.</p>';
+      }
+      if (boRoadStats) boRoadStats.textContent = "P 0 · B 0 · T 0";
       return;
     }
 
     const rounds = [...data].reverse();
+    const recentRounds = rounds.slice(-30);
 
-    boRoadHistory.innerHTML = rounds.map(round => {
+    boRoadHistory.innerHTML = recentRounds.map(round => {
       let className = "road-tie";
       let label = "T";
 
@@ -1321,13 +1501,31 @@ async function loadRoadHistory() {
 
       return `<div class="bo-road-dot ${className}" title="Ván #${round.round_number}">${label}</div>`;
     }).join("");
+
+    const counts = rounds.reduce((acc, round) => {
+      if (round.result === "player") acc.player += 1;
+      else if (round.result === "banker") acc.banker += 1;
+      else if (round.result === "tie") acc.tie += 1;
+      return acc;
+    }, { player:0, banker:0, tie:0 });
+
+    if (boRoadStats) {
+      boRoadStats.textContent =
+        `P ${counts.player} · B ${counts.banker} · T ${counts.tie}`;
+    }
+
+    renderBigRoad(rounds);
+
   } catch (error) {
     console.error("Load road history:", error);
     boRoadHistory.innerHTML =
       '<p class="bo-road-empty">Không thể tải lịch sử.</p>';
+    if (boBigRoad) {
+      boBigRoad.innerHTML =
+        '<p class="bo-road-empty">Không thể tải đại lộ.</p>';
+    }
   }
 }
-
 
 // ================================
 // SUPABASE REALTIME

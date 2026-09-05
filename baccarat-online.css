@@ -740,3 +740,140 @@ button{
 .road-tie{background:#249768}
 .bo-road-empty{grid-column:1/-1;margin:5px 0;text-align:center;color:rgba(255,255,255,.55);font-size:12px}
 @media(max-width:420px){.bo-road-card{padding:15px 12px}.bo-road-history{grid-template-columns:repeat(10,1fr);gap:5px}.bo-road-dot{font-size:9px}}
+
+
+/* =========================================
+   BIG ROAD + DEAL ANIMATION
+========================================= */
+.bo-big-road-wrap{
+  margin-top:18px;
+  padding-top:16px;
+  border-top:1px solid rgba(255,255,255,.06);
+}
+.bo-big-road-title{
+  display:flex;
+  align-items:flex-end;
+  justify-content:space-between;
+  gap:12px;
+  margin-bottom:10px;
+}
+.bo-big-road-title span{
+  display:block;
+  color:var(--gold);
+  font-size:9px;
+  font-weight:950;
+  letter-spacing:1.5px;
+}
+.bo-big-road-title strong{
+  display:block;
+  margin-top:2px;
+  font-size:15px;
+}
+.bo-road-stats{
+  color:var(--muted);
+  font-size:10px;
+  font-weight:850;
+  white-space:nowrap;
+}
+.bo-big-road-scroll{
+  overflow-x:auto;
+  padding-bottom:3px;
+  -webkit-overflow-scrolling:touch;
+}
+.bo-big-road{
+  --road-cell:30px;
+  position:relative;
+  display:grid;
+  grid-template-rows:repeat(6,var(--road-cell));
+  grid-auto-flow:column;
+  grid-auto-columns:var(--road-cell);
+  gap:2px;
+  min-width:max-content;
+  padding:7px;
+  border-radius:13px;
+  background:
+    linear-gradient(rgba(255,255,255,.055) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,255,255,.055) 1px,transparent 1px),
+    rgba(0,0,0,.16);
+  background-size:32px 32px;
+}
+.bo-big-road .bo-road-empty{
+  width:260px;
+  margin:32px 0;
+}
+.bo-big-dot{
+  width:24px;
+  height:24px;
+  align-self:center;
+  justify-self:center;
+  display:grid;
+  place-items:center;
+  border-radius:50%;
+  background:rgba(4,16,12,.85);
+  font-size:9px;
+  font-weight:950;
+  position:relative;
+}
+.bo-big-dot.player{
+  border:3px solid #4ea7ea;
+  color:#9bd5ff;
+}
+.bo-big-dot.banker{
+  border:3px solid #e05c5c;
+  color:#ffb0b0;
+}
+.bo-big-dot .tie-badge{
+  position:absolute;
+  right:-5px;
+  bottom:-5px;
+  min-width:14px;
+  height:14px;
+  padding:0 3px;
+  display:grid;
+  place-items:center;
+  border-radius:999px;
+  background:#249768;
+  color:#fff;
+  border:1px solid rgba(255,255,255,.35);
+  font-size:8px;
+  line-height:1;
+}
+
+.bo-card.dealing{
+  animation:boDealCard .42s cubic-bezier(.18,.8,.25,1) both;
+  transform-origin:50% 100%;
+}
+@keyframes boDealCard{
+  0%{
+    opacity:0;
+    transform:translateY(-42px) translateX(18px) rotate(8deg) scale(.72);
+    filter:blur(2px);
+  }
+  70%{
+    opacity:1;
+    transform:translateY(3px) translateX(0) rotate(-1deg) scale(1.03);
+    filter:blur(0);
+  }
+  100%{
+    opacity:1;
+    transform:translateY(0) translateX(0) rotate(0) scale(1);
+  }
+}
+.bo-hands.is-dealing .bo-hand-score{
+  opacity:.45;
+}
+.bo-result.dealing-result{
+  color:var(--gold2);
+  animation:boResultPulse .8s ease-in-out infinite alternate;
+}
+@keyframes boResultPulse{
+  from{opacity:.55;transform:scale(.98)}
+  to{opacity:1;transform:scale(1.02)}
+}
+
+@media(max-width:420px){
+  .bo-big-road{--road-cell:27px;background-size:29px 29px}
+  .bo-big-dot{width:21px;height:21px;border-width:2px}
+  .bo-big-road-title{align-items:flex-start}
+  .bo-road-stats{font-size:9px}
+}

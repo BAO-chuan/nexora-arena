@@ -8,7 +8,7 @@
 <title>
     LS79win Baccarat Online
   </title>
-<link href="baccarat-online.css?v=7" rel="stylesheet"/>
+<link href="baccarat-online.css?v=8" rel="stylesheet"/>
 <link href="menu.css?v=3" rel="stylesheet"/>
 </head>
 <body>
@@ -153,22 +153,15 @@
 <span>
           Số VNC muốn cược
         </span>
-<input id="boBetAmount" inputmode="numeric" min="1" placeholder="Ví dụ: 1000" step="1" type="number"/>
+<input id="boBetAmount" inputmode="numeric" min="10000" max="1000000" placeholder="10.000 - 1.000.000 VNC" step="1000" type="number"/>
 </label>
 <div class="bo-quick-row">
-<button data-bo-amount="100" type="button">
-          100
-        </button>
-<button data-bo-amount="500" type="button">
-          500
-        </button>
-<button data-bo-amount="1000" type="button">
-          1K
-        </button>
-<button data-bo-amount="5000" type="button">
-          5K
-        </button>
+<button data-bo-amount="10000" type="button">10K</button>
+<button data-bo-amount="50000" type="button">50K</button>
+<button data-bo-amount="100000" type="button">100K</button>
+<button data-bo-amount="1000000" type="button">1M</button>
 </div>
+<p class="bo-bet-limit">Giới hạn mỗi lần cược: 10.000 – 1.000.000 VNC</p>
 <button class="bo-place-bet" disabled="" id="boPlaceBet" type="button">
         CHỌN CỬA CƯỢC
       </button>
@@ -242,7 +235,7 @@
 <span>
           Thời gian đặt cược
         </span>
-<input id="boBettingSeconds" max="120" min="5" type="number" value="30"/>
+<input id="boBettingSeconds" max="120" min="5" type="number" value="20"/>
 </label>
 <button class="bo-admin-btn" id="boCreateRound" type="button">
         + TẠO VÁN MỚI
@@ -253,7 +246,7 @@
 </section>
 </main>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="baccarat-online.js?v=14"></script>
+<script src="baccarat-online.js?v=15"></script>
 <script src="menu.js?v=2"></script>
 </body>
 </html>

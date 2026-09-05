@@ -29,7 +29,9 @@ let lastAnimatedRoundId = null;
 let dealAnimationToken = 0;
 let betStatsTimer = null;
 
-const AUTO_BETTING_SECONDS = 30;
+const AUTO_BETTING_SECONDS = 20;
+const MIN_BET_AMOUNT = 10000;
+const MAX_BET_AMOUNT = 1000000;
 const RESULT_DISPLAY_MS = 10000;
 // ================================
 // ELEMENTS
@@ -1032,7 +1034,8 @@ function updateBetButton() {
     bettingOpen &&
     selectedBet &&
     Number.isFinite(amount) &&
-    amount > 0;
+    amount >= MIN_BET_AMOUNT &&
+    amount <= MAX_BET_AMOUNT;
 
 
   boPlaceBet.disabled =
@@ -1088,11 +1091,12 @@ boPlaceBet?.addEventListener(
 
     if (
       !Number.isFinite(amount) ||
-      amount <= 0
+      amount < MIN_BET_AMOUNT ||
+      amount > MAX_BET_AMOUNT
     ) {
 
       setBetMessage(
-        "Số VNC không hợp lệ.",
+        `Mỗi lần cược từ ${formatVNC(MIN_BET_AMOUNT)} đến ${formatVNC(MAX_BET_AMOUNT)} VNC.`,
         true
       );
 

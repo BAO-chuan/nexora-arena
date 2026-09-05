@@ -1047,3 +1047,12 @@ body{
 .bo-tab-btn.active{background:linear-gradient(135deg,rgba(217,11,22,.28),rgba(242,196,90,.09));color:#ffe29a;box-shadow:inset 0 0 0 1px rgba(242,196,90,.20)}
 .bo-road-dot.player{background:#b90b15}.bo-road-dot.banker{background:#a57a18}.bo-road-dot.tie{background:#5b3711}
 .bo-big-road{background:#090303;border-color:rgba(242,196,90,.12)}
+
+/* V15 betting limits */
+.bo-bet-limit{
+  margin:6px 0 0;
+  text-align:center;
+  color:var(--muted);
+  font-size:9px;
+  font-weight:800;
+}

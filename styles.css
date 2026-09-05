@@ -837,3 +837,158 @@ input:focus{border-color:#c9912f;box-shadow:0 0 0 3px rgba(242,196,90,.08)}
   font-weight:800;
   line-height:1.5;
 }
+
+
+/* =========================================================
+   LS79win HOME MOTION — RESTORED
+   Visual-only. No backend/game logic changes.
+========================================================= */
+.home-motion-enabled{
+  position:relative;
+  isolation:isolate;
+}
+.home-motion-enabled > *:not(.home-ambient){
+  position:relative;
+  z-index:1;
+}
+.home-ambient{
+  position:absolute;
+  inset:0;
+  overflow:hidden;
+  pointer-events:none;
+  z-index:0;
+}
+.ambient-orb{
+  position:absolute;
+  border-radius:50%;
+  filter:blur(4px);
+  opacity:.38;
+  will-change:transform,opacity;
+}
+.orb-a{
+  width:170px;height:170px;
+  right:-70px;top:40px;
+  background:radial-gradient(circle,rgba(217,11,22,.45),rgba(217,11,22,0) 70%);
+  animation:ls79OrbA 8s ease-in-out infinite alternate;
+}
+.orb-b{
+  width:130px;height:130px;
+  left:-55px;top:310px;
+  background:radial-gradient(circle,rgba(242,196,90,.30),rgba(242,196,90,0) 70%);
+  animation:ls79OrbB 10s ease-in-out infinite alternate;
+}
+.orb-c{
+  width:150px;height:150px;
+  right:18%;top:610px;
+  background:radial-gradient(circle,rgba(217,11,22,.26),rgba(217,11,22,0) 70%);
+  animation:ls79OrbC 12s ease-in-out infinite alternate;
+}
+.ambient-spark{
+  position:absolute;
+  color:#f2c45a;
+  opacity:.32;
+  text-shadow:0 0 12px rgba(242,196,90,.55);
+  will-change:transform,opacity;
+}
+.spark-a{right:13%;top:120px;animation:ls79Spark 3.8s ease-in-out infinite}
+.spark-b{left:8%;top:440px;animation:ls79Spark 4.6s ease-in-out .7s infinite}
+.spark-c{right:28%;top:760px;animation:ls79Spark 5.2s ease-in-out 1.2s infinite}
+
+.home-reveal{
+  opacity:0;
+  transform:translateY(18px) scale(.985);
+  transition:
+    opacity .62s ease,
+    transform .62s cubic-bezier(.2,.75,.25,1);
+}
+.home-reveal[data-reveal-delay="2"]{transition-delay:.07s}
+.home-reveal[data-reveal-delay="3"]{transition-delay:.14s}
+.home-reveal[data-reveal-delay="4"]{transition-delay:.21s}
+.home-reveal.is-visible{
+  opacity:1;
+  transform:none;
+}
+
+.home-motion-enabled .v3-card-a{
+  animation:ls79CardA 4.8s ease-in-out infinite alternate;
+}
+.home-motion-enabled .v3-card-k{
+  animation:ls79CardK 5.4s ease-in-out .3s infinite alternate;
+}
+.home-motion-enabled .v3-chip{
+  animation:ls79Chip 4s ease-in-out infinite;
+}
+.home-motion-enabled .v3-promo-btn{
+  animation:ls79ButtonGlow 2.8s ease-in-out infinite;
+}
+.home-motion-enabled .v3-slider-dots .active{
+  animation:ls79Dot 1.8s ease-in-out infinite;
+}
+.home-motion-enabled .game-card{
+  transition:transform .22s ease,border-color .22s ease,box-shadow .22s ease;
+}
+.home-motion-enabled .game-card:active{
+  transform:scale(.985);
+}
+.ls79-balance-pop{
+  animation:ls79BalancePop .42s ease;
+}
+
+@keyframes ls79OrbA{
+  from{transform:translate3d(0,0,0) scale(.94);opacity:.25}
+  to{transform:translate3d(-24px,35px,0) scale(1.12);opacity:.48}
+}
+@keyframes ls79OrbB{
+  from{transform:translate3d(0,0,0) scale(1)}
+  to{transform:translate3d(30px,-24px,0) scale(1.16)}
+}
+@keyframes ls79OrbC{
+  from{transform:translate3d(0,0,0)}
+  to{transform:translate3d(-30px,22px,0)}
+}
+@keyframes ls79Spark{
+  0%,100%{transform:translateY(0) rotate(0deg) scale(.85);opacity:.18}
+  50%{transform:translateY(-16px) rotate(18deg) scale(1.18);opacity:.62}
+}
+@keyframes ls79CardA{
+  from{transform:rotate(-12deg) translateY(0)}
+  to{transform:rotate(-7deg) translateY(-8px)}
+}
+@keyframes ls79CardK{
+  from{transform:rotate(12deg) translateY(2px)}
+  to{transform:rotate(7deg) translateY(-7px)}
+}
+@keyframes ls79Chip{
+  0%,100%{transform:translateY(0) rotate(0deg)}
+  50%{transform:translateY(-7px) rotate(5deg)}
+}
+@keyframes ls79ButtonGlow{
+  0%,100%{box-shadow:0 8px 24px rgba(219,145,18,.18)}
+  50%{box-shadow:0 8px 30px rgba(242,196,90,.38),0 0 16px rgba(217,11,22,.15)}
+}
+@keyframes ls79Dot{
+  0%,100%{opacity:.55;transform:scale(.85)}
+  50%{opacity:1;transform:scale(1.18)}
+}
+@keyframes ls79BalancePop{
+  0%{transform:scale(1)}
+  45%{transform:scale(1.08)}
+  100%{transform:scale(1)}
+}
+
+@media (prefers-reduced-motion:reduce){
+  .ambient-orb,.ambient-spark,
+  .home-motion-enabled .v3-card-a,
+  .home-motion-enabled .v3-card-k,
+  .home-motion-enabled .v3-chip,
+  .home-motion-enabled .v3-promo-btn,
+  .home-motion-enabled .v3-slider-dots .active,
+  .ls79-balance-pop{
+    animation:none!important;
+  }
+  .home-reveal{
+    opacity:1!important;
+    transform:none!important;
+    transition:none!important;
+  }
+}

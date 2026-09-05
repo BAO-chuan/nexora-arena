@@ -64,6 +64,8 @@ const boRoadStats = $("boRoadStats");
 const boBetAmount = $("boBetAmount");
 const boPlaceBet = $("boPlaceBet");
 const boBetMessage = $("boBetMessage");
+const boBetPreview = $("boBetPreview");
+const boMyRoundBets = $("boMyRoundBets");
 
 const boPlayerBetAmount = $("boPlayerBetAmount");
 const boPlayerBetPlayers = $("boPlayerBetPlayers");
@@ -451,6 +453,10 @@ async function loadCurrentRound() {
 
 function renderRound() {
 
+  boCountdown?.classList.remove("warning", "danger");
+  document.querySelector(".bo-room-card")?.classList.remove("bet-closing");
+  document.querySelector(".bo-table")?.classList.remove("winner-player", "winner-banker", "winner-tie");
+
   clearInterval(
     countdownTimer
   );
@@ -645,6 +651,10 @@ function startCountdown() {
 
     boCountdown.textContent =
       remaining + "s";
+
+    boCountdown.classList.toggle("warning", remaining <= 10 && remaining > 5);
+    boCountdown.classList.toggle("danger", remaining <= 5 && remaining > 0);
+    document.querySelector(".bo-room-card")?.classList.toggle("bet-closing", remaining <= 5 && remaining > 0);
 
 
     if (remaining <= 0) {
@@ -932,6 +942,10 @@ function renderResult() {
       currentRound.result
     ] ||
     currentRound.result;
+
+  const table = document.querySelector(".bo-table");
+  table?.classList.remove("winner-player", "winner-banker", "winner-tie");
+  table?.classList.add(`winner-${currentRound.result}`);
 }
 
 
@@ -1005,6 +1019,26 @@ boBetAmount?.addEventListener(
 );
 
 
+function updateBetPreview() {
+  if (!boBetPreview) return;
+
+  const labels = { player: "PLAYER", banker: "BANKER", tie: "TIE" };
+  const amount = Math.floor(Number(boBetAmount?.value || 0));
+
+  if (!selectedBet) {
+    boBetPreview.textContent = "Chọn PLAYER, TIE hoặc BANKER để đặt cược.";
+    return;
+  }
+
+  if (!Number.isFinite(amount) || amount <= 0) {
+    boBetPreview.textContent = `Bạn đang chọn ${labels[selectedBet]} • nhập số VNC muốn cược`;
+    return;
+  }
+
+  boBetPreview.textContent =
+    `Bạn đang cược: ${labels[selectedBet]} • ${formatVNC(amount)} VNC`;
+}
+
 // ================================
 // BET BUTTON STATE
 // ================================
@@ -1012,6 +1046,7 @@ boBetAmount?.addEventListener(
 function updateBetButton() {
 
   if (!boPlaceBet) return;
+  updateBetPreview();
 
 
   const amount =
@@ -1137,6 +1172,13 @@ boPlaceBet?.addEventListener(
       setBetMessage(
         `✓ Đã cược ${formatVNC(amount)} VNC`
       );
+
+      const placedSide = selectedBet;
+      const placedButton = document.querySelector(`[data-bet-on="${placedSide}"]`);
+      placedButton?.classList.remove("chip-land");
+      void placedButton?.offsetWidth;
+      placedButton?.classList.add("chip-land");
+      setTimeout(() => placedButton?.classList.remove("chip-land"), 800);
 
 
       boBetAmount.value = "";
@@ -1328,6 +1370,21 @@ async function loadMyBets() {
 
     if (error) throw error;
 
+
+    const roundTotals = { player: 0, banker: 0, tie: 0 };
+    (data || []).forEach(bet => {
+      if (roundTotals[bet.bet_on] !== undefined) {
+        roundTotals[bet.bet_on] += Number(bet.amount || 0);
+      }
+    });
+
+    if (boMyRoundBets) {
+      boMyRoundBets.innerHTML = `
+        <span>PLAYER <b>${formatVNC(roundTotals.player)}</b></span>
+        <span>TIE <b>${formatVNC(roundTotals.tie)}</b></span>
+        <span>BANKER <b>${formatVNC(roundTotals.banker)}</b></span>
+      `;
+    }
 
     if (
       !data ||

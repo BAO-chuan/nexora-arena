@@ -1048,11 +1048,42 @@ body{
 .bo-road-dot.player{background:#b90b15}.bo-road-dot.banker{background:#a57a18}.bo-road-dot.tie{background:#5b3711}
 .bo-big-road{background:#090303;border-color:rgba(242,196,90,.12)}
 
-/* V15 betting limits */
-.bo-bet-limit{
-  margin:6px 0 0;
-  text-align:center;
-  color:var(--muted);
-  font-size:9px;
-  font-weight:800;
+/* =========================================================
+   LS79win Baccarat V16 — Table Experience
+========================================================= */
+.bo-bet-preview{
+  margin-top:7px;padding:8px 10px;border-radius:10px;text-align:center;
+  background:rgba(242,196,90,.06);border:1px solid rgba(242,196,90,.13);
+  color:#ffe39a;font-size:10px;font-weight:850
+}
+.bo-my-round-bets{
+  margin-top:6px;display:grid;grid-template-columns:repeat(3,1fr);gap:5px
+}
+.bo-my-round-bets span{
+  padding:6px 3px;border-radius:9px;background:rgba(255,255,255,.025);
+  border:1px solid rgba(255,255,255,.05);text-align:center;
+  color:var(--muted);font-size:8px;font-weight:900
+}
+.bo-my-round-bets b{display:block;margin-top:2px;color:#fff;font-size:9px}
+#boCountdown.warning{color:#ffd65c;animation:boCountdownWarn .8s ease-in-out infinite alternate}
+#boCountdown.danger{color:#ff414b;animation:boCountdownDanger .38s ease-in-out infinite alternate}
+.bo-room-card.bet-closing{border-color:rgba(217,11,22,.62);box-shadow:0 0 24px rgba(217,11,22,.15)}
+@keyframes boCountdownWarn{from{transform:scale(1)}to{transform:scale(1.08)}}
+@keyframes boCountdownDanger{from{transform:scale(1)}to{transform:scale(1.18);text-shadow:0 0 14px rgba(255,45,55,.8)}}
+.bo-bet-btn.chip-land{animation:boChipLand .72s cubic-bezier(.2,.8,.2,1)}
+@keyframes boChipLand{
+  0%{transform:translateY(-14px) scale(.94)}
+  45%{transform:translateY(3px) scale(1.05);box-shadow:0 0 24px rgba(242,196,90,.38)}
+  100%{transform:translateY(0) scale(1)}
+}
+.bo-table.winner-player{box-shadow:0 0 0 1px rgba(74,167,234,.7),0 0 30px rgba(74,167,234,.22),inset 0 0 35px rgba(74,167,234,.08)}
+.bo-table.winner-banker{box-shadow:0 0 0 1px rgba(224,92,92,.75),0 0 30px rgba(224,92,92,.23),inset 0 0 35px rgba(224,92,92,.08)}
+.bo-table.winner-tie{box-shadow:0 0 0 1px rgba(70,190,125,.75),0 0 30px rgba(70,190,125,.23),inset 0 0 35px rgba(70,190,125,.08)}
+.bo-table.winner-player #boResult,.bo-table.winner-banker #boResult,.bo-table.winner-tie #boResult{
+  color:#ffe39a;font-weight:950;letter-spacing:.6px;animation:boWinnerPulse .8s ease-in-out 3 alternate
+}
+@keyframes boWinnerPulse{from{transform:scale(1)}to{transform:scale(1.04);text-shadow:0 0 18px rgba(242,196,90,.5)}}
+@media(prefers-reduced-motion:reduce){
+  #boCountdown.warning,#boCountdown.danger,.bo-bet-btn.chip-land,
+  .bo-table.winner-player #boResult,.bo-table.winner-banker #boResult,.bo-table.winner-tie #boResult{animation:none}
 }

@@ -1451,4 +1451,376 @@ window.addEventListener(
 window.addEventListener(
   "focus",
   loadNxcWithdrawRequests
+
+// =========================================
+// ADMIN NXC WITHDRAW REQUESTS
+// =========================================
+
+async function loadAdminWithdrawRequests(){
+
+  const list =
+    document.getElementById(
+      "adminWithdrawList"
+    );
+
+  if(!list) return;
+
+
+  try{
+
+    const {
+      data: { session }
+    } = await sb.auth.getSession();
+
+
+    if(!session){
+      return;
+    }
+
+
+    const {
+      data: profile,
+      error: profileError
+    } = await sb
+      .from("profiles")
+      .select("role")
+      .eq("id", session.user.id)
+      .single();
+
+
+    if(profileError){
+      throw profileError;
+    }
+
+
+    if(profile?.role !== "admin"){
+      return;
+    }
+
+
+    const {
+      data,
+      error
+    } = await sb.rpc(
+      "admin_list_nxc_withdraws"
+    );
+
+
+    if(error){
+      throw error;
+    }
+
+
+    if(!data || !data.length){
+
+      list.innerHTML =
+        '<p class="muted">Không có lệnh rút đang chờ.</p>';
+
+      return;
+    }
+
+
+    list.innerHTML =
+      data.map(item => {
+
+        const date =
+          new Date(
+            item.created_at
+          ).toLocaleString(
+            "vi-VN"
+          );
+
+
+        return `
+          <div
+            class="admin-withdraw-card"
+            data-withdraw-id="${item.request_id}"
+          >
+
+            <div class="admin-withdraw-top">
+
+              <div>
+
+                <div class="admin-withdraw-user">
+                  ${esc(item.username || "Player")}
+                </div>
+
+                <div class="muted">
+                  ${date}
+                </div>
+
+              </div>
+
+              <div class="admin-withdraw-amount">
+                ${Number(item.amount || 0).toLocaleString("vi-VN")} NXC
+              </div>
+
+            </div>
+
+
+            <div class="admin-withdraw-info">
+
+              <p>
+                <strong>Họ tên:</strong>
+                ${esc(item.full_name || "Chưa có")}
+              </p>
+
+              <p>
+                <strong>SĐT:</strong>
+                ${esc(item.phone || "Chưa có")}
+              </p>
+
+              <p>
+                <strong>Ngân hàng:</strong>
+                ${esc(item.bank_name || "Chưa có")}
+              </p>
+
+              <p>
+                <strong>Số tài khoản:</strong>
+                ${esc(item.bank_account || "Chưa có")}
+              </p>
+
+            </div>
+
+
+            <div class="admin-withdraw-actions">
+
+              <button
+                type="button"
+                class="admin-withdraw-approve"
+                data-approve-withdraw="${item.request_id}"
+              >
+                ✓ DUYỆT
+              </button>
+
+              <button
+                type="button"
+                class="admin-withdraw-reject"
+                data-reject-withdraw="${item.request_id}"
+              >
+                × TỪ CHỐI
+              </button>
+
+            </div>
+
+          </div>
+        `;
+
+      }).join("");
+
+
+    bindAdminWithdrawButtons();
+
+
+  }catch(error){
+
+    console.error(
+      "Admin withdraw list:",
+      error
+    );
+
+    list.innerHTML =
+      '<p class="muted">Không thể tải lệnh rút.</p>';
+  }
+}
+
+
+
+function bindAdminWithdrawButtons(){
+
+  document
+    .querySelectorAll(
+      "[data-approve-withdraw]"
+    )
+    .forEach(button => {
+
+      button.onclick =
+        async () => {
+
+          const requestId =
+            button.dataset.approveWithdraw;
+
+          await approveAdminWithdraw(
+            requestId
+          );
+        };
+
+    });
+
+
+  document
+    .querySelectorAll(
+      "[data-reject-withdraw]"
+    )
+    .forEach(button => {
+
+      button.onclick =
+        async () => {
+
+          const requestId =
+            button.dataset.rejectWithdraw;
+
+          await rejectAdminWithdraw(
+            requestId
+          );
+        };
+
+    });
+}
+
+
+
+async function approveAdminWithdraw(
+  requestId
+){
+
+  try{
+
+    const {
+      error
+    } = await sb.rpc(
+      "admin_approve_nxc_withdraw",
+      {
+        request_id:
+          requestId
+      }
+    );
+
+
+    if(error){
+      throw error;
+    }
+
+
+    await loadAdminWithdrawRequests();
+
+
+    if(
+      typeof loadPlayers
+      === "function"
+    ){
+      await loadPlayers();
+    }
+
+
+    if(
+      typeof loadLeaderboard
+      === "function"
+    ){
+      await loadLeaderboard();
+    }
+
+
+  }catch(error){
+
+    console.error(
+      "Approve withdraw:",
+      error
+    );
+
+    alert(
+      error?.message
+      ||
+      "Không thể duyệt lệnh rút."
+    );
+  }
+}
+
+
+
+async function rejectAdminWithdraw(
+  requestId
+){
+
+  try{
+
+    const {
+      error
+    } = await sb.rpc(
+      "admin_reject_nxc_withdraw",
+      {
+        request_id:
+          requestId
+      }
+    );
+
+
+    if(error){
+      throw error;
+    }
+
+
+    await loadAdminWithdrawRequests();
+
+
+    if(
+      typeof loadPlayers
+      === "function"
+    ){
+      await loadPlayers();
+    }
+
+
+    if(
+      typeof loadLeaderboard
+      === "function"
+    ){
+      await loadLeaderboard();
+    }
+
+
+    if(
+      typeof syncWalletPage
+      === "function"
+    ){
+      await syncWalletPage();
+    }
+
+
+  }catch(error){
+
+    console.error(
+      "Reject withdraw:",
+      error
+    );
+
+    alert(
+      error?.message
+      ||
+      "Không thể từ chối lệnh rút."
+    );
+  }
+}
+
+
+
+const refreshAdminWithdraw =
+  document.getElementById(
+    "refreshAdminWithdraw"
+  );
+
+
+if(refreshAdminWithdraw){
+
+  refreshAdminWithdraw.addEventListener(
+    "click",
+    loadAdminWithdrawRequests
+  );
+}
+
+
+loadAdminWithdrawRequests();
+
+
+window.addEventListener(
+  "pageshow",
+  loadAdminWithdrawRequests
 );
+
+
+window.addEventListener(
+  "focus",
+  loadAdminWithdrawRequests
+);
+);
+

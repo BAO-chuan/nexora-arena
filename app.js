@@ -33,3 +33,56 @@ document.querySelectorAll(".play-btn").forEach(btn=>{
 });
 document.querySelectorAll(".nav-item").forEach(item=>{item.onclick=()=>{document.querySelectorAll(".nav-item").forEach(n=>n.classList.remove("active"));item.classList.add("active")}});
 sb.auth.onAuthStateChange(()=>setTimeout(refresh,0));refresh();
+
+/* ===== ĐỒNG BỘ NXC TỪ SUPABASE ===== */
+
+async function syncNXC(){
+  try{
+    const {data:{session}} = await sb.auth.getSession();
+
+    if(!session) return;
+
+    const {data,error} = await sb
+      .from("profiles")
+      .select("balance")
+      .eq("id",session.user.id)
+      .single();
+
+    if(error){
+      console.error("Lỗi đồng bộ NXC:",error);
+      return;
+    }
+
+    const balance = Number(data.balance || 0);
+
+    [
+      $("userBalance"),
+      $("walletBalance"),
+      $("gameBalance"),
+      $("balance")
+    ].forEach(el=>{
+      if(el){
+        el.textContent = balance.toLocaleString("vi-VN");
+      }
+    });
+
+  }catch(error){
+    console.error("syncNXC:",error);
+  }
+}
+
+/* Khi quay từ Baccarat về trang chính */
+window.addEventListener("pageshow",()=>{
+  syncNXC();
+});
+
+/* Khi quay lại tab */
+window.addEventListener("focus",()=>{
+  syncNXC();
+});
+
+document.addEventListener("visibilitychange",()=>{
+  if(document.visibilityState==="visible"){
+    syncNXC();
+  }
+});

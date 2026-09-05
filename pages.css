@@ -1,0 +1,75 @@
+
+/* LS79win Multi-page v1 */
+body[data-page] #appArea{max-width:1180px;margin:0 auto}
+
+/* Default: each route exposes only its own module after login */
+body[data-page="home"] #appArea > #nxcWallet,
+body[data-page="home"] #appArea > #leaderboard,
+body[data-page="home"] #appArea > #adminArea{display:none!important}
+
+body[data-page="games"] #appArea > #nxcWallet,
+body[data-page="games"] #appArea > #leaderboard,
+body[data-page="games"] #appArea > #adminArea{display:none!important}
+body[data-page="games"] #home > :not(#games){display:none!important}
+body[data-page="games"] #home{display:block!important}
+body[data-page="games"] #games{margin-top:4px}
+
+body[data-page="vnc"] #appArea > #home,
+body[data-page="vnc"] #appArea > #leaderboard,
+body[data-page="vnc"] #appArea > #adminArea{display:none!important}
+body[data-page="vnc"] .vnc-withdraw-details{display:none!important}
+
+body[data-page="withdraw"] #appArea > #home,
+body[data-page="withdraw"] #appArea > #leaderboard,
+body[data-page="withdraw"] #appArea > #adminArea{display:none!important}
+body[data-page="withdraw"] .vnc-request-card,
+body[data-page="withdraw"] .vnc-request-receipt,
+body[data-page="withdraw"] .vnc-history-card,
+body[data-page="withdraw"] .vnc-mode-tabs{display:none!important}
+body[data-page="withdraw"] .vnc-withdraw-details{display:block!important}
+body[data-page="withdraw"] .vnc-withdraw-details > summary{display:none}
+body[data-page="withdraw"] .vnc-player-summary{margin-bottom:4px}
+
+body[data-page="leaderboard"] #appArea > #home,
+body[data-page="leaderboard"] #appArea > #nxcWallet,
+body[data-page="leaderboard"] #appArea > #adminArea{display:none!important}
+body[data-page="leaderboard"] #leaderboard > #account,
+body[data-page="leaderboard"] #leaderboard > .player-info-card{display:none!important}
+body[data-page="leaderboard"] #leaderboard{grid-template-columns:1fr!important;max-width:760px;margin:0 auto}
+
+body[data-page="account"] #appArea > #home,
+body[data-page="account"] #appArea > #nxcWallet,
+body[data-page="account"] #appArea > #adminArea{display:none!important}
+body[data-page="account"] #leaderboard > .panel:first-child{display:none!important}
+body[data-page="account"] #account .subhead,
+body[data-page="account"] #transactionList{display:none!important}
+body[data-page="account"] #leaderboard{grid-template-columns:1fr!important;max-width:760px;margin:0 auto}
+
+body[data-page="history"] #appArea > #home,
+body[data-page="history"] #appArea > #nxcWallet,
+body[data-page="history"] #appArea > #adminArea{display:none!important}
+body[data-page="history"] #leaderboard > .panel:first-child,
+body[data-page="history"] #leaderboard > .player-info-card{display:none!important}
+body[data-page="history"] #account .profile-card,
+body[data-page="history"] #account .profile-stats{display:none!important}
+body[data-page="history"] #account > .eyebrow,
+body[data-page="history"] #account > h2{display:none!important}
+body[data-page="history"] #leaderboard{display:block!important;max-width:760px;margin:0 auto}
+
+body[data-page="admin"] #appArea > #home,
+body[data-page="admin"] #appArea > #nxcWallet,
+body[data-page="admin"] #appArea > #leaderboard{display:none!important}
+body[data-page="admin"] #adminArea{max-width:900px;margin:0 auto}
+
+/* Dedicated page header */
+.route-heading{max-width:760px;margin:4px auto 12px;padding:0 2px}
+.route-heading .eyebrow{display:block;margin-bottom:3px}
+.route-heading h1{font-size:25px;margin:0}
+.route-heading p{font-size:11px;color:#9f9188;margin:5px 0 0}
+
+/* Keep page navigation app-like on iPhone */
+.bottom-nav .nav-item.active{color:#ffd45f}
+@media(max-width:600px){
+  body[data-page] #appArea{padding-top:7px}
+  .route-heading h1{font-size:21px}
+}

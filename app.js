@@ -1855,3 +1855,17 @@ window.addEventListener(
   loadAdminWithdrawRequests
 );
 
+
+
+// ===== Multi-page v1 helpers =====
+(function(){
+  const adminArea = document.getElementById("adminArea");
+  const adminLink = document.getElementById("adminPageLink");
+  if(adminArea && adminLink){
+    const syncAdminLink = () => {
+      adminLink.classList.toggle("hidden", adminArea.classList.contains("hidden"));
+    };
+    new MutationObserver(syncAdminLink).observe(adminArea,{attributes:true,attributeFilter:["class"]});
+    syncAdminLink();
+  }
+})();

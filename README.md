@@ -13,3 +13,18 @@ Hệ thống đăng ký/đăng nhập thật bằng Supabase, ví VNC riêng cho
 **Không bao giờ** đưa `service_role` key vào frontend hoặc GitHub.
 
 VNC là coin ảo, không có giá trị tiền mặt, không nạp/rút và không quy đổi thành tài sản thật.
+
+
+## LS79win Multi-page v1
+Các mục chính đã được tách thành URL riêng:
+- index.html — Trang chủ
+- games.html — Game
+- vnc-request.html — Yêu cầu VNC ảo
+- vnc-withdraw.html — Rút VNC ảo
+- history.html — Lịch sử VNC
+- leaderboard.html — Bảng xếp hạng
+- account.html — Tài khoản
+- admin.html — Admin
+- baccarat-online.html — Baccarat Online
+
+Tất cả dùng chung Supabase/Auth/database hiện tại. Không cần chạy SQL mới.

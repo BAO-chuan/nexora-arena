@@ -939,3 +939,61 @@ button{
 .bo-bet-btn.player .bo-live-bet-stat b{ color:#8bd2ff; }
 .bo-bet-btn.banker .bo-live-bet-stat b{ color:#ffa0a0; }
 .bo-bet-btn.tie .bo-live-bet-stat b{ color:#91e4bf; }
+
+
+/* =========================================
+   V14 MOBILE COMPACT LAYOUT
+========================================= */
+.bo-main{padding-top:8px;padding-bottom:calc(38px + env(safe-area-inset-bottom))}
+.bo-status{margin-bottom:7px;padding:5px 9px;font-size:10px}
+.bo-room-card{margin-top:7px;padding:10px 12px;border-radius:16px}
+.bo-room-head{align-items:center}
+.bo-room-head .bo-eyebrow{display:none}
+.bo-room-head h1{margin:0;font-size:14px;line-height:1.1}
+.bo-room-code{padding:5px 8px;font-size:9px}
+.bo-round-info{margin-top:8px;gap:5px}
+.bo-round-info div{padding:7px 8px;border-radius:10px}
+.bo-round-info span{font-size:8px}
+.bo-round-info strong{margin-top:2px;font-size:12px}
+.bo-table{margin-top:8px;padding:7px;border-radius:20px}
+.bo-table-inner{min-height:205px;padding:11px;border-radius:16px}
+.bo-table-title span{font-size:8px}
+.bo-table-title strong{margin-top:3px;font-size:12px}
+.bo-hands{margin-top:10px;gap:6px}
+.bo-hand-label{margin-bottom:5px;font-size:9px}
+.bo-cards{min-height:66px;gap:3px}
+.bo-card{width:43px;height:60px;padding:4px;border-radius:7px}
+.bo-card-rank{font-size:15px}.bo-card-suit{font-size:17px}
+.bo-hand-score{margin-top:5px;padding:3px 8px;min-width:34px;font-size:18px}
+.bo-result{margin-top:8px}
+.bo-betting-card{margin-top:8px;padding:11px;border-radius:16px}
+.bo-betting-card .bo-section-head{display:none}
+.bo-table-bet-total{margin:0 0 7px;padding:7px 10px;border-radius:11px;display:flex;align-items:center;justify-content:space-between;gap:7px}
+.bo-table-bet-total span,.bo-table-bet-total strong,.bo-table-bet-total small{margin:0}
+.bo-table-bet-total span{font-size:8px}.bo-table-bet-total strong{font-size:12px}.bo-table-bet-total small{font-size:9px}
+.bo-bet-options{gap:5px}
+.bo-bet-btn{padding:8px 4px;border-radius:12px;min-height:76px}
+.bo-bet-btn>span{font-size:10px}.bo-bet-btn>strong{font-size:13px}
+.bo-live-bet-stat{margin-top:4px}.bo-live-bet-stat b{font-size:10px}.bo-live-bet-stat small{font-size:8px}
+.bo-amount-field{margin-top:8px}.bo-amount-field span{font-size:9px;margin-bottom:4px}.bo-amount-field input{padding:9px 10px}
+.bo-quick-row{margin-top:6px;gap:5px}.bo-quick-row button{padding:8px 4px}
+.bo-place-bet{margin-top:7px;padding:10px}
+#boBetMessage{min-height:0;margin:5px 0 0;font-size:10px}
+.bo-more-card{margin-top:8px}
+.bo-tabs{display:grid;grid-template-columns:1fr 1fr;gap:6px;padding:5px;border:1px solid var(--line);border-radius:14px;background:#071a13;position:sticky;bottom:calc(6px + env(safe-area-inset-bottom));z-index:20;box-shadow:0 8px 25px rgba(0,0,0,.3)}
+.bo-tab-btn{border:0;border-radius:10px;padding:10px 7px;background:transparent;color:var(--muted);font-weight:950;font-size:11px;letter-spacing:.3px}
+.bo-tab-btn.active{background:rgba(224,192,108,.13);color:var(--gold2);box-shadow:inset 0 0 0 1px rgba(224,192,108,.18)}
+.bo-tab-panel{display:none!important;margin-top:7px!important}
+.bo-tab-panel.active{display:block!important}
+.bo-road-card,.bo-history-card{padding:12px;border-radius:15px}
+.bo-road-head{margin-bottom:10px}.bo-road-head h2,.bo-section-head h2{font-size:15px}
+.bo-road-history{gap:5px}
+.bo-big-road-wrap{margin-top:10px}
+.bo-admin-card{margin-top:8px}
+@media(max-width:420px){
+ .bo-main{padding-left:7px;padding-right:7px}
+ .bo-topbar{min-height:50px;padding-top:calc(7px + env(safe-area-inset-top));padding-bottom:7px}
+ .bo-table-inner{min-height:190px;padding:9px}
+ .bo-card{width:40px;height:57px}
+ .bo-bet-btn{padding:7px 3px}
+}

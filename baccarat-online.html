@@ -1,526 +1,259 @@
-<!doctype html>
+<!DOCTYPE html>
+
 <html lang="vi">
-
 <head>
-
-  <meta charset="utf-8">
-
-  <meta
-    name="viewport"
-    content="width=device-width,initial-scale=1,viewport-fit=cover"
-  >
-
-  <meta
-    name="theme-color"
-    content="#06130f"
-  >
-
-  <title>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1,viewport-fit=cover" name="viewport"/>
+<meta content="#06130f" name="theme-color"/>
+<title>
     NEXORA Baccarat Online
   </title>
-
-  <link
-    rel="stylesheet"
-    href="baccarat-online.css?v=5"
-  >
-
-  <link
-    rel="stylesheet"
-    href="menu.css?v=2"
-  >
-
+<link href="baccarat-online.css?v=6" rel="stylesheet"/>
+<link href="menu.css?v=2" rel="stylesheet"/>
 </head>
-
 <body>
-
-  <header class="bo-topbar">
-
-    <a
-      class="bo-back"
-      href="index.html"
-    >
+<header class="bo-topbar">
+<a class="bo-back" href="index.html">
       ←
     </a>
-
-    <div>
-
-      <span class="bo-brand">
+<div>
+<span class="bo-brand">
         NEXORA
       </span>
-
-      <strong>
+<strong>
         Baccarat Online
       </strong>
-
-    </div>
-
-    <div class="bo-wallet">
-
-      <span>NXC</span>
-
-      <strong id="boBalance">
+</div>
+<div class="bo-wallet">
+<span>NXC</span>
+<strong id="boBalance">
         0
       </strong>
-
-    </div>
-
-  </header>
-
-
-  <main class="bo-main">
-
-    <div
-      id="boStatus"
-      class="bo-status"
-    >
+</div>
+</header>
+<main class="bo-main">
+<div class="bo-status" id="boStatus">
       Đang kết nối phòng...
     </div>
-
-
-    <section class="bo-room-card">
-
-      <div class="bo-room-head">
-
-        <div>
-
-          <span class="bo-eyebrow">
+<section class="bo-room-card">
+<div class="bo-room-head">
+<div>
+<span class="bo-eyebrow">
             LIVE ROOM
           </span>
-
-          <h1 id="boRoomName">
+<h1 id="boRoomName">
             NEXORA Room 1
           </h1>
-
-        </div>
-
-        <span
-          id="boRoomCode"
-          class="bo-room-code"
-        >
+</div>
+<span class="bo-room-code" id="boRoomCode">
           NXR001
         </span>
-
-      </div>
-
-
-      <div class="bo-round-info">
-
-        <div>
-
-          <span>VÁN</span>
-
-          <strong id="boRoundNumber">
+</div>
+<div class="bo-round-info">
+<div>
+<span>VÁN</span>
+<strong id="boRoundNumber">
             —
           </strong>
-
-        </div>
-
-
-        <div>
-
-          <span>TRẠNG THÁI</span>
-
-          <strong id="boRoundStatus">
+</div>
+<div>
+<span>TRẠNG THÁI</span>
+<strong id="boRoundStatus">
             Chờ ván
           </strong>
-
-        </div>
-
-
-        <div>
-
-          <span>CÒN LẠI</span>
-
-          <strong id="boCountdown">
+</div>
+<div>
+<span>CÒN LẠI</span>
+<strong id="boCountdown">
             —
           </strong>
-
-        </div>
-
-      </div>
-
-    </section>
-
-
-    <section class="bo-table">
-
-      <div class="bo-table-inner">
-
-        <div class="bo-table-title">
-
-          <span>
+</div>
+</div>
+</section>
+<section class="bo-table">
+<div class="bo-table-inner">
+<div class="bo-table-title">
+<span>
             BACCARAT LIVE
           </span>
-
-          <strong id="boTableMessage">
+<strong id="boTableMessage">
             Đang chờ ván mới
           </strong>
-
-        </div>
-
-
-        <div class="bo-hands">
-
-  <div class="bo-hand">
-
-    <span class="bo-hand-label">
+</div>
+<div class="bo-hands">
+<div class="bo-hand">
+<span class="bo-hand-label">
       PLAYER
     </span>
-
-    <div
-      id="boPlayerCards"
-      class="bo-cards"
-    ></div>
-
-    <strong
-      id="boPlayerScore"
-      class="bo-hand-score"
-    >
+<div class="bo-cards" id="boPlayerCards"></div>
+<strong class="bo-hand-score" id="boPlayerScore">
       —
     </strong>
-
-  </div>
-
-
-  <div class="bo-vs">
+</div>
+<div class="bo-vs">
     VS
   </div>
-
-
-  <div class="bo-hand">
-
-    <span class="bo-hand-label">
+<div class="bo-hand">
+<span class="bo-hand-label">
       BANKER
     </span>
-
-    <div
-      id="boBankerCards"
-      class="bo-cards"
-    ></div>
-
-    <strong
-      id="boBankerScore"
-      class="bo-hand-score"
-    >
+<div class="bo-cards" id="boBankerCards"></div>
+<strong class="bo-hand-score" id="boBankerScore">
       —
     </strong>
-
-  </div>
-
 </div>
-
-        <div
-          id="boResult"
-          class="bo-result"
-        >
+</div>
+<div class="bo-result" id="boResult">
           Chưa có kết quả
         </div>
-
-      </div>
-
-    </section>
-
-
-    <section class="bo-road-card">
-      <div class="bo-road-head">
-        <div>
-          <span class="bo-road-eyebrow">ROAD HISTORY</span>
-          <h2>Lịch sử cầu</h2>
-        </div>
-        <div class="bo-road-legend" aria-label="Chú thích lịch sử cầu">
-          <span class="road-player">P</span>
-          <span class="road-banker">B</span>
-          <span class="road-tie">T</span>
-        </div>
-      </div>
-      <div id="boRoadHistory" class="bo-road-history">
-        <p class="bo-road-empty">Đang tải lịch sử...</p>
-      </div>
-
-      <div class="bo-big-road-wrap">
-        <div class="bo-big-road-title">
-          <div>
-            <span>BIG ROAD</span>
-            <strong>Đại lộ</strong>
-          </div>
-          <div id="boRoadStats" class="bo-road-stats">
-            P 0 · B 0 · T 0
-          </div>
-        </div>
-
-        <div class="bo-big-road-scroll">
-          <div id="boBigRoad" class="bo-big-road">
-            <p class="bo-road-empty">Đang tải đại lộ...</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-
-    <section class="bo-betting-card">
-
-      <div class="bo-section-head">
-
-        <div>
-
-          <span class="bo-eyebrow">
+</div>
+</section><section class="bo-betting-card">
+<div class="bo-section-head">
+<div>
+<span class="bo-eyebrow">
             PLACE BET
           </span>
-
-          <h2>
+<h2>
             Đặt NXC
           </h2>
-
-        </div>
-
-      </div>
-
-
-      <div class="bo-table-bet-total">
-        <span>TỔNG BÀN</span>
-        <strong id="boTableBetAmount">0 NXC</strong>
-        <small id="boTableBetPlayers">0 người</small>
-      </div>
-
-      <div
-        class="bo-bet-options"
-        id="boBetOptions"
-      >
-
-        <button
-          type="button"
-          class="bo-bet-btn player"
-          data-bet-on="player"
-        >
-
-          <span>PLAYER</span>
-
-          <strong>x2</strong>
-
-          <div class="bo-live-bet-stat">
-            <b id="boPlayerBetAmount">0 NXC</b>
-            <small id="boPlayerBetPlayers">0 người</small>
-          </div>
-
-        </button>
-
-
-        <button
-          type="button"
-          class="bo-bet-btn tie"
-          data-bet-on="tie"
-        >
-
-          <span>TIE</span>
-
-          <strong>x8</strong>
-
-          <div class="bo-live-bet-stat">
-            <b id="boTieBetAmount">0 NXC</b>
-            <small id="boTieBetPlayers">0 người</small>
-          </div>
-
-        </button>
-
-
-        <button
-          type="button"
-          class="bo-bet-btn banker"
-          data-bet-on="banker"
-        >
-
-          <span>BANKER</span>
-
-          <strong>x2</strong>
-
-          <div class="bo-live-bet-stat">
-            <b id="boBankerBetAmount">0 NXC</b>
-            <small id="boBankerBetPlayers">0 người</small>
-          </div>
-
-        </button>
-
-      </div>
-
-
-      <label class="bo-amount-field">
-
-        <span>
+</div>
+</div>
+<div class="bo-table-bet-total">
+<span>TỔNG BÀN</span>
+<strong id="boTableBetAmount">0 NXC</strong>
+<small id="boTableBetPlayers">0 người</small>
+</div>
+<div class="bo-bet-options" id="boBetOptions">
+<button class="bo-bet-btn player" data-bet-on="player" type="button">
+<span>PLAYER</span>
+<strong>x2</strong>
+<div class="bo-live-bet-stat">
+<b id="boPlayerBetAmount">0 NXC</b>
+<small id="boPlayerBetPlayers">0 người</small>
+</div>
+</button>
+<button class="bo-bet-btn tie" data-bet-on="tie" type="button">
+<span>TIE</span>
+<strong>x8</strong>
+<div class="bo-live-bet-stat">
+<b id="boTieBetAmount">0 NXC</b>
+<small id="boTieBetPlayers">0 người</small>
+</div>
+</button>
+<button class="bo-bet-btn banker" data-bet-on="banker" type="button">
+<span>BANKER</span>
+<strong>x2</strong>
+<div class="bo-live-bet-stat">
+<b id="boBankerBetAmount">0 NXC</b>
+<small id="boBankerBetPlayers">0 người</small>
+</div>
+</button>
+</div>
+<label class="bo-amount-field">
+<span>
           Số NXC muốn cược
         </span>
-
-        <input
-          id="boBetAmount"
-          type="number"
-          min="1"
-          step="1"
-          inputmode="numeric"
-          placeholder="Ví dụ: 1000"
-        >
-
-      </label>
-
-
-      <div class="bo-quick-row">
-
-        <button
-          type="button"
-          data-bo-amount="100"
-        >
+<input id="boBetAmount" inputmode="numeric" min="1" placeholder="Ví dụ: 1000" step="1" type="number"/>
+</label>
+<div class="bo-quick-row">
+<button data-bo-amount="100" type="button">
           100
         </button>
-
-        <button
-          type="button"
-          data-bo-amount="500"
-        >
+<button data-bo-amount="500" type="button">
           500
         </button>
-
-        <button
-          type="button"
-          data-bo-amount="1000"
-        >
+<button data-bo-amount="1000" type="button">
           1K
         </button>
-
-        <button
-          type="button"
-          data-bo-amount="5000"
-        >
+<button data-bo-amount="5000" type="button">
           5K
         </button>
-
-      </div>
-
-
-      <button
-        id="boPlaceBet"
-        class="bo-place-bet"
-        type="button"
-        disabled
-      >
+</div>
+<button class="bo-place-bet" disabled="" id="boPlaceBet" type="button">
         CHỌN CỬA CƯỢC
       </button>
+<p class="bo-muted" id="boBetMessage"></p>
+</section>
 
 
-      <p
-        id="boBetMessage"
-        class="bo-muted"
-      ></p>
 
-    </section>
-
-
-    <section class="bo-history-card">
-
-      <div class="bo-section-head">
-
-        <div>
-
-          <span class="bo-eyebrow">
+<section class="bo-more-card"><div aria-label="Thông tin Baccarat" class="bo-tabs" role="tablist"><button class="bo-tab-btn active" data-bo-tab="road" role="tab" type="button">CẦU</button><button class="bo-tab-btn" data-bo-tab="bets" role="tab" type="button">CƯỢC CỦA TÔI</button></div><section class="bo-road-card bo-tab-panel active" data-bo-panel="road">
+<div class="bo-road-head">
+<div>
+<span class="bo-road-eyebrow">ROAD HISTORY</span>
+<h2>Lịch sử cầu</h2>
+</div>
+<div aria-label="Chú thích lịch sử cầu" class="bo-road-legend">
+<span class="road-player">P</span>
+<span class="road-banker">B</span>
+<span class="road-tie">T</span>
+</div>
+</div>
+<div class="bo-road-history" id="boRoadHistory">
+<p class="bo-road-empty">Đang tải lịch sử...</p>
+</div>
+<div class="bo-big-road-wrap">
+<div class="bo-big-road-title">
+<div>
+<span>BIG ROAD</span>
+<strong>Đại lộ</strong>
+</div>
+<div class="bo-road-stats" id="boRoadStats">
+            P 0 · B 0 · T 0
+          </div>
+</div>
+<div class="bo-big-road-scroll">
+<div class="bo-big-road" id="boBigRoad">
+<p class="bo-road-empty">Đang tải đại lộ...</p>
+</div>
+</div>
+</div>
+</section><section class="bo-history-card bo-tab-panel" data-bo-panel="bets">
+<div class="bo-section-head">
+<div>
+<span class="bo-eyebrow">
             MY BETS
           </span>
-
-          <h2>
+<h2>
             Cược của tôi
           </h2>
-
-        </div>
-
-
-        <button
-          id="boRefreshBets"
-          class="bo-refresh"
-          type="button"
-        >
+</div>
+<button class="bo-refresh" id="boRefreshBets" type="button">
           Làm mới
         </button>
-
-      </div>
-
-
-      <div id="boBetList">
-
-        <p class="bo-muted">
+</div>
+<div id="boBetList">
+<p class="bo-muted">
           Chưa có cược.
         </p>
-
-      </div>
-
-    </section>
-
-
-    <section
-      id="boAdminPanel"
-      class="bo-admin-card"
-      hidden
-    >
-
-      <div class="bo-section-head">
-
-        <div>
-
-          <span class="bo-eyebrow">
+</div>
+</section></section><section class="bo-admin-card" hidden="" id="boAdminPanel">
+<div class="bo-section-head">
+<div>
+<span class="bo-eyebrow">
             ADMIN TEST
           </span>
-
-          <h2>
+<h2>
             Điều khiển ván
           </h2>
-
-        </div>
-
-      </div>
-
-
-      <label class="bo-amount-field">
-
-        <span>
+</div>
+</div>
+<label class="bo-amount-field">
+<span>
           Thời gian đặt cược
         </span>
-
-        <input
-          id="boBettingSeconds"
-          type="number"
-          min="5"
-          max="120"
-          value="30"
-        >
-
-      </label>
-
-
-      <button
-        id="boCreateRound"
-        class="bo-admin-btn"
-        type="button"
-      >
+<input id="boBettingSeconds" max="120" min="5" type="number" value="30"/>
+</label>
+<button class="bo-admin-btn" id="boCreateRound" type="button">
         + TẠO VÁN MỚI
       </button>
-
-
-      <p class="bo-muted">
+<p class="bo-muted">
         Giai đoạn test: Admin tạo ván thủ công.
       </p>
-
-    </section>
-
-  </main>
-
-
-  <script
-    src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"
-  ></script>
-
-  <script
-    src="baccarat-online.js?v=13"
-  ></script>
-
-  <script
-    src="menu.js?v=2"
-  ></script>
-
+</section>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="baccarat-online.js?v=14"></script>
+<script src="menu.js?v=2"></script>
 </body>
-
 </html>

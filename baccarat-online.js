@@ -1769,3 +1769,23 @@ document.addEventListener(
 // ================================
 
 initAuth();
+
+
+// ================================
+// V14 COMPACT TABS
+// ================================
+function setBaccaratTab(tabName) {
+  document.querySelectorAll("[data-bo-tab]").forEach(button => {
+    const active = button.dataset.boTab === tabName;
+    button.classList.toggle("active", active);
+    button.setAttribute("aria-selected", active ? "true" : "false");
+  });
+
+  document.querySelectorAll("[data-bo-panel]").forEach(panel => {
+    panel.classList.toggle("active", panel.dataset.boPanel === tabName);
+  });
+}
+
+document.querySelectorAll("[data-bo-tab]").forEach(button => {
+  button.addEventListener("click", () => setBaccaratTab(button.dataset.boTab));
+});

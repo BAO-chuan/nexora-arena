@@ -75,53 +75,63 @@ function formatNXC(value) {
 ========================= */
 
 async function loadProfile() {
+  try {
+    const {
+      data: { user },
+      error: userError
+    } = await sb.auth.getUser();
 
-  const {
-    data: { session },
-    error: sessionError
-  } = await sb.auth.getSession();
+    if (userError) {
+      console.error(userError);
+      return false;
+    }
 
-  if (sessionError) {
-    console.error(sessionError);
+    if (!user) {
+      location.href = "index.html";
+      return false;
+    }
+
+    const {
+      data,
+      error
+    } = await sb
+      .from("profiles")
+      .select("id, username, role, balance, is_suspended")
+      .eq("id", user.id)
+      .maybeSingle();
+
+    if (error) {
+      console.error("Lỗi lấy profile:", error);
+      alert("Không tải được số dư: " + error.message);
+      return false;
+    }
+
+    if (!data) {
+      console.error("Không tìm thấy profile cho user:", user.id);
+      alert("Không tìm thấy hồ sơ tài khoản.");
+      return false;
+    }
+
+    if (data.is_suspended) {
+      await sb.auth.signOut();
+      alert("Tài khoản đang bị khóa.");
+      location.href = "index.html";
+      return false;
+    }
+
+    profile = data;
+
+    console.log("PROFILE BACCARAT:", profile);
+
+    renderBalance();
+
+    return true;
+
+  } catch (error) {
+    console.error("loadProfile:", error);
     return false;
   }
-
-  if (!session) {
-    location.href = "index.html";
-    return false;
-  }
-
-  const {
-    data,
-    error
-  } = await sb
-    .from("profiles")
-    .select("id,username,role,balance,is_suspended")
-    .eq("id", session.user.id)
-    .single();
-
-  if (error) {
-
-    console.error(error);
-
-    alert(
-      "Không tải được tài khoản: " +
-      error.message
-    );
-
-    return false;
-  }
-
-  if (data.is_suspended) {
-
-    await sb.auth.signOut();
-
-    alert("Tài khoản đang bị khóa.");
-
-    location.href = "index.html";
-
-    return false;
-  }
+}
 
   profile = data;
 
@@ -131,17 +141,15 @@ async function loadProfile() {
 }
 
 function renderBalance() {
-
   if (!profile) return;
 
-  const el = $("walletBalance");
+  const el = document.getElementById("walletBalance");
 
   if (el) {
     el.textContent =
-      formatNXC(profile.balance);
+      Number(profile.balance || 0).toLocaleString("vi-VN");
   }
 }
-
 
 /* =========================
    HIỂN THỊ CƯỢC

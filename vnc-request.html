@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="theme-color" content="#06130f">
   <title>LS79win • Yêu cầu VNC</title>
-  <link rel="stylesheet" href="styles.css?v=21">
+  <link rel="stylesheet" href="styles.css?v=22">
   <link rel="stylesheet" href="menu.css?v=3">
   <link rel="stylesheet" href="pages.css?v=1">
 </head>
@@ -251,11 +251,18 @@
       <div class="vnc-receipt-icon">✓</div>
       <span class="eyebrow">ĐÃ GỬI YÊU CẦU</span>
       <h3 id="vncReceiptAmount">0 VNC</h3>
-      <div class="vnc-receipt-grid">
-        <div><span>Mã yêu cầu</span><strong id="vncReceiptId">—</strong></div>
-        <div><span>Trạng thái</span><strong class="pending">Chờ Admin duyệt</strong></div>
+      <div class="vnc-receipt-detail">
+        <div class="vnc-receipt-grid">
+          <div><span>Mã yêu cầu</span><strong id="vncReceiptId">—</strong></div>
+          <div><span>Trạng thái</span><strong class="pending">Chờ Admin duyệt</strong></div>
+        </div>
+
+        <div class="vnc-request-qr-wrap" aria-label="QR mã yêu cầu VNC">
+          <div id="vncRequestQr" class="vnc-request-qr"></div>
+          <small>QR MÃ YÊU CẦU</small>
+        </div>
       </div>
-      <p>Không cần chuyển tiền hoặc cung cấp thông tin ngân hàng. Đây chỉ là yêu cầu cấp điểm VNC ảo trong LS79win.</p>
+
       <button id="vncNewRequestBtn" class="mini-btn" type="button">Tạo yêu cầu khác</button>
     </div>
 
@@ -492,7 +499,8 @@
     })();
   </script>
 
-  <script src="app.js?v=23"></script>
+  <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+  <script src="app.js?v=24"></script>
   <script src="menu.js?v=2"></script>
 </body>
 </html>

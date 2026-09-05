@@ -102,6 +102,34 @@ document.addEventListener("visibilitychange", ()=>{
    LS79win - VNC REQUESTS
 ===================================================== */
 
+
+function renderVncRequestQr(requestId){
+  const qrBox = $("vncRequestQr");
+  if(!qrBox) return;
+
+  qrBox.innerHTML = "";
+
+  if(!requestId){
+    qrBox.textContent = "QR";
+    return;
+  }
+
+  if(typeof QRCode === "undefined"){
+    qrBox.textContent = "QR";
+    return;
+  }
+
+  // QR chỉ chứa mã đối chiếu yêu cầu VNC ảo, không chứa thông tin thanh toán.
+  new QRCode(qrBox,{
+    text:`LS79WIN-VNC-REQUEST:${String(requestId)}`,
+    width:108,
+    height:108,
+    colorDark:"#000000",
+    colorLight:"#ffffff",
+    correctLevel:QRCode.CorrectLevel.M
+  });
+}
+
 function formatRequestVNC(value){
   return Number(value || 0)
     .toLocaleString("vi-VN");
@@ -431,6 +459,8 @@ if(nxcRequestForm){
           $("vncReceiptId").textContent = shortId;
         }
 
+        renderVncRequestQr(createdRequest?.id || "");
+
         $("vncRequestReceipt")?.classList.remove("hidden");
         nxcRequestForm.classList.add("hidden");
 
@@ -469,6 +499,7 @@ if(nxcRequestForm){
 if($("vncNewRequestBtn")){
   $("vncNewRequestBtn").onclick = () => {
     $("vncRequestReceipt")?.classList.add("hidden");
+    if($("vncRequestQr")) $("vncRequestQr").innerHTML = "";
     nxcRequestForm?.classList.remove("hidden");
     $("nxcRequestAmount")?.focus();
   };

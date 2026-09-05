@@ -736,219 +736,88 @@ input:focus{border-color:#c9912f;box-shadow:0 0 0 3px rgba(242,196,90,.08)}
 
 
 /* =========================================================
-   LS79win Home Motion v1
-   Visual-only animation layer for Home UI v3
+   LS79win VNC Request QR v1
+   QR = mã đối chiếu yêu cầu VNC ảo, không phải QR thanh toán.
 ========================================================= */
+.vnc-receipt-detail{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) 128px;
+  gap:10px;
+  align-items:stretch;
+  margin-bottom:14px;
+}
 
-#home.home-motion-enabled{
-  position:relative;
-  isolation:isolate;
+.vnc-receipt-detail .vnc-receipt-grid{
+  grid-template-columns:1fr;
+  margin-bottom:0;
+}
+
+.vnc-request-qr-wrap{
+  display:grid;
+  place-items:center;
+  align-content:center;
+  gap:6px;
+  padding:8px;
+  border-radius:13px;
+  background:#0a0606;
+  border:1px solid rgba(242,196,90,.14);
+}
+
+.vnc-request-qr{
+  width:108px;
+  height:108px;
+  padding:5px;
+  display:grid;
+  place-items:center;
+  border-radius:9px;
+  background:#fff;
   overflow:hidden;
-}
-#home.home-motion-enabled > *:not(.home-ambient){
-  position:relative;
-  z-index:2;
-}
-
-.home-ambient{
-  position:absolute;
-  inset:0;
-  z-index:0;
-  overflow:hidden;
-  pointer-events:none;
-}
-.ambient-orb{
-  position:absolute;
-  border-radius:50%;
-  filter:blur(6px);
-  opacity:.22;
-  animation:ls79FloatOrb 9s ease-in-out infinite alternate;
-}
-.orb-a{
-  width:180px;height:180px;
-  top:55px;left:-70px;
-  background:radial-gradient(circle,rgba(255,201,72,.5),rgba(255,201,72,0) 70%);
-}
-.orb-b{
-  width:260px;height:260px;
-  top:260px;right:-120px;
-  background:radial-gradient(circle,rgba(181,18,16,.42),rgba(181,18,16,0) 70%);
-  animation-duration:12s;
-  animation-delay:-3s;
-}
-.orb-c{
-  width:160px;height:160px;
-  bottom:60px;left:30%;
-  background:radial-gradient(circle,rgba(255,183,39,.25),rgba(255,183,39,0) 70%);
-  animation-duration:10.5s;
-  animation-delay:-5s;
-}
-.ambient-spark{
-  position:absolute;
-  color:#ffd86a;
-  text-shadow:0 0 12px rgba(255,206,80,.65);
-  opacity:.28;
-  animation:ls79Spark 4.5s ease-in-out infinite;
-}
-.spark-a{top:110px;right:15%;font-size:15px}
-.spark-b{top:390px;left:10%;font-size:11px;animation-delay:-1.7s}
-.spark-c{bottom:190px;right:9%;font-size:14px;animation-delay:-3s}
-
-@keyframes ls79FloatOrb{
-  from{transform:translate3d(0,0,0) scale(1)}
-  to{transform:translate3d(18px,-22px,0) scale(1.08)}
-}
-@keyframes ls79Spark{
-  0%,100%{transform:translateY(0) rotate(0deg) scale(.9);opacity:.18}
-  50%{transform:translateY(-12px) rotate(12deg) scale(1.12);opacity:.52}
+  color:#111;
+  font-size:11px;
+  font-weight:1000;
 }
 
-/* Promo banner gains a soft breathing glow */
-#home .v3-promo,
-#home .promo-banner,
-#home .hero{
-  position:relative;
-}
-#home .v3-promo::after,
-#home .promo-banner::after{
-  content:"";
-  position:absolute;
-  inset:-1px;
-  border-radius:inherit;
-  pointer-events:none;
-  box-shadow:
-    0 0 0 1px rgba(255,211,88,.07),
-    0 0 30px rgba(137,15,12,.14);
-  animation:ls79BannerGlow 3.8s ease-in-out infinite;
-}
-@keyframes ls79BannerGlow{
-  0%,100%{opacity:.35}
-  50%{opacity:.9}
+.vnc-request-qr img,
+.vnc-request-qr canvas{
+  display:block !important;
+  width:98px !important;
+  height:98px !important;
+  max-width:100%;
 }
 
-/* Floating decorative art/cards/chips already present in the banner */
-#home .v3-card,
-#home .promo-card,
-#home .css-card{
-  animation:ls79CardFloat 4.2s ease-in-out infinite;
-  transform-origin:center;
-}
-#home .v3-card:nth-child(2),
-#home .promo-card:nth-child(2),
-#home .css-card:nth-child(2){animation-delay:-1.4s}
-#home .v3-card:nth-child(3),
-#home .promo-card:nth-child(3),
-#home .css-card:nth-child(3){animation-delay:-2.7s}
-
-#home .v3-chip,
-#home .promo-chip,
-#home .css-chip{
-  animation:ls79ChipSpin 12s linear infinite;
-}
-@keyframes ls79CardFloat{
-  0%,100%{transform:translateY(0) rotate(0deg)}
-  50%{transform:translateY(-7px) rotate(1.5deg)}
-}
-@keyframes ls79ChipSpin{
-  from{transform:rotate(0deg)}
-  to{transform:rotate(360deg)}
-}
-
-/* Buttons shimmer subtly rather than constantly flashing */
-#home .v3-promo-btn,
-#home .play-btn,
-#home .gold,
-#home .primary-btn{
-  position:relative;
-  overflow:hidden;
-}
-#home .v3-promo-btn::before,
-#home .play-btn::before{
-  content:"";
-  position:absolute;
-  top:-40%;
-  left:-70%;
-  width:45%;
-  height:180%;
-  transform:skewX(-20deg);
-  background:linear-gradient(90deg,transparent,rgba(255,255,255,.22),transparent);
-  animation:ls79Shimmer 4.8s ease-in-out infinite;
-  pointer-events:none;
-}
-@keyframes ls79Shimmer{
-  0%,65%{left:-70%}
-  82%,100%{left:135%}
-}
-
-/* Game cards get a premium "alive" feel */
-#home .game-card{
-  transition:transform .22s ease, box-shadow .22s ease, border-color .22s ease;
-}
-#home .game-card:hover,
-#home .game-card:focus-within{
-  transform:translateY(-4px);
-  border-color:rgba(255,210,84,.4);
-  box-shadow:0 13px 30px rgba(0,0,0,.34),0 0 18px rgba(150,22,15,.13);
-}
-#home .game-card img,
-#home .game-card .game-thumb{
-  transition:transform .35s ease, filter .35s ease;
-}
-#home .game-card:hover img,
-#home .game-card:focus-within img,
-#home .game-card:hover .game-thumb,
-#home .game-card:focus-within .game-thumb{
-  transform:scale(1.035);
-}
-
-/* JS reveal animation */
-.home-reveal{
-  opacity:0;
-  transform:translateY(18px);
-  transition:
-    opacity .62s cubic-bezier(.2,.7,.2,1),
-    transform .62s cubic-bezier(.2,.7,.2,1);
-}
-.home-reveal.is-visible{
-  opacity:1;
-  transform:none;
-}
-.home-reveal[data-reveal-delay="1"]{transition-delay:.05s}
-.home-reveal[data-reveal-delay="2"]{transition-delay:.10s}
-.home-reveal[data-reveal-delay="3"]{transition-delay:.15s}
-.home-reveal[data-reveal-delay="4"]{transition-delay:.20s}
-
-/* Balance gets a tiny pulse only when JS detects a change */
-#heroBalance.ls79-balance-pop,
-#walletChip.ls79-balance-pop,
-#headerBalance.ls79-balance-pop{
-  animation:ls79BalancePop .5s ease;
-}
-@keyframes ls79BalancePop{
-  0%{transform:scale(1)}
-  45%{transform:scale(1.08);text-shadow:0 0 16px rgba(255,208,77,.55)}
-  100%{transform:scale(1)}
-}
-
-/* Accessibility / battery friendly */
-@media (prefers-reduced-motion: reduce){
-  #home *,
-  #home *::before,
-  #home *::after{
-    animation:none!important;
-    transition:none!important;
-    scroll-behavior:auto!important;
-  }
-  .home-reveal{
-    opacity:1!important;
-    transform:none!important;
-  }
+.vnc-request-qr-wrap small{
+  color:#a99a8d;
+  font-size:7px;
+  font-weight:900;
+  letter-spacing:.55px;
+  text-align:center;
 }
 
 @media(max-width:600px){
-  .ambient-orb{opacity:.16}
-  .orb-a{width:125px;height:125px}
-  .orb-b{width:190px;height:190px}
-  #home .game-card:hover,
-  #home .game-card:focus-within{transform:none}
+  .vnc-receipt-detail{
+    grid-template-columns:minmax(0,1fr) 116px;
+    gap:8px;
+  }
+
+  .vnc-request-qr{
+    width:96px;
+    height:96px;
+  }
+
+  .vnc-request-qr img,
+  .vnc-request-qr canvas{
+    width:86px !important;
+    height:86px !important;
+  }
+}
+
+@media(max-width:390px){
+  .vnc-receipt-detail{
+    grid-template-columns:1fr;
+  }
+
+  .vnc-request-qr-wrap{
+    width:122px;
+    justify-self:center;
+  }
 }

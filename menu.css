@@ -258,3 +258,18 @@ body.nx-menu-open{
   box-shadow:
     0 0 0 3px rgba(184,58,58,.12);
 }
+
+
+/* LS79win UI v2 menu */
+.nx-menu-btn{background:linear-gradient(145deg,#270507,#0b0303);border-color:rgba(242,196,90,.28);color:#ffe18b;box-shadow:0 0 18px rgba(170,0,10,.10)}
+.nx-menu-overlay{background:rgba(0,0,0,.72)}
+.nx-menu{background:linear-gradient(180deg,#170303,#080303 52%,#030303);border-right-color:rgba(242,196,90,.25)}
+.nx-menu-logo{border-radius:50%;color:#180300;background:radial-gradient(circle at 35% 30%,#ffe89d,#e3aa32 55%,#9b2a13);border-color:#f8d66e}
+.nx-menu-brand strong{background:linear-gradient(90deg,#ffe798,#f1b22e 58%,#ff2631);-webkit-background-clip:text;background-clip:text;color:transparent;font-style:italic}
+.nx-menu-brand small{color:#bdaea2}
+.nx-menu-wallet{background:linear-gradient(135deg,rgba(217,11,22,.18),rgba(242,196,90,.08),rgba(8,2,2,.8));border-color:rgba(242,196,90,.20)}
+.nx-menu-wallet strong{color:#ffe18d}
+.nx-menu-link{color:#d0c4bb}
+.nx-menu-link span{color:#ffd66d;background:rgba(217,11,22,.12);border:1px solid rgba(242,196,90,.08)}
+.nx-menu-link:hover,.nx-menu-link.active{background:linear-gradient(90deg,rgba(217,11,22,.20),rgba(242,196,90,.06));color:#ffe6a3}
+.nx-admin-link{color:#ffd66d}.nx-admin-badge{background:#d90b16}

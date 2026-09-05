@@ -997,3 +997,53 @@ button{
  .bo-card{width:40px;height:57px}
  .bo-bet-btn{padding:7px 3px}
 }
+
+
+/* =========================================================
+   LS79win Baccarat UI v2 — BLACK / RED / GOLD
+   Visual-only override; v14 compact layout and JS preserved.
+========================================================= */
+:root{--bg:#050000;--panel:#160606;--panel2:#080303;--gold:#f2c45a;--gold2:#ffe39a;--text:#fff8ec;--muted:#b6aaa1;--line:rgba(242,196,90,.20);--red:#d90b16}
+body{
+  background:
+    radial-gradient(circle at 15% 0%,rgba(217,11,22,.18),transparent 30%),
+    radial-gradient(circle at 90% 8%,rgba(242,196,90,.08),transparent 24%),
+    linear-gradient(180deg,#090000,#030303 48%,#080101);
+  background-attachment:fixed;
+}
+.bo-topbar{background:rgba(12,1,1,.95);border-bottom-color:rgba(242,196,90,.22);box-shadow:0 8px 30px rgba(0,0,0,.4)}
+.bo-back{background:#210506;color:#ffe08b;border:1px solid rgba(242,196,90,.16)}
+.bo-brand{background:linear-gradient(90deg,#ffe594,#eeb12c 60%,#ff2833);-webkit-background-clip:text;background-clip:text;color:transparent}
+.bo-wallet{background:linear-gradient(135deg,rgba(217,11,22,.15),rgba(242,196,90,.07));border-color:rgba(242,196,90,.22)}
+.bo-status{background:#120505;border:1px solid rgba(242,196,90,.09)}
+.bo-room-card,.bo-betting-card,.bo-history-card,.bo-admin-card,.bo-road-card{
+  background:linear-gradient(155deg,rgba(27,6,6,.98),rgba(7,3,3,.98));
+  border-color:rgba(242,196,90,.18);box-shadow:0 18px 50px rgba(0,0,0,.34)
+}
+.bo-room-code{background:rgba(217,11,22,.12);border-color:rgba(242,196,90,.22);color:#ffe18b}
+.bo-table{
+  background:linear-gradient(145deg,#5c060c,#190305 42%,#090303);
+  border-color:rgba(242,196,90,.42);box-shadow:0 20px 55px rgba(0,0,0,.38),inset 0 0 35px rgba(217,11,22,.08)
+}
+.bo-table-inner{
+  background:
+    radial-gradient(ellipse at center,rgba(155,10,18,.28),transparent 58%),
+    linear-gradient(180deg,#1a0506,#080303);
+  border-color:rgba(242,196,90,.20)
+}
+.bo-table-inner:before{border-color:rgba(242,196,90,.14)}
+.bo-table-title span,.bo-eyebrow{color:#ffd66d}
+.bo-hand-label{color:#ffe3a0}
+.bo-vs{color:#f0b83e}
+.bo-result{background:rgba(8,2,2,.72);border-color:rgba(242,196,90,.12)}
+.bo-card{box-shadow:0 7px 18px rgba(0,0,0,.38),0 0 0 1px rgba(242,196,90,.14)}
+.bo-table-bet-total{background:linear-gradient(90deg,rgba(217,11,22,.12),rgba(242,196,90,.06));border-color:rgba(242,196,90,.16)}
+.bo-bet-option{background:linear-gradient(180deg,#180606,#0b0303);border-color:rgba(242,196,90,.13)}
+.bo-bet-option.selected{border-color:#f3c456;box-shadow:0 0 0 2px rgba(217,11,22,.28),0 0 20px rgba(217,11,22,.14)}
+.bo-chip{background:#130505;border-color:rgba(242,196,90,.17);color:#ffe39a}
+.bo-chip.active{background:linear-gradient(180deg,#ffe08a,#d99c24);color:#190400;border-color:#ffe39a}
+.bo-place-bet{background:linear-gradient(180deg,#d90b16,#8a0710);color:#fff4dd;border:1px solid #f0b63c;box-shadow:0 8px 22px rgba(217,11,22,.18)}
+.bo-tabs{background:#0d0404;border-color:rgba(242,196,90,.16)}
+.bo-tab-btn.active{background:linear-gradient(135deg,rgba(217,11,22,.28),rgba(242,196,90,.09));color:#ffe29a;box-shadow:inset 0 0 0 1px rgba(242,196,90,.20)}
+.bo-road-dot.player{background:#b90b15}.bo-road-dot.banker{background:#a57a18}.bo-road-dot.tie{background:#5b3711}
+.bo-big-road{background:#090303;border-color:rgba(242,196,90,.12)}

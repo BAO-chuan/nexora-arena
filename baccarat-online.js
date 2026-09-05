@@ -26,6 +26,7 @@ let settlingRoundId = null;
 let autoRoundTimer = null;
 let creatingNextRound = false;
 let lastAnimatedRoundId = null;
+let activeDealRoundId = null;
 let dealAnimationToken = 0;
 let betStatsTimer = null;
 let currentShoeState = null;
@@ -240,6 +241,7 @@ async function animateFinishedRound(round) {
   if (!round) return;
 
   const token = ++dealAnimationToken;
+  activeDealRoundId = round.id;
   const playerCards = Array.isArray(round.player_cards) ? round.player_cards : [];
   const bankerCards = Array.isArray(round.banker_cards) ? round.banker_cards : [];
 
@@ -291,6 +293,10 @@ async function animateFinishedRound(round) {
   boCardShoe?.classList.remove("active", "is-dealing");
   renderResult();
   boTableMessage.textContent = "Ván đã kết thúc";
+
+  if (activeDealRoundId === round.id) {
+    activeDealRoundId = null;
+  }
 
   // Chỉ bắt đầu đếm thời gian sang ván mới sau khi chia bài xong.
   scheduleNextRound(true);
@@ -563,6 +569,7 @@ function renderRound() {
 
   if (currentRound?.status !== "finished") {
     ++dealAnimationToken;
+    activeDealRoundId = null;
     boResult?.classList.remove("dealing-result");
     document.querySelector(".bo-hands")?.classList.remove("is-dealing");
     document.querySelector(".bo-table")?.classList.remove("opening-cards");
@@ -633,10 +640,13 @@ function renderRound() {
       isFreshResult &&
       lastAnimatedRoundId !== currentRound.id;
 
+    const animationAlreadyRunning =
+      activeDealRoundId === currentRound.id;
+
     if (shouldAnimate) {
       lastAnimatedRoundId = currentRound.id;
       animateFinishedRound(currentRound);
-    } else {
+    } else if (!animationAlreadyRunning) {
       ++dealAnimationToken;
       boPlayerScore.textContent =
         currentRound.player_score ?? "—";
@@ -662,7 +672,7 @@ function renderRound() {
         "Ván đã kết thúc";
     }
 
-    if (!shouldAnimate) {
+    if (!shouldAnimate && !animationAlreadyRunning) {
       scheduleNextRound(false);
     }
 

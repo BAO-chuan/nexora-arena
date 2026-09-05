@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="theme-color" content="#06130f">
   <title>LS79win</title>
-  <link rel="stylesheet" href="styles.css?v=21">
+  <link rel="stylesheet" href="styles.css?v=22">
   <link rel="stylesheet" href="menu.css?v=3">
   <link rel="stylesheet" href="pages.css?v=1">
 </head>
@@ -51,7 +51,15 @@
 
     <section id="appArea" class="hidden">
 
-      <section id="home" class="lobby-v3">
+      <section id="home" class="lobby-v3 home-motion-enabled">
+      <div class="home-ambient" aria-hidden="true">
+        <span class="ambient-orb orb-a"></span>
+        <span class="ambient-orb orb-b"></span>
+        <span class="ambient-orb orb-c"></span>
+        <span class="ambient-spark spark-a">✦</span>
+        <span class="ambient-spark spark-b">◆</span>
+        <span class="ambient-spark spark-c">✧</span>
+      </div>
 
         <section class="v3-promo">
           <div class="v3-promo-copy">
@@ -486,6 +494,7 @@
   </script>
 
   <script src="app.js?v=23"></script>
+  <script src="home-motion.js?v=1"></script>
   <script src="menu.js?v=2"></script>
 </body>
 </html>

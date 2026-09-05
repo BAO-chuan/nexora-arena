@@ -472,7 +472,7 @@ function startCountdown() {
     1200
   );
 }
-
+  }
   tick();
 
   countdownTimer =

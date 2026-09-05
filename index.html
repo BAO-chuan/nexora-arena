@@ -161,7 +161,115 @@
         Đang tải...
       </p>
     </div>
+<div class="nxc-withdraw-card">
 
+  <div class="section-head">
+    <div>
+      <span class="eyebrow">WITHDRAW NXC</span>
+      <h3>Rút NXC</h3>
+    </div>
+  </div>
+
+  <p class="muted">
+    NXC sẽ bị trừ ngay khi gửi lệnh.
+    Nếu Admin từ chối, NXC sẽ được hoàn lại.
+  </p>
+
+  <form id="nxcWithdrawForm">
+
+    <label class="player-info-field">
+      <span>Số NXC muốn rút</span>
+
+      <input
+        id="nxcWithdrawAmount"
+        type="number"
+        min="1"
+        step="1"
+        inputmode="numeric"
+        placeholder="Ví dụ: 1000"
+        required
+      >
+    </label>
+
+    <div class="nxc-quick-row">
+
+      <button
+        type="button"
+        class="mini-btn"
+        data-withdraw-nxc="1000"
+      >
+        1K
+      </button>
+
+      <button
+        type="button"
+        class="mini-btn"
+        data-withdraw-nxc="5000"
+      >
+        5K
+      </button>
+
+      <button
+        type="button"
+        class="mini-btn"
+        data-withdraw-nxc="10000"
+      >
+        10K
+      </button>
+
+      <button
+        type="button"
+        class="mini-btn"
+        data-withdraw-nxc="50000"
+      >
+        50K
+      </button>
+
+    </div>
+
+    <button
+      class="primary-btn"
+      type="submit"
+    >
+      GỬI LỆNH RÚT
+    </button>
+
+    <p
+      id="nxcWithdrawMessage"
+      class="muted"
+    ></p>
+
+  </form>
+
+  <div class="nxc-history-head">
+
+    <div>
+      <span class="eyebrow">
+        WITHDRAW HISTORY
+      </span>
+
+      <h3>
+        Lịch sử rút NXC
+      </h3>
+    </div>
+
+    <button
+      id="refreshWithdrawRequests"
+      class="mini-btn"
+      type="button"
+    >
+      Làm mới
+    </button>
+
+  </div>
+
+  <div id="nxcWithdrawList">
+    <p class="muted">
+      Đang tải lệnh rút...
+    </p>
+  </div>
+
+</div>
   </div>
 </section>
       <section id="leaderboard" class="section split">

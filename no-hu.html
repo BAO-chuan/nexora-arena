@@ -3,61 +3,51 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <meta name="theme-color" content="#080000">
-  <title>LS79win • Nổ Hũ 777</title>
-  <link rel="stylesheet" href="no-hu.css?v=1">
+  <meta name="theme-color" content="#170b04">
+  <title>LS79win • Wild West Gold</title>
+  <link rel="stylesheet" href="no-hu.css?v=2">
 </head>
 <body>
-  <main class="slot-app">
-    <header class="slot-topbar">
+  <main class="slot-app west-app">
+    <header class="slot-topbar west-topbar">
       <a class="back-btn" href="games.html" aria-label="Quay lại">‹</a>
       <a class="slot-brand" href="index.html">
         <span class="slot-brand-mark">L</span>
-        <span><b>LS79win</b><small>Cược vui thắng lớn</small></span>
+        <span><b>LS79win</b><small>WILD WEST GOLD</small></span>
       </a>
       <button id="soundBtn" class="round-btn" type="button" aria-label="Âm thanh">♪</button>
     </header>
 
-    <section class="slot-hero">
+    <section class="west-jackpot">
       <div>
         <span class="eyebrow">LS79WIN • VIRTUAL VNC</span>
-        <h1>NỔ HŨ <em>777</em></h1>
-        <p>Slot 5×3 dùng VNC ảo. Kết quả được tạo và thanh toán ở backend.</p>
+        <h1>WILD WEST <em>GOLD</em></h1>
       </div>
       <div class="jackpot-box">
-        <small>HŨ HIỆN TẠI</small>
+        <small>HŨ VNC</small>
         <strong id="jackpotAmount">— VNC</strong>
-        <span>5 số 7 ở hàng giữa = NỔ HŨ</span>
       </div>
     </section>
 
-    <section class="wallet-strip">
-      <div>
-        <small>NGƯỜI CHƠI</small>
-        <strong id="slotUsername">Player</strong>
-      </div>
-      <div>
-        <small>SỐ DƯ</small>
-        <strong id="slotBalance">— VNC</strong>
-      </div>
+    <section class="wallet-strip west-wallet">
+      <div><small>NGƯỜI CHƠI</small><strong id="slotUsername">Player</strong></div>
+      <div><small>SỐ DƯ</small><strong id="slotBalance">— VNC</strong></div>
       <button id="refreshBalance" class="mini-btn" type="button">↻</button>
     </section>
 
-    <section class="slot-machine">
-      <div class="machine-lights" aria-hidden="true">
-        <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+    <section class="slot-machine west-machine">
+      <div class="west-sign" aria-hidden="true">
+        <span>×2</span><b>WILD WEST</b><span>×4</span>
       </div>
 
       <div class="machine-title">
-        <span>◆</span>
-        <b>GOLDEN FORTUNE</b>
-        <span>◆</span>
+        <span>★</span><b>GOLD RUSH REELS</b><span>★</span>
       </div>
 
-      <div id="reelGrid" class="reel-grid" aria-label="Bảng quay 5 cột 3 hàng">
-        <div class="reel-cell">🍒</div><div class="reel-cell">🍋</div><div class="reel-cell">🔔</div><div class="reel-cell">⭐</div><div class="reel-cell">7️⃣</div>
+      <div id="reelGrid" class="reel-grid west-reels" aria-label="Bảng quay 5 cột 3 hàng">
+        <div class="reel-cell">🤠</div><div class="reel-cell">💰</div><div class="reel-cell">⭐</div><div class="reel-cell">🐎</div><div class="reel-cell">7</div>
         <div class="reel-cell">⭐</div><div class="reel-cell">BAR</div><div class="reel-cell seven">7</div><div class="reel-cell">BAR</div><div class="reel-cell">⭐</div>
-        <div class="reel-cell">💎</div><div class="reel-cell">🍒</div><div class="reel-cell">🔔</div><div class="reel-cell">🍋</div><div class="reel-cell">💎</div>
+        <div class="reel-cell">💎</div><div class="reel-cell">🤠</div><div class="reel-cell">💰</div><div class="reel-cell">🐎</div><div class="reel-cell">💎</div>
       </div>
 
       <div id="winOverlay" class="win-overlay hidden" aria-live="polite">
@@ -65,35 +55,35 @@
         <strong id="winAmount">0 VNC</strong>
       </div>
 
-      <div class="machine-footer">
+      <div class="machine-footer west-machine-footer">
         <div><small>CƯỢC</small><strong id="currentBet">100 VNC</strong></div>
-        <div><small>THẮNG GẦN NHẤT</small><strong id="lastWin">0 VNC</strong></div>
-        <div><small>ĐƯỜNG THẮNG</small><strong id="winningLines">0</strong></div>
+        <div><small>THẮNG</small><strong id="lastWin">0 VNC</strong></div>
+        <div><small>LINE</small><strong id="winningLines">0</strong></div>
       </div>
     </section>
 
-    <section class="bet-panel">
-      <div class="bet-title">
-        <div>
-          <span class="eyebrow">BET CONTROL</span>
-          <h2>Chọn mức VNC</h2>
-        </div>
-        <button id="paytableBtn" class="mini-btn" type="button">Bảng thưởng</button>
+    <section class="west-control-panel">
+      <div class="west-message-row">
+        <span>★</span>
+        <p id="slotMessage" class="slot-message">Chọn mức cược và bấm QUAY.</p>
+        <button id="paytableBtn" class="mini-btn" type="button">ⓘ</button>
       </div>
 
-      <div id="betChips" class="bet-chips">
+      <div id="betChips" class="bet-chips west-bets">
         <button type="button" class="active" data-bet="100">100</button>
         <button type="button" data-bet="500">500</button>
         <button type="button" data-bet="1000">1K</button>
         <button type="button" data-bet="5000">5K</button>
       </div>
 
-      <button id="spinBtn" class="spin-btn" type="button">
-        <span>QUAY</span>
-        <small>SPIN</small>
-      </button>
-
-      <p id="slotMessage" class="slot-message">Chọn mức cược và bấm QUAY.</p>
+      <div class="west-spin-row">
+        <button id="betMinusBtn" class="west-round-control" type="button" aria-label="Giảm cược">−</button>
+        <button id="spinBtn" class="spin-btn west-spin" type="button" aria-label="Quay">
+          <span>↻</span><small>QUAY</small>
+        </button>
+        <button id="betPlusBtn" class="west-round-control" type="button" aria-label="Tăng cược">+</button>
+        <button id="autoSpinBtn" class="west-round-control auto" type="button" aria-label="Tự động quay">AUTO</button>
+      </div>
     </section>
 
     <section class="slot-history">
@@ -106,7 +96,7 @@
 
     <section class="virtual-note">
       <span>ⓘ</span>
-      <p><strong>VNC là điểm ảo trong LS79win.</strong> Không phải VND, không có giá trị tiền mặt và không thể quy đổi thành tiền thật. Game này chỉ dành cho giải trí bằng điểm ảo.</p>
+      <p><strong>VNC là điểm ảo trong LS79win.</strong> Không phải VND, không có giá trị tiền mặt và không thể quy đổi thành tiền thật.</p>
     </section>
   </main>
 
@@ -116,21 +106,21 @@
         <div><span class="eyebrow">PAYTABLE</span><h2>Bảng thưởng</h2></div>
         <button class="round-btn" value="close">×</button>
       </div>
-      <p>Thắng khi có từ <strong>3 biểu tượng giống nhau liên tiếp từ cột trái</strong> trên một trong 5 đường thắng.</p>
+      <p>Backend hiện tại vẫn dùng 5 đường thắng và trả thưởng theo biểu tượng gốc. Bản Wild West chỉ thay lớp hiển thị/animation.</p>
       <div class="paytable-grid">
-        <div><b>🍒 Cherry</b><span>3×: 2 • 4×: 5 • 5×: 10</span></div>
-        <div><b>🍋 Lemon</b><span>3×: 3 • 4×: 8 • 5×: 15</span></div>
-        <div><b>🔔 Bell</b><span>3×: 5 • 4×: 15 • 5×: 30</span></div>
-        <div><b>⭐ Star</b><span>3×: 8 • 4×: 25 • 5×: 50</span></div>
-        <div><b>BAR</b><span>3×: 12 • 4×: 40 • 5×: 100</span></div>
-        <div><b>7</b><span>3×: 20 • 4×: 80 • 5×: 250</span></div>
+        <div><b>🤠 Outlaw</b><span>CHERRY • 3×: 2 • 4×: 5 • 5×: 10</span></div>
+        <div><b>🐎 Horse</b><span>LEMON • 3×: 3 • 4×: 8 • 5×: 15</span></div>
+        <div><b>💰 Gold</b><span>BELL • 3×: 5 • 4×: 15 • 5×: 30</span></div>
+        <div><b>⭐ Sheriff</b><span>STAR • 3×: 8 • 4×: 25 • 5×: 50</span></div>
+        <div><b>WILD</b><span>BAR • 3×: 12 • 4×: 40 • 5×: 100</span></div>
+        <div><b>7</b><span>SEVEN • 3×: 20 • 4×: 80 • 5×: 250</span></div>
         <div><b>💎 Diamond</b><span>3×: 50 • 4×: 200 • 5×: 1000</span></div>
       </div>
-      <div class="jackpot-rule">🔥 <strong>NỔ HŨ:</strong> 5 số 7 trên hàng giữa nhận toàn bộ hũ VNC hiện tại.</div>
+      <div class="jackpot-rule">🔥 <strong>NỔ HŨ:</strong> luật jackpot backend hiện tại được giữ nguyên.</div>
     </form>
   </dialog>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="no-hu.js?v=1"></script>
+  <script src="no-hu.js?v=2"></script>
 </body>
 </html>

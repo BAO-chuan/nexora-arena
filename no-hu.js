@@ -5,13 +5,13 @@ const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 const $ = id => document.getElementById(id);
 const SYMBOLS = {
-  CHERRY:{label:"🍒"},
-  LEMON:{label:"🍋"},
-  BELL:{label:"🔔"},
-  STAR:{label:"⭐"},
-  BAR:{label:"BAR"},
+  CHERRY:{label:"🤠", cls:"outlaw-symbol"},
+  LEMON:{label:"🐎", cls:"horse-symbol"},
+  BELL:{label:"💰", cls:"gold-symbol"},
+  STAR:{label:"⭐", cls:"sheriff-symbol"},
+  BAR:{label:"WILD", cls:"wild-symbol"},
   SEVEN:{label:"7", cls:"seven"},
-  DIAMOND:{label:"💎"}
+  DIAMOND:{label:"💎", cls:"diamond-symbol"}
 };
 const PAYLINES = [
   [0,1,2,3,4],
@@ -27,6 +27,8 @@ let spinning = false;
 let soundOn = true;
 let fakeTimer = null;
 let currentBalance = 0;
+let autoSpinOn = false;
+const BET_LEVELS = [100,500,1000,5000];
 
 function fmt(n){ return Number(n||0).toLocaleString("vi-VN"); }
 function setMessage(text){ $("slotMessage").textContent = text; }
@@ -207,6 +209,14 @@ async function spin(){
   await loadHistory();
   spinning = false;
   updateSpinAvailability();
+
+  if(autoSpinOn && currentBalance >= currentBet){
+    setTimeout(()=>spin(),650);
+  }else if(autoSpinOn && currentBalance < currentBet){
+    autoSpinOn = false;
+    $("autoSpinBtn")?.classList.remove("active");
+    setMessage("AUTO đã dừng vì số dư không đủ.");
+  }
 }
 async function loadHistory(){
   if(!session) return;
@@ -250,6 +260,34 @@ document.querySelectorAll("#betChips button").forEach(btn=>{
     $("currentBet").textContent = `${fmt(currentBet)} VNC`;
     updateSpinAvailability();
   });
+});
+
+
+function setBetLevel(nextBet){
+  if(spinning) return;
+  const btn = document.querySelector(`#betChips button[data-bet="${nextBet}"]`);
+  if(!btn) return;
+  document.querySelectorAll("#betChips button").forEach(b=>b.classList.remove("active"));
+  btn.classList.add("active");
+  currentBet = Number(nextBet);
+  $("currentBet").textContent = `${fmt(currentBet)} VNC`;
+  updateSpinAvailability();
+}
+
+$("betMinusBtn")?.addEventListener("click",()=>{
+  const i = BET_LEVELS.indexOf(currentBet);
+  setBetLevel(BET_LEVELS[Math.max(0,i-1)]);
+});
+
+$("betPlusBtn")?.addEventListener("click",()=>{
+  const i = BET_LEVELS.indexOf(currentBet);
+  setBetLevel(BET_LEVELS[Math.min(BET_LEVELS.length-1,i+1)]);
+});
+
+$("autoSpinBtn")?.addEventListener("click",()=>{
+  autoSpinOn = !autoSpinOn;
+  $("autoSpinBtn").classList.toggle("active",autoSpinOn);
+  if(autoSpinOn && !spinning) spin();
 });
 
 $("spinBtn").addEventListener("click",spin);

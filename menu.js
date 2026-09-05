@@ -405,7 +405,11 @@
         admin.hidden =
           data.role !== "admin";
       }
+if(data.role === "admin"){
 
+  await loadAdminRequestBadge();
+
+}
 
     }catch(error){
 

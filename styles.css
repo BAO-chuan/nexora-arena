@@ -391,3 +391,125 @@
   color:#ff9999;
   background:rgba(220,80,80,.10);
 }
+
+/* =========================================
+   ADMIN WITHDRAW REQUESTS
+========================================= */
+
+.admin-withdraw-section{
+  margin-top:24px;
+  padding-top:20px;
+
+  border-top:
+    1px solid rgba(255,255,255,.08);
+}
+
+
+.admin-withdraw-card{
+  margin-top:14px;
+  padding:16px;
+
+  border-radius:18px;
+
+  background:
+    rgba(255,255,255,.035);
+
+  border:
+    1px solid rgba(224,192,108,.13);
+}
+
+
+.admin-withdraw-top{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+
+  gap:12px;
+}
+
+
+.admin-withdraw-user{
+  font-weight:900;
+  color:#fff;
+}
+
+
+.admin-withdraw-amount{
+  color:#f5dc94;
+
+  font-size:19px;
+  font-weight:950;
+}
+
+
+.admin-withdraw-info{
+  display:grid;
+  gap:7px;
+
+  margin-top:14px;
+  padding:12px;
+
+  border-radius:13px;
+
+  background:
+    rgba(0,0,0,.16);
+}
+
+
+.admin-withdraw-info p{
+  margin:0;
+
+  font-size:13px;
+
+  color:#a8bbb2;
+
+  overflow-wrap:anywhere;
+}
+
+
+.admin-withdraw-info strong{
+  color:#e7ece9;
+}
+
+
+.admin-withdraw-actions{
+  display:grid;
+
+  grid-template-columns:1fr 1fr;
+
+  gap:10px;
+
+  margin-top:14px;
+}
+
+
+.admin-withdraw-approve{
+  border:1px solid rgba(80,190,140,.3);
+
+  background:
+    rgba(50,150,105,.14);
+
+  color:#8be0bb;
+
+  border-radius:12px;
+
+  padding:11px;
+
+  font-weight:900;
+}
+
+
+.admin-withdraw-reject{
+  border:1px solid rgba(220,80,80,.3);
+
+  background:
+    rgba(190,60,60,.12);
+
+  color:#ff9c9c;
+
+  border-radius:12px;
+
+  padding:11px;
+
+  font-weight:900;
+}

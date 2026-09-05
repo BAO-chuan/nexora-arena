@@ -1,9 +1,26 @@
-const URL="https://efpfhpwxmzpmmynczbce.supabase.co",KEY="sb_publishable_7pNQIr21sL3EUy0WSqXKwQ_N6_oDWhJ";
-const sb=supabase.createClient(URL,KEY),$=x=>document.getElementById(x);let me=null,room=null,sub=null;
+const SUPABASE_URL="https://efpfhpwxmzpmmynczbce.supabase.co";
+const SUPABASE_KEY="sb_publishable_7pNQIr21sL3EUy0WSqXKwQ_N6_oDWhJ";
+const $=x=>document.getElementById(x);
+let sb=null,me=null,room=null,sub=null;
 const fmt=n=>Number(n||0).toLocaleString("vi-VN");
 function msg(t){$("tableMsg").textContent=t||""} function gmsg(t){$("gateMsg").textContent=t||""}
 async function rpc(name,args={}){const {data,error}=await sb.rpc(name,args);if(error)throw error;return data}
-async function boot(){const {data:{session}}=await sb.auth.getSession();if(!session){location.href="index.html";return}me=session.user;await refreshBalance();const saved=localStorage.getItem("ls79_xd_room");if(saved){room=saved;showTable();await refresh()} }
+async function boot(){
+  try{
+    if(!window.supabase?.createClient) throw new Error("Không tải được thư viện Supabase. Hãy tải lại trang.");
+    sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+    const {data:{session},error}=await sb.auth.getSession();
+    if(error) throw error;
+    if(!session){location.href="index.html";return}
+    me=session.user;
+    await refreshBalance();
+    const saved=localStorage.getItem("ls79_xd_room");
+    if(saved){room=saved;showTable();await refresh()}
+  }catch(e){
+    console.error("Xì Dách boot error:",e);
+    gmsg("Lỗi khởi tạo: "+(e?.message||e));
+  }
+}
 async function refreshBalance(){const {data}=await sb.from("profiles").select("balance").eq("id",me.id).single();$("balance").textContent=fmt(data?.balance)+" VNC"}
 function showTable(){ $("gate").classList.add("hidden");$("table").classList.remove("hidden");subscribe() }
 async function refresh(){if(!room)return;try{const state=await rpc("xidach_get_state",{p_room_id:room});render(state)}catch(e){msg(e.message)}}
@@ -19,4 +36,5 @@ $("startBtn").onclick=async()=>{try{await rpc("xidach_start_round",{p_room_id:ro
 $("hitBtn").onclick=async()=>{try{await rpc("xidach_hit",{p_room_id:room});refresh()}catch(e){msg(e.message)}};
 $("standBtn").onclick=async()=>{try{await rpc("xidach_stand",{p_room_id:room});refresh()}catch(e){msg(e.message)}};
 $("newBtn").onclick=async()=>{try{await rpc("xidach_new_round",{p_room_id:room});refresh()}catch(e){msg(e.message)}};
-$("leaveBtn").onclick=async()=>{try{await rpc("xidach_leave_room",{p_room_id:room})}catch{}localStorage.removeItem("ls79_xd_room");location.reload()};boot();
+$("leaveBtn").onclick=async()=>{try{await rpc("xidach_leave_room",{p_room_id:room})}catch{}localStorage.removeItem("ls79_xd_room");location.reload()};
+boot();

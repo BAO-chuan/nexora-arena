@@ -160,3 +160,75 @@
     font-size:9px;
   }
 }
+
+/* =========================================
+   ADMIN - NXC REQUESTS
+========================================= */
+
+.admin-nxc-section{
+  margin-top:30px;
+  padding-top:25px;
+  border-top:1px solid rgba(224,192,108,.15);
+}
+
+.admin-request-card{
+  padding:15px;
+  margin-top:10px;
+  border-radius:17px;
+  background:rgba(255,255,255,.025);
+  border:1px solid rgba(255,255,255,.06);
+}
+
+.admin-request-top{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  gap:12px;
+}
+
+.admin-request-user strong{
+  display:block;
+  font-size:15px;
+}
+
+.admin-request-user span{
+  display:block;
+  margin-top:4px;
+  color:var(--muted);
+  font-size:11px;
+}
+
+.admin-request-amount{
+  color:var(--gold2);
+  font-size:18px;
+  font-weight:950;
+  white-space:nowrap;
+}
+
+.admin-request-actions{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
+  margin-top:13px;
+}
+
+.admin-request-actions button{
+  border:0;
+  padding:11px;
+  border-radius:12px;
+  font-weight:900;
+}
+
+.approve-nxc{
+  background:#176349;
+  color:white;
+}
+
+.reject-nxc{
+  background:#6d3030;
+  color:white;
+}
+
+.admin-request-actions button:disabled{
+  opacity:.5;
+}

@@ -137,17 +137,28 @@
 
 
           <a
-            id="nxAdminLink"
-            class="
-              nx-menu-link
-              nx-admin-link
-            "
-            href="index.html#adminArea"
-            hidden
-          >
-            <span>⚙</span>
-            Quản trị
-          </a>
+  id="nxAdminLink"
+  class="
+    nx-menu-link
+    nx-admin-link
+  "
+  href="index.html#adminArea"
+  hidden
+>
+  <span>⚙</span>
+
+  <span class="nx-admin-text">
+    Quản trị
+  </span>
+
+  <strong
+    id="nxAdminBadge"
+    class="nx-admin-badge"
+    hidden
+  >
+    0
+  </strong>
+</a>
 
         </nav>
 

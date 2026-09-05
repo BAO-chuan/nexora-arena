@@ -1451,6 +1451,7 @@ window.addEventListener(
 window.addEventListener(
   "focus",
   loadNxcWithdrawRequests
+);
 
 // =========================================
 // ADMIN NXC WITHDRAW REQUESTS

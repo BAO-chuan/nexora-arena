@@ -451,20 +451,27 @@ function startCountdown() {
 
     if (remaining <= 0) {
 
-      clearInterval(
-        countdownTimer
-      );
+  clearInterval(
+    countdownTimer
+  );
 
-      boRoundStatus.textContent =
-        "Hết giờ";
+  boRoundStatus.textContent =
+    "Hết giờ";
 
-      boTableMessage.textContent =
-        "Đang chờ xử lý ván";
+  boTableMessage.textContent =
+    "Đang xử lý kết quả...";
 
-      updateBetButton();
-    }
-  }
+  updateBetButton();
 
+
+  // Chờ thêm một chút để chắc chắn
+  // thời gian server đã qua betting_ends_at
+
+  setTimeout(
+    settleCurrentRound,
+    1200
+  );
+}
 
   tick();
 

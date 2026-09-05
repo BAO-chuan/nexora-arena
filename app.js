@@ -90,3 +90,406 @@ document.addEventListener("visibilitychange", ()=>{
     syncNXC();
   }
 });
+
+/* =====================================================
+   NEXORA - NXC REQUESTS
+===================================================== */
+
+function formatRequestNXC(value){
+  return Number(value || 0)
+    .toLocaleString("vi-VN");
+}
+
+
+/* ===== ĐỒNG BỘ SỐ DƯ TRONG VÍ ===== */
+
+async function syncWalletPage(){
+
+  try{
+
+    const {
+      data: { session }
+    } = await sb.auth.getSession();
+
+    if(!session) return;
+
+    const {
+      data,
+      error
+    } = await sb
+      .from("profiles")
+      .select("balance")
+      .eq("id", session.user.id)
+      .single();
+
+    if(error){
+      console.error(
+        "Wallet balance:",
+        error
+      );
+      return;
+    }
+
+    const balance =
+      Number(data.balance || 0);
+
+    const wallet =
+      $("walletPageBalance");
+
+    if(wallet){
+      wallet.textContent =
+        balance.toLocaleString("vi-VN")
+        +
+        " NXC";
+    }
+
+    /*
+      Đồng bộ luôn các balance
+      khác trên trang chính.
+    */
+
+    if($("headerBalance")){
+      $("headerBalance").textContent =
+        balance.toLocaleString("vi-VN");
+    }
+
+    if($("heroBalance")){
+      $("heroBalance").textContent =
+        balance.toLocaleString("vi-VN")
+        +
+        " NXC";
+    }
+
+    if($("profileBalance")){
+      $("profileBalance").textContent =
+        balance.toLocaleString("vi-VN")
+        +
+        " NXC";
+    }
+
+  }catch(error){
+
+    console.error(
+      "syncWalletPage:",
+      error
+    );
+  }
+}
+
+
+/* ===== LOAD YÊU CẦU CỦA PLAYER ===== */
+
+async function loadNxcRequests(){
+
+  const list =
+    $("nxcRequestList");
+
+  if(!list) return;
+
+  try{
+
+    const {
+      data: { session }
+    } = await sb.auth.getSession();
+
+    if(!session){
+      list.innerHTML =
+        '<p class="muted">Bạn chưa đăng nhập.</p>';
+
+      return;
+    }
+
+    const {
+      data,
+      error
+    } = await sb
+      .from("nxc_requests")
+      .select(
+        "id,amount,status,created_at,processed_at"
+      )
+      .eq("user_id", session.user.id)
+      .order(
+        "created_at",
+        { ascending:false }
+      )
+      .limit(10);
+
+    if(error){
+      throw error;
+    }
+
+    if(!data || data.length === 0){
+
+      list.innerHTML =
+        '<p class="muted">Chưa có yêu cầu NXC.</p>';
+
+      return;
+    }
+
+    const labels = {
+      pending:
+        "⏳ Chờ duyệt",
+
+      approved:
+        "✓ Đã duyệt",
+
+      rejected:
+        "× Từ chối"
+    };
+
+    list.innerHTML =
+      data.map(request => {
+
+        const status =
+          request.status || "pending";
+
+        const date =
+          new Date(
+            request.created_at
+          ).toLocaleString(
+            "vi-VN",
+            {
+              dateStyle:"short",
+              timeStyle:"short"
+            }
+          );
+
+        return `
+          <div class="nxc-request-row">
+
+            <div class="nxc-request-info">
+
+              <strong>
+                ${formatRequestNXC(request.amount)}
+                NXC
+              </strong>
+
+              <span>
+                ${date}
+              </span>
+
+            </div>
+
+            <span
+              class="request-status ${status}"
+            >
+              ${labels[status] || status}
+            </span>
+
+          </div>
+        `;
+
+      }).join("");
+
+  }catch(error){
+
+    console.error(
+      "loadNxcRequests:",
+      error
+    );
+
+    list.innerHTML =
+      `<p class="muted">
+        Không tải được yêu cầu:
+        ${esc(error.message)}
+      </p>`;
+  }
+}
+
+
+/* ===== CÁC NÚT 1K / 5K / 10K / 50K ===== */
+
+document
+  .querySelectorAll("[data-nxc]")
+  .forEach(button => {
+
+    button.addEventListener(
+      "click",
+      () => {
+
+        const input =
+          $("nxcRequestAmount");
+
+        if(!input) return;
+
+        input.value =
+          button.dataset.nxc;
+      }
+    );
+  });
+
+
+/* ===== GỬI YÊU CẦU ===== */
+
+const nxcRequestForm =
+  $("nxcRequestForm");
+
+if(nxcRequestForm){
+
+  nxcRequestForm.addEventListener(
+    "submit",
+    async event => {
+
+      event.preventDefault();
+
+      const submitButton =
+        nxcRequestForm.querySelector(
+          'button[type="submit"]'
+        );
+
+      try{
+
+        const {
+          data: { session }
+        } = await sb.auth.getSession();
+
+        if(!session){
+          toast("Bạn chưa đăng nhập");
+          return;
+        }
+
+        const amount =
+          Math.floor(
+            Number(
+              $("nxcRequestAmount").value
+            )
+          );
+
+        if(
+          !Number.isFinite(amount)
+          ||
+          amount <= 0
+        ){
+          toast(
+            "Hãy nhập số NXC hợp lệ"
+          );
+
+          return;
+        }
+
+        /*
+          Giới hạn mỗi yêu cầu để tránh
+          nhập nhầm số quá lớn.
+        */
+
+        if(amount > 1000000){
+
+          toast(
+            "Mỗi yêu cầu tối đa 1.000.000 NXC"
+          );
+
+          return;
+        }
+
+        submitButton.disabled =
+          true;
+
+        submitButton.textContent =
+          "ĐANG GỬI...";
+
+        const {
+          error
+        } = await sb
+          .from("nxc_requests")
+          .insert({
+            user_id:
+              session.user.id,
+
+            amount:
+              amount,
+
+            status:
+              "pending"
+          });
+
+        if(error){
+          throw error;
+        }
+
+        $("nxcRequestAmount").value =
+          "";
+
+        toast(
+          "Đã gửi yêu cầu NXC"
+        );
+
+        await loadNxcRequests();
+
+      }catch(error){
+
+        console.error(
+          "Create NXC request:",
+          error
+        );
+
+        alert(
+          "Không gửi được yêu cầu: "
+          +
+          error.message
+        );
+
+      }finally{
+
+        submitButton.disabled =
+          false;
+
+        submitButton.textContent =
+          "GỬI YÊU CẦU";
+      }
+    }
+  );
+}
+
+
+/* ===== LÀM MỚI ===== */
+
+if($("refreshNxcRequests")){
+
+  $("refreshNxcRequests").onclick =
+    async () => {
+
+      await syncWalletPage();
+      await loadNxcRequests();
+
+      toast("Đã làm mới Ví NXC");
+    };
+}
+
+
+/* ===== KHI QUAY LẠI TRANG ===== */
+
+async function refreshNxcWallet(){
+
+  await syncWalletPage();
+  await loadNxcRequests();
+}
+
+
+window.addEventListener(
+  "pageshow",
+  refreshNxcWallet
+);
+
+window.addEventListener(
+  "focus",
+  refreshNxcWallet
+);
+
+document.addEventListener(
+  "visibilitychange",
+  () => {
+
+    if(
+      document.visibilityState
+      ===
+      "visible"
+    ){
+      refreshNxcWallet();
+    }
+  }
+);
+
+
+/* chạy lần đầu */
+
+refreshNxcWallet();

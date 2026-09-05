@@ -310,6 +310,9 @@ async function animateFinishedRound(round) {
     activeDealRoundId = null;
   }
 
+  // Chỉ cập nhật cầu sau khi người chơi đã xem xong toàn bộ phần mở bài.
+  await loadRoadHistory();
+
   // Chỉ bắt đầu đếm thời gian sang ván mới sau khi chia bài xong.
   scheduleNextRound(true);
 }
@@ -1816,7 +1819,20 @@ async function loadRoadHistory() {
       return;
     }
 
-    const rounds = [...data].reverse();
+    // Giữ kín kết quả ván đang chia/lật bài khỏi các bảng cầu.
+    const hiddenRoundId = activeDealRoundId;
+
+    const rounds = [...data]
+      .filter(round => {
+        if (!hiddenRoundId) return true;
+        return !(
+          currentRound &&
+          currentRound.id === hiddenRoundId &&
+          Number(round.round_number) === Number(currentRound.round_number)
+        );
+      })
+      .reverse();
+
     const recentRounds = rounds.slice(-30);
 
     boRoadHistory.innerHTML = recentRounds.map(round => {

@@ -27,6 +27,7 @@ let autoRoundTimer = null;
 let creatingNextRound = false;
 let lastAnimatedRoundId = null;
 let dealAnimationToken = 0;
+let betStatsTimer = null;
 
 const AUTO_BETTING_SECONDS = 30;
 const RESULT_DISPLAY_MS = 10000;
@@ -61,6 +62,15 @@ const boRoadStats = $("boRoadStats");
 const boBetAmount = $("boBetAmount");
 const boPlaceBet = $("boPlaceBet");
 const boBetMessage = $("boBetMessage");
+
+const boPlayerBetAmount = $("boPlayerBetAmount");
+const boPlayerBetPlayers = $("boPlayerBetPlayers");
+const boTieBetAmount = $("boTieBetAmount");
+const boTieBetPlayers = $("boTieBetPlayers");
+const boBankerBetAmount = $("boBankerBetAmount");
+const boBankerBetPlayers = $("boBankerBetPlayers");
+const boTableBetAmount = $("boTableBetAmount");
+const boTableBetPlayers = $("boTableBetPlayers");
 
 const boBetList = $("boBetList");
 
@@ -415,6 +425,8 @@ async function loadCurrentRound() {
     renderRound();
 
     await loadMyBets();
+    await loadBetStats();
+    startBetStatsPolling();
 
   } catch (error) {
 
@@ -1143,6 +1155,7 @@ boPlaceBet?.addEventListener(
       await loadProfile();
 
       await loadMyBets();
+      await loadBetStats();
 
       updateBetButton();
 
@@ -1165,6 +1178,102 @@ boPlaceBet?.addEventListener(
   }
 );
 
+
+// ================================
+// LIVE BET STATS
+// ================================
+
+function resetBetStatsUI() {
+  const zeroAmount = "0 NXC";
+  const zeroPlayers = "0 người";
+
+  if (boPlayerBetAmount) boPlayerBetAmount.textContent = zeroAmount;
+  if (boPlayerBetPlayers) boPlayerBetPlayers.textContent = zeroPlayers;
+  if (boTieBetAmount) boTieBetAmount.textContent = zeroAmount;
+  if (boTieBetPlayers) boTieBetPlayers.textContent = zeroPlayers;
+  if (boBankerBetAmount) boBankerBetAmount.textContent = zeroAmount;
+  if (boBankerBetPlayers) boBankerBetPlayers.textContent = zeroPlayers;
+  if (boTableBetAmount) boTableBetAmount.textContent = zeroAmount;
+  if (boTableBetPlayers) boTableBetPlayers.textContent = zeroPlayers;
+}
+
+function setBetStat(amountEl, playersEl, stats) {
+  const amount = Number(stats?.amount || 0);
+  const players = Number(stats?.players || 0);
+
+  if (amountEl) {
+    amountEl.textContent = `${formatNXC(amount)} NXC`;
+  }
+
+  if (playersEl) {
+    playersEl.textContent = `${players} người`;
+  }
+}
+
+async function loadBetStats() {
+  if (!currentRound) {
+    resetBetStatsUI();
+    return;
+  }
+
+  try {
+    const { data, error } = await sb.rpc(
+      "baccarat_get_bet_stats",
+      { p_round_id: currentRound.id }
+    );
+
+    if (error) throw error;
+
+    const stats = data || {};
+
+    setBetStat(
+      boPlayerBetAmount,
+      boPlayerBetPlayers,
+      stats.player
+    );
+
+    setBetStat(
+      boTieBetAmount,
+      boTieBetPlayers,
+      stats.tie
+    );
+
+    setBetStat(
+      boBankerBetAmount,
+      boBankerBetPlayers,
+      stats.banker
+    );
+
+    if (boTableBetAmount) {
+      boTableBetAmount.textContent =
+        `${formatNXC(Number(stats.total_amount || 0))} NXC`;
+    }
+
+    if (boTableBetPlayers) {
+      boTableBetPlayers.textContent =
+        `${Number(stats.total_players || 0)} người`;
+    }
+  } catch (error) {
+    console.error("Load bet stats:", error);
+  }
+}
+
+function startBetStatsPolling() {
+  clearInterval(betStatsTimer);
+  betStatsTimer = null;
+
+  if (
+    !currentRound ||
+    currentRound.status !== "betting"
+  ) {
+    return;
+  }
+
+  betStatsTimer = setInterval(
+    loadBetStats,
+    1500
+  );
+}
 
 // ================================
 // MY BETS
@@ -1581,6 +1690,8 @@ function subscribeRoom() {
       await loadProfile();
 
       await loadMyBets();
+      await loadBetStats();
+      startBetStatsPolling();
 
       await loadRoadHistory();
 

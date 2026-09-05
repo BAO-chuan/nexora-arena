@@ -877,3 +877,65 @@ button{
   .bo-big-road-title{align-items:flex-start}
   .bo-road-stats{font-size:9px}
 }
+
+
+/* =========================================
+   LIVE BET TOTALS - v13
+========================================= */
+
+.bo-table-bet-total{
+  margin-top:16px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  flex-wrap:wrap;
+  padding:10px 12px;
+  border-radius:14px;
+  background:rgba(224,192,108,.07);
+  border:1px solid rgba(224,192,108,.15);
+}
+
+.bo-table-bet-total span{
+  color:var(--muted);
+  font-size:9px;
+  font-weight:900;
+  letter-spacing:1.2px;
+}
+
+.bo-table-bet-total strong{
+  color:var(--gold2);
+  font-size:13px;
+}
+
+.bo-table-bet-total small{
+  color:#c5d4ce;
+  font-size:11px;
+}
+
+.bo-live-bet-stat{
+  margin-top:9px;
+  padding-top:8px;
+  border-top:1px solid rgba(255,255,255,.07);
+}
+
+.bo-live-bet-stat b,
+.bo-live-bet-stat small{
+  display:block;
+}
+
+.bo-live-bet-stat b{
+  color:#fff;
+  font-size:12px;
+  line-height:1.2;
+}
+
+.bo-live-bet-stat small{
+  margin-top:4px;
+  color:var(--muted);
+  font-size:10px;
+}
+
+.bo-bet-btn.player .bo-live-bet-stat b{ color:#8bd2ff; }
+.bo-bet-btn.banker .bo-live-bet-stat b{ color:#ffa0a0; }
+.bo-bet-btn.tie .bo-live-bet-stat b{ color:#91e4bf; }

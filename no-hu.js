@@ -108,7 +108,20 @@ async function refreshJackpot(){
 function renderGrid(grid, winningLines=[]){
   const cells = [...document.querySelectorAll(".reel-cell")];
   const winIndexes = new Set();
+
   winningLines.forEach(w => {
+    // V2.1 backend: 3 biểu tượng giống nhau ở 3 hàng khác nhau.
+    if(Array.isArray(w.positions) && w.positions.length){
+      w.positions.forEach(pos => {
+        const index = Number(pos);
+        if(Number.isInteger(index) && index >= 0 && index < 15){
+          winIndexes.add(index);
+        }
+      });
+      return;
+    }
+
+    // Tương thích dữ liệu payline cũ trong lịch sử.
     const line = PAYLINES[(w.line||1)-1] || [];
     for(let i=0;i<Number(w.count||0);i++) winIndexes.add(line[i]);
   });

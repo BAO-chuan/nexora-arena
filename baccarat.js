@@ -1292,3 +1292,113 @@ async function startGame() {
 }
 
 startGame();
+
+async function forceSyncBaccaratBalance() {
+  try {
+
+    const {
+      data: { session },
+      error: sessionError
+    } = await sb.auth.getSession();
+
+    if (sessionError) {
+      console.error("SESSION ERROR:", sessionError);
+
+      if ($("roundState")) {
+        $("roundState").textContent = "LỖI SESSION";
+      }
+
+      return;
+    }
+
+    if (!session) {
+      console.log("Không có session đăng nhập");
+
+      if ($("roundState")) {
+        $("roundState").textContent = "CHƯA ĐĂNG NHẬP";
+      }
+
+      return;
+    }
+
+    console.log("USER ID:", session.user.id);
+
+    const {
+      data,
+      error
+    } = await sb
+      .from("profiles")
+      .select("id, balance")
+      .eq("id", session.user.id)
+      .maybeSingle();
+
+    if (error) {
+      console.error("PROFILE ERROR:", error);
+
+      if ($("roundState")) {
+        $("roundState").textContent =
+          "LỖI: " + error.message;
+      }
+
+      return;
+    }
+
+    if (!data) {
+      console.error("Không tìm thấy profile");
+
+      if ($("roundState")) {
+        $("roundState").textContent =
+          "KHÔNG TÌM THẤY PROFILE";
+      }
+
+      return;
+    }
+
+    console.log("BALANCE SUPABASE:", data.balance);
+
+    const balanceBox =
+      document.getElementById("gameBalance") ||
+      document.getElementById("walletBalance");
+
+    if (balanceBox) {
+      balanceBox.textContent =
+        Number(data.balance || 0).toLocaleString("vi-VN");
+    }
+
+    if (profile) {
+      profile.balance = Number(data.balance || 0);
+    }
+
+  } catch (err) {
+
+    console.error("SYNC ERROR:", err);
+
+    if ($("roundState")) {
+      $("roundState").textContent =
+        "LỖI SYNC";
+    }
+  }
+}
+
+
+/* chạy ngay */
+forceSyncBaccaratBalance();
+
+
+/* khi quay lại trang */
+window.addEventListener("pageshow", () => {
+  forceSyncBaccaratBalance();
+});
+
+
+/* khi quay lại tab */
+window.addEventListener("focus", () => {
+  forceSyncBaccaratBalance();
+});
+
+
+document.addEventListener("visibilitychange", () => {
+  if (document.visibilityState === "visible") {
+    forceSyncBaccaratBalance();
+  }
+});

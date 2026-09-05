@@ -377,7 +377,7 @@ function renderRound() {
 
     boTableMessage.textContent =
       "Ván đã kết thúc";
-
+scheduleNextRound();
   } else if (
     currentRound.status ===
     "betting"

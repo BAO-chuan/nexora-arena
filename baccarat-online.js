@@ -1091,8 +1091,12 @@ function subscribeRoom() {
 
     async () => {
 
-      await loadCurrentRound();
-    }
+  await loadCurrentRound();
+
+  await loadProfile();
+
+  await loadMyBets();
+}
   )
 
   .subscribe(status => {

@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="styles.css?v=21">
   <link rel="stylesheet" href="menu.css?v=3">
   <link rel="stylesheet" href="pages.css?v=1">
-  <link rel="stylesheet" href="admin.css?v=2">
+  <link rel="stylesheet" href="admin.css?v=3">
 </head>
 <body data-page="admin">
   <header class="topbar">
@@ -446,6 +446,9 @@
           <button class="admin-tab" type="button" data-admin-tab="withdraws">
             Rút VNC <span id="adminWithdrawBadge" class="admin-tab-badge hidden">0</span>
           </button>
+          <button class="admin-tab" type="button" data-admin-tab="support">
+            CSKH <span id="adminSupportBadge" class="admin-tab-badge hidden">0</span>
+          </button>
         </div>
 
         <section class="admin-panel active" data-admin-panel="players">
@@ -507,6 +510,27 @@
 
           <div id="adminWithdrawList">
             <p class="muted">Đang tải lệnh rút...</p>
+          </div>
+        </section>
+
+
+        <section class="admin-panel" data-admin-panel="support">
+          <div class="admin-panel-head">
+            <div>
+              <span class="eyebrow">CUSTOMER SUPPORT</span>
+              <h3>Chăm sóc khách hàng</h3>
+            </div>
+            <button id="refreshAdminSupport" class="mini-btn" type="button">↻ Làm mới</button>
+          </div>
+          <div class="admin-help">
+            <span>💬</span>
+            <p>Đọc tin nhắn của thành viên và phản hồi trực tiếp. Người chơi sẽ thấy câu trả lời trong hộp CSKH.</p>
+          </div>
+          <div class="admin-support-layout">
+            <div id="adminSupportThreads" class="admin-support-threads"><p class="muted">Đang tải hội thoại...</p></div>
+            <div id="adminSupportChat" class="admin-support-chat">
+              <div class="admin-support-empty">Chọn một thành viên để xem hội thoại.</div>
+            </div>
           </div>
         </section>
 
@@ -617,8 +641,9 @@
     })();
   </script>
 
-  <script src="app.js?v=26"></script>
-  <script src="admin-dashboard.js?v=3"></script>
+  <script src="app.js?v=27"></script>
+  <script src="admin-dashboard.js?v=4"></script>
+  <script src="cskh-admin.js?v=1"></script>
   <script src="menu.js?v=2"></script>
 
 

@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="theme-color" content="#06130f">
   <title>LS79win</title>
-  <link rel="stylesheet" href="styles.css?v=24">
+  <link rel="stylesheet" href="styles.css?v=25">
   <link rel="stylesheet" href="menu.css?v=3">
   <link rel="stylesheet" href="pages.css?v=1">
 </head>
@@ -477,6 +477,26 @@
   </a>
 
 </nav>
+
+  <!-- LS79win CSKH v1 -->
+  <button id="supportFab" class="support-fab hidden" type="button" aria-label="Chăm sóc khách hàng">
+    <span>💬</span><b>CSKH</b><i id="supportUnreadBadge" class="support-unread hidden">0</i>
+  </button>
+
+  <section id="supportBox" class="support-box hidden" aria-label="Hộp chăm sóc khách hàng">
+    <div class="support-head">
+      <div><span class="support-online-dot"></span><strong>LS79win CSKH</strong><small>Hỗ trợ thành viên</small></div>
+      <button id="supportClose" type="button">×</button>
+    </div>
+    <div id="supportMessages" class="support-messages">
+      <div class="support-empty">Gửi nội dung cần hỗ trợ cho CSKH.</div>
+    </div>
+    <form id="supportForm" class="support-form">
+      <textarea id="supportInput" maxlength="1000" rows="2" placeholder="Nhập nội dung cần hỗ trợ..." required></textarea>
+      <button id="supportSend" type="submit">GỬI</button>
+    </form>
+  </section>
+
   <div id="toast" class="toast"></div>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   
@@ -493,7 +513,8 @@
     })();
   </script>
 
-  <script src="app.js?v=23"></script>
+  <script src="app.js?v=27"></script>
+  <script src="cskh.js?v=1"></script>
   <script src="home-motion.js?v=2"></script>
   <script src="menu.js?v=2"></script>
 </body>

@@ -356,3 +356,24 @@ body[data-page="admin"] #adminArea{
     grid-template-columns:1fr;
   }
 }
+
+
+/* ===== CSKH Admin v1 ===== */
+.admin-tabs{grid-template-columns:repeat(4,1fr)}
+.admin-support-layout{display:grid;grid-template-columns:280px 1fr;gap:10px;min-height:430px}
+.admin-support-threads,.admin-support-chat{border:1px solid rgba(242,196,90,.12);border-radius:14px;background:#090505;overflow:auto}
+.admin-support-thread{width:100%;text-align:left;padding:11px;border:0;border-bottom:1px solid rgba(242,196,90,.08);background:transparent;color:#eee}
+.admin-support-thread.active{background:#21100a}.admin-support-thread strong{display:block;color:#ffe091;font-size:11px}
+.admin-support-thread span{display:block;color:#9c8f87;font-size:9px;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.admin-support-thread i{float:right;min-width:18px;height:18px;padding:0 5px;border-radius:99px;background:#a91f18;color:#fff;font-size:9px;font-style:normal;text-align:center;line-height:18px}
+.admin-support-chat{display:grid;grid-template-rows:auto 1fr auto}
+.admin-support-chat-head{padding:11px 12px;border-bottom:1px solid rgba(242,196,90,.1);font-size:11px;color:#ffe091}
+.admin-support-chat-messages{padding:12px;overflow:auto;display:flex;flex-direction:column;gap:8px}
+.admin-support-message{max-width:82%;padding:9px 10px;border-radius:12px;font-size:11px;white-space:pre-wrap;overflow-wrap:anywhere}
+.admin-support-message.user{align-self:flex-start;background:#21100a;color:#eee}.admin-support-message.admin{align-self:flex-end;background:#641016;color:#fff}
+.admin-support-message small{display:block;margin-top:4px;opacity:.55;font-size:8px}
+.admin-support-reply{display:grid;grid-template-columns:1fr auto;gap:7px;padding:10px;border-top:1px solid rgba(242,196,90,.1)}
+.admin-support-reply textarea{resize:none;min-height:45px;padding:10px;border-radius:10px;background:#120707;color:#fff;border:1px solid rgba(242,196,90,.16)}
+.admin-support-reply button{border:0;border-radius:10px;padding:0 15px;background:#c58d25;color:#1d1004;font-weight:1000}
+.admin-support-empty{margin:auto;color:#8d8179;font-size:11px}
+@media(max-width:650px){.admin-tabs{grid-template-columns:repeat(2,1fr)}.admin-support-layout{grid-template-columns:1fr;min-height:0}.admin-support-threads{max-height:180px}.admin-support-chat{min-height:390px}}

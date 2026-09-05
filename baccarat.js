@@ -1,3 +1,7 @@
+/* =========================================================
+   NEXORA BACCARAT ROYALE
+   NXC = điểm ảo trong game
+========================================================= */
 const SUPABASE_URL =
   "https://efpfhpwxmzpmmynczbce.supabase.co";
 
@@ -9,11 +13,12 @@ const sb = window.supabase.createClient(
   SUPABASE_ANON_KEY
 );
 
-const $ = (id) => document.getElementById(id);
+const $ = id => document.getElementById(id);
 
-/* =========================
+
+/* =========================================================
    TRẠNG THÁI GAME
-========================= */
+========================================================= */
 
 let profile = null;
 
@@ -41,16 +46,19 @@ try {
 }
 
 
-/* =========================
+/* =========================================================
    CÔNG CỤ
-========================= */
+========================================================= */
 
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-function toast(message) {
+function formatNXC(value) {
+  return Number(value || 0).toLocaleString("vi-VN");
+}
 
+function toast(message) {
   const el = $("toast");
 
   if (!el) return;
@@ -63,30 +71,29 @@ function toast(message) {
   }, 1800);
 }
 
-function formatNXC(value) {
 
-  return Number(value || 0)
-    .toLocaleString("vi-VN");
-}
-
-
-/* =========================
-   TÀI KHOẢN + SỐ DƯ
-========================= */
+/* =========================================================
+   PROFILE + ĐỒNG BỘ BALANCE
+========================================================= */
 
 async function loadProfile() {
   try {
-    const {
-      data: { user },
-      error: userError
-    } = await sb.auth.getUser();
 
-    if (userError) {
-      console.error(userError);
+    const {
+      data: { session },
+      error: sessionError
+    } = await sb.auth.getSession();
+
+    if (sessionError) {
+      console.error(
+        "Lỗi lấy session:",
+        sessionError
+      );
+
       return false;
     }
 
-    if (!user) {
+    if (!session) {
       location.href = "index.html";
       return false;
     }
@@ -96,100 +103,177 @@ async function loadProfile() {
       error
     } = await sb
       .from("profiles")
-      .select("id, username, role, balance, is_suspended")
-      .eq("id", user.id)
-      .maybeSingle();
+      .select(
+        "id, username, role, balance, is_suspended"
+      )
+      .eq("id", session.user.id)
+      .single();
 
     if (error) {
-      console.error("Lỗi lấy profile:", error);
-      alert("Không tải được số dư: " + error.message);
+      console.error(
+        "Lỗi đọc profile:",
+        error
+      );
+
+      if ($("roundState")) {
+        $("roundState").textContent =
+          "LỖI TÀI KHOẢN";
+      }
+
       return false;
     }
 
     if (!data) {
-      console.error("Không tìm thấy profile cho user:", user.id);
-      alert("Không tìm thấy hồ sơ tài khoản.");
+      console.error(
+        "Không tìm thấy profile"
+      );
+
       return false;
     }
 
     if (data.is_suspended) {
+
       await sb.auth.signOut();
-      alert("Tài khoản đang bị khóa.");
+
+      alert(
+        "Tài khoản đang bị khóa."
+      );
+
       location.href = "index.html";
+
       return false;
     }
 
     profile = data;
 
-    console.log("PROFILE BACCARAT:", profile);
-
     renderBalance();
+
+    console.log(
+      "NEXORA PROFILE:",
+      profile
+    );
 
     return true;
 
   } catch (error) {
-    console.error("loadProfile:", error);
+
+    console.error(
+      "loadProfile error:",
+      error
+    );
+
     return false;
   }
 }
 
-  profile = data;
-
-  renderBalance();
-
-  return true;
-}
 
 function renderBalance() {
-  if (!profile) return;
 
-  const el = document.getElementById("gameBalance");
+  const el = $("gameBalance");
 
-  if (el) {
-    el.textContent =
-      Number(profile.balance || 0).toLocaleString("vi-VN");
+  if (!el) return;
+
+  if (!profile) {
+    el.textContent = "0";
+    return;
+  }
+
+  el.textContent =
+    formatNXC(profile.balance);
+}
+
+
+async function syncBalance() {
+
+  try {
+
+    const {
+      data: { session }
+    } = await sb.auth.getSession();
+
+    if (!session) return;
+
+    const {
+      data,
+      error
+    } = await sb
+      .from("profiles")
+      .select("balance")
+      .eq("id", session.user.id)
+      .single();
+
+    if (error) {
+      console.error(
+        "Lỗi đồng bộ balance:",
+        error
+      );
+
+      return;
+    }
+
+    if (!profile) {
+      profile = {
+        id: session.user.id,
+        balance: Number(data.balance || 0)
+      };
+    } else {
+      profile.balance =
+        Number(data.balance || 0);
+    }
+
+    renderBalance();
+
+  } catch (error) {
+
+    console.error(
+      "syncBalance error:",
+      error
+    );
   }
 }
 
-/* =========================
-   HIỂN THỊ CƯỢC
-========================= */
+
+/* =========================================================
+   BET
+========================================================= */
 
 function totalBet() {
-
   return (
-    bets.player +
-    bets.tie +
-    bets.banker
+    Number(bets.player) +
+    Number(bets.tie) +
+    Number(bets.banker)
   );
 }
 
+
 function renderBets() {
 
-  if ($("playerBet")) {
-    $("playerBet").textContent =
-      formatNXC(bets.player);
+  if ($("betPlayer")) {
+    $("betPlayer").textContent =
+      formatNXC(bets.player) + " NXC";
   }
 
-  if ($("tieBet")) {
-    $("tieBet").textContent =
-      formatNXC(bets.tie);
+  if ($("betTie")) {
+    $("betTie").textContent =
+      formatNXC(bets.tie) + " NXC";
   }
 
-  if ($("bankerBet")) {
-    $("bankerBet").textContent =
-      formatNXC(bets.banker);
+  if ($("betBanker")) {
+    $("betBanker").textContent =
+      formatNXC(bets.banker) + " NXC";
   }
 }
+
 
 function clearSelectedZones() {
 
   document
     .querySelectorAll(".bet-zone")
-    .forEach(el => {
-      el.classList.remove("selected");
+    .forEach(zone => {
+      zone.classList.remove("selected");
     });
 }
+
 
 function clearBets() {
 
@@ -200,14 +284,13 @@ function clearBets() {
   };
 
   renderBets();
-
   clearSelectedZones();
 }
 
 
-/* =========================
+/* =========================================================
    CHIP
-========================= */
+========================================================= */
 
 document
   .querySelectorAll(".chip")
@@ -237,9 +320,9 @@ document
   });
 
 
-/* =========================
-   ĐẶT CƯỢC
-========================= */
+/* =========================================================
+   CLICK PLAYER / TIE / BANKER
+========================================================= */
 
 document
   .querySelectorAll(".bet-zone")
@@ -250,21 +333,26 @@ document
       () => {
 
         if (!bettingOpen) {
-
           toast("Đã khóa cược");
-
           return;
         }
 
-        if (!profile) return;
+        if (!profile) {
+          toast("Chưa tải được tài khoản");
+          return;
+        }
 
         const side =
-          String(button.dataset.bet || "")
-            .toLowerCase();
+          String(
+            button.dataset.bet || ""
+          ).toLowerCase();
 
         if (
-          !["player", "tie", "banker"]
-            .includes(side)
+          ![
+            "player",
+            "tie",
+            "banker"
+          ].includes(side)
         ) {
           return;
         }
@@ -274,24 +362,33 @@ document
           -
           totalBet();
 
-        if (selectedChip > available) {
+        if (
+          selectedChip >
+          available
+        ) {
 
           toast("Không đủ NXC");
-
           return;
         }
 
-        bets[side] += selectedChip;
+        bets[side] +=
+          selectedChip;
 
         renderBets();
 
         clearSelectedZones();
 
-        button.classList.add("selected");
+        button.classList.add(
+          "selected"
+        );
       }
     );
   });
 
+
+/* =========================================================
+   XÓA CƯỢC
+========================================================= */
 
 if ($("clearBets")) {
 
@@ -300,9 +397,7 @@ if ($("clearBets")) {
     () => {
 
       if (!bettingOpen) {
-
         toast("Đã khóa cược");
-
         return;
       }
 
@@ -312,9 +407,9 @@ if ($("clearBets")) {
 }
 
 
-/* =========================
+/* =========================================================
    CHƠI LẠI CƯỢC TRƯỚC
-========================= */
+========================================================= */
 
 if ($("replayBtn")) {
 
@@ -323,23 +418,19 @@ if ($("replayBtn")) {
     () => {
 
       if (!bettingOpen) {
-
         toast("Đã khóa cược");
-
         return;
       }
 
       if (!lastBets) {
-
         toast("Chưa có cược trước");
-
         return;
       }
 
       const needed =
-        lastBets.player +
-        lastBets.tie +
-        lastBets.banker;
+        Number(lastBets.player) +
+        Number(lastBets.tie) +
+        Number(lastBets.banker);
 
       if (
         needed >
@@ -354,7 +445,14 @@ if ($("replayBtn")) {
       }
 
       bets = {
-        ...lastBets
+        player:
+          Number(lastBets.player),
+
+        tie:
+          Number(lastBets.tie),
+
+        banker:
+          Number(lastBets.banker)
       };
 
       renderBets();
@@ -367,9 +465,9 @@ if ($("replayBtn")) {
 }
 
 
-/* =========================
+/* =========================================================
    BỘ BÀI
-========================= */
+========================================================= */
 
 const suits = [
   "♠",
@@ -394,10 +492,10 @@ const ranks = [
   "K"
 ];
 
+
 function drawCard() {
 
   return {
-
     rank:
       ranks[
         Math.floor(
@@ -416,6 +514,7 @@ function drawCard() {
   };
 }
 
+
 function cardValue(card) {
 
   if (card.rank === "A") {
@@ -432,23 +531,25 @@ function cardValue(card) {
   return Number(card.rank);
 }
 
+
 function handTotal(hand) {
 
-  return (
+  const total =
     hand.reduce(
       (sum, card) =>
         sum + cardValue(card),
       0
-    ) % 10
-  );
+    );
+
+  return total % 10;
 }
 
 
-/* =========================
+/* =========================================================
    LUẬT BACCARAT
-========================= */
+========================================================= */
 
-function baccaratRound() {
+function createBaccaratRound() {
 
   const player = [
     drawCard(),
@@ -460,103 +561,141 @@ function baccaratRound() {
     drawCard()
   ];
 
-  let p = handTotal(player);
-  let b = handTotal(banker);
+  let playerTotal =
+    handTotal(player);
 
-  /* Natural 8 hoặc 9 */
+  let bankerTotal =
+    handTotal(banker);
 
-  if (p < 8 && b < 8) {
+  /*
+    NATURAL 8 / 9
+  */
 
-    let playerThird = null;
+  if (
+    playerTotal < 8 &&
+    bankerTotal < 8
+  ) {
 
-    /* PLAYER */
+    let playerThirdCard = null;
 
-    if (p <= 5) {
+    /*
+      PLAYER:
+      0 - 5 rút
+      6 - 7 đứng
+    */
 
-      playerThird = drawCard();
+    if (playerTotal <= 5) {
 
-      player.push(playerThird);
+      playerThirdCard =
+        drawCard();
 
-      p = handTotal(player);
+      player.push(
+        playerThirdCard
+      );
     }
 
-    /* BANKER */
+    /*
+      BANKER
+    */
 
-    if (!playerThird) {
+    if (!playerThirdCard) {
 
-      if (b <= 5) {
-        banker.push(drawCard());
+      if (bankerTotal <= 5) {
+        banker.push(
+          drawCard()
+        );
       }
 
     } else {
 
-      const thirdValue =
-        cardValue(playerThird);
+      const third =
+        cardValue(
+          playerThirdCard
+        );
 
-      if (b <= 2) {
+      if (bankerTotal <= 2) {
 
-        banker.push(drawCard());
+        banker.push(
+          drawCard()
+        );
 
       } else if (
-        b === 3 &&
-        thirdValue !== 8
+        bankerTotal === 3 &&
+        third !== 8
       ) {
 
-        banker.push(drawCard());
+        banker.push(
+          drawCard()
+        );
 
       } else if (
-        b === 4 &&
+        bankerTotal === 4 &&
         [2,3,4,5,6,7]
-          .includes(thirdValue)
+          .includes(third)
       ) {
 
-        banker.push(drawCard());
+        banker.push(
+          drawCard()
+        );
 
       } else if (
-        b === 5 &&
+        bankerTotal === 5 &&
         [4,5,6,7]
-          .includes(thirdValue)
+          .includes(third)
       ) {
 
-        banker.push(drawCard());
+        banker.push(
+          drawCard()
+        );
 
       } else if (
-        b === 6 &&
+        bankerTotal === 6 &&
         [6,7]
-          .includes(thirdValue)
+          .includes(third)
       ) {
 
-        banker.push(drawCard());
+        banker.push(
+          drawCard()
+        );
       }
     }
   }
 
-  p = handTotal(player);
-  b = handTotal(banker);
+  playerTotal =
+    handTotal(player);
+
+  bankerTotal =
+    handTotal(banker);
 
   let winner = "tie";
 
-  if (p > b) {
+  if (
+    playerTotal >
+    bankerTotal
+  ) {
     winner = "player";
   }
 
-  if (b > p) {
+  if (
+    bankerTotal >
+    playerTotal
+  ) {
     winner = "banker";
   }
 
   return {
     player,
     banker,
-    p,
-    b,
+    playerTotal,
+    bankerTotal,
     winner
   };
 }
 
 
-/* =========================
+/* =========================================================
    HTML LÁ BÀI
-========================= */
+========================================================= */
 
 function cardHtml(card) {
 
@@ -582,9 +721,9 @@ function cardHtml(card) {
 }
 
 
-/* =========================
-   KHÓA / MỞ CƯỢC
-========================= */
+/* =========================================================
+   MỞ / KHÓA BET
+========================================================= */
 
 function setBettingEnabled(enabled) {
 
@@ -592,7 +731,7 @@ function setBettingEnabled(enabled) {
 
   document
     .querySelectorAll(
-      ".chip,.bet-zone"
+      ".chip, .bet-zone"
     )
     .forEach(el => {
 
@@ -611,17 +750,20 @@ function setBettingEnabled(enabled) {
 }
 
 
-/* =========================
-   15 GIÂY NHẬN CƯỢC
-========================= */
+/* =========================================================
+   COUNTDOWN 15 GIÂY
+========================================================= */
 
 async function bettingCountdown() {
+
+  await syncBalance();
 
   setBettingEnabled(true);
 
   if ($("dealBtn")) {
 
-    $("dealBtn").disabled = true;
+    $("dealBtn").disabled =
+      true;
 
     $("dealBtn").textContent =
       "ĐANG NHẬN CƯỢC";
@@ -645,24 +787,22 @@ async function bettingCountdown() {
   setBettingEnabled(false);
 
   if ($("roundState")) {
-
     $("roundState").textContent =
       "KHÓA CƯỢC";
   }
 
   if ($("dealBtn")) {
-
     $("dealBtn").textContent =
       "ĐÃ KHÓA CƯỢC";
   }
 
-  await sleep(800);
+  await sleep(700);
 }
 
 
-/* =========================
-   CẬP NHẬT NXC SUPABASE
-========================= */
+/* =========================================================
+   CẬP NHẬT NXC TRÊN SUPABASE
+========================================================= */
 
 async function applyResult(
   round,
@@ -670,43 +810,70 @@ async function applyResult(
 ) {
 
   const staked =
-    roundBets.player +
-    roundBets.tie +
-    roundBets.banker;
+    Number(roundBets.player) +
+    Number(roundBets.tie) +
+    Number(roundBets.banker);
 
   let returned = 0;
+
+  /*
+    PLAYER thắng:
+    cược 100 => nhận 200
+    lợi nhuận +100
+  */
 
   if (
     round.winner === "player"
   ) {
 
     returned =
-      roundBets.player * 2;
+      Number(
+        roundBets.player
+      ) * 2;
+  }
 
-  } else if (
+  /*
+    BANKER thắng:
+    lợi nhuận 0.95 : 1
+  */
+
+  else if (
     round.winner === "banker"
   ) {
 
     returned =
       Math.floor(
-        roundBets.banker * 1.95
+        Number(
+          roundBets.banker
+        ) * 1.95
       );
+  }
 
-  } else {
+  /*
+    TIE:
+    Tie 8:1
+    Player/Banker được hoàn cược
+  */
+
+  else {
 
     returned =
-      roundBets.tie * 9
+      Number(roundBets.tie) * 9
       +
-      roundBets.player
+      Number(roundBets.player)
       +
-      roundBets.banker;
+      Number(roundBets.banker);
   }
 
   const delta =
     returned - staked;
 
+  /*
+    RPC này chỉ cộng/trừ phần
+    lời/lỗ ròng vào profiles.balance
+  */
+
   const {
-    data,
     error
   } = await sb.rpc(
     "game_adjust_balance",
@@ -717,7 +884,7 @@ async function applyResult(
         "baccarat",
 
       game_note:
-        `Baccarat ${round.winner.toUpperCase()} | Bet ${staked} | Return ${returned}`
+        `Baccarat ${round.winner} | Bet ${staked} | Return ${returned}`
     }
   );
 
@@ -726,27 +893,11 @@ async function applyResult(
   }
 
   /*
-    Không tin vào balance cũ.
-    Đọc lại trực tiếp Supabase.
+    Đọc lại balance mới nhất
+    từ Supabase
   */
 
-  const {
-    data: freshProfile,
-    error: refreshError
-  } = await sb
-    .from("profiles")
-    .select("balance")
-    .eq("id", profile.id)
-    .single();
-
-  if (refreshError) {
-    throw refreshError;
-  }
-
-  profile.balance =
-    freshProfile.balance;
-
-  renderBalance();
+  await syncBalance();
 
   return {
     staked,
@@ -756,9 +907,9 @@ async function applyResult(
 }
 
 
-/* =========================
+/* =========================================================
    LỊCH SỬ
-========================= */
+========================================================= */
 
 function saveRound(
   round,
@@ -771,10 +922,10 @@ function saveRound(
       round.winner,
 
     player:
-      round.p,
+      round.playerTotal,
 
     banker:
-      round.b,
+      round.bankerTotal,
 
     delta:
       summary.delta,
@@ -787,24 +938,32 @@ function saveRound(
   });
 
   localHistory =
-    localHistory.slice(0, 10);
+    localHistory.slice(
+      0,
+      10
+    );
 
   localStorage.setItem(
     "nexora_baccarat_history",
-    JSON.stringify(localHistory)
+    JSON.stringify(
+      localHistory
+    )
   );
 
   renderHistory();
 }
 
+
 function renderHistory() {
 
   const list =
-    $("historyList");
+    $("roundHistory");
 
   if (!list) return;
 
-  if (!localHistory.length) {
+  if (
+    localHistory.length === 0
+  ) {
 
     list.innerHTML =
       `<p class="empty">
@@ -825,7 +984,9 @@ function renderHistory() {
       .map(item => {
 
         const positive =
-          Number(item.delta) >= 0;
+          Number(
+            item.delta
+          ) >= 0;
 
         return `
           <div class="history-row">
@@ -862,10 +1023,8 @@ function renderHistory() {
                 ${positive ? "plus" : "minus"}
               "
             >
-
               ${positive ? "+" : ""}
               ${formatNXC(item.delta)}
-
             </div>
 
           </div>
@@ -873,6 +1032,7 @@ function renderHistory() {
       })
       .join("");
 }
+
 
 if ($("clearHistory")) {
 
@@ -892,9 +1052,9 @@ if ($("clearHistory")) {
 }
 
 
-/* =========================
-   HIỆU ỨNG KẾT QUẢ
-========================= */
+/* =========================================================
+   HIỆU ỨNG THẮNG / THUA
+========================================================= */
 
 function flashResult(delta) {
 
@@ -908,39 +1068,51 @@ function flashResult(delta) {
     "loss"
   );
 
-  requestAnimationFrame(() => {
+  requestAnimationFrame(
+    () => {
 
-    table.classList.add(
-      delta >= 0
-        ? "win"
-        : "loss"
-    );
-
-    setTimeout(() => {
-
-      table.classList.remove(
-        "win",
-        "loss"
+      table.classList.add(
+        delta >= 0
+          ? "win"
+          : "loss"
       );
 
-    }, 900);
-  });
+      setTimeout(
+        () => {
+
+          table.classList.remove(
+            "win",
+            "loss"
+          );
+
+        },
+        900
+      );
+    }
+  );
 }
 
 
-/* =========================
+/* =========================================================
    CHIA BÀI CHẬM
-========================= */
+========================================================= */
 
 async function dealCardsSlowly(
   round
 ) {
 
   const playerContainer =
-    $("playerCards");
+    $("playerHand");
 
   const bankerContainer =
-    $("bankerCards");
+    $("bankerHand");
+
+  if (
+    !playerContainer ||
+    !bankerContainer
+  ) {
+    return;
+  }
 
   const maxCards =
     Math.max(
@@ -964,11 +1136,7 @@ async function dealCardsSlowly(
           )
         );
 
-      /*
-        Đợi hiệu ứng lật bài
-      */
-
-      await sleep(1200);
+      await sleep(1100);
     }
 
     if (round.banker[i]) {
@@ -981,15 +1149,48 @@ async function dealCardsSlowly(
           )
         );
 
-      await sleep(1200);
+      await sleep(1100);
     }
   }
 }
 
 
-/* =========================
-   MỘT VÁN TỰ ĐỘNG
-========================= */
+/* =========================================================
+   RESET BÀN TRƯỚC VÁN
+========================================================= */
+
+function resetTable() {
+
+  if ($("playerHand")) {
+    $("playerHand").innerHTML = "";
+  }
+
+  if ($("bankerHand")) {
+    $("bankerHand").innerHTML = "";
+  }
+
+  if ($("playerScore")) {
+    $("playerScore").textContent =
+      "0";
+  }
+
+  if ($("bankerScore")) {
+    $("bankerScore").textContent =
+      "0";
+  }
+
+  if ($("resultBanner")) {
+
+    $("resultBanner")
+      .classList
+      .add("hidden");
+  }
+}
+
+
+/* =========================================================
+   CHẠY 1 VÁN
+========================================================= */
 
 async function runRound() {
 
@@ -998,15 +1199,32 @@ async function runRound() {
   roundRunning = true;
 
   /*
-    Đọc balance mới nhất trước vòng
+    Đồng bộ tiền trước ván
   */
 
-  await loadProfile();
+  const loaded =
+    await loadProfile();
+
+  if (!loaded) {
+
+    roundRunning = false;
+
+    if ($("roundState")) {
+      $("roundState").textContent =
+        "LỖI TÀI KHOẢN";
+    }
+
+    return;
+  }
+
+  /*
+    15 giây đặt cược
+  */
 
   await bettingCountdown();
 
   /*
-    Không ai đặt cược
+    Không đặt cược
   */
 
   if (totalBet() <= 0) {
@@ -1016,7 +1234,7 @@ async function runRound() {
         "KHÔNG CÓ CƯỢC";
     }
 
-    await sleep(1800);
+    await sleep(1500);
 
     roundRunning = false;
 
@@ -1026,15 +1244,22 @@ async function runRound() {
   }
 
   /*
-    Kiểm tra balance lần cuối
+    Đồng bộ balance trước khi
+    chấp nhận cược
   */
+
+  await syncBalance();
 
   if (
     totalBet() >
-    Number(profile.balance || 0)
+    Number(
+      profile.balance || 0
+    )
   ) {
 
-    toast("Số dư không đủ");
+    toast(
+      "Số dư không đủ"
+    );
 
     clearBets();
 
@@ -1048,38 +1273,21 @@ async function runRound() {
   }
 
   const roundBets = {
-    ...bets
+    player:
+      Number(bets.player),
+
+    tie:
+      Number(bets.tie),
+
+    banker:
+      Number(bets.banker)
   };
 
   lastBets = {
     ...roundBets
   };
 
-  /*
-    Xóa bài cũ
-  */
-
-  if ($("playerCards")) {
-    $("playerCards").innerHTML = "";
-  }
-
-  if ($("bankerCards")) {
-    $("bankerCards").innerHTML = "";
-  }
-
-  if ($("playerScore")) {
-    $("playerScore").textContent = "0";
-  }
-
-  if ($("bankerScore")) {
-    $("bankerScore").textContent = "0";
-  }
-
-  if ($("resultBanner")) {
-    $("resultBanner")
-      .classList
-      .add("hidden");
-  }
+  resetTable();
 
   if ($("roundState")) {
     $("roundState").textContent =
@@ -1087,28 +1295,36 @@ async function runRound() {
   }
 
   const round =
-    baccaratRound();
+    createBaccaratRound();
 
   /*
-    Chia + lật bài chậm
+    Chia bài
   */
 
-  await dealCardsSlowly(round);
+  await dealCardsSlowly(
+    round
+  );
 
-  await sleep(300);
+  /*
+    Hiện điểm
+  */
 
   if ($("playerScore")) {
+
     $("playerScore").textContent =
-      round.p;
+      round.playerTotal;
   }
 
   if ($("bankerScore")) {
+
     $("bankerScore").textContent =
-      round.b;
+      round.bankerTotal;
   }
 
+  await sleep(400);
+
   /*
-    Tính NXC
+    Cập nhật balance
   */
 
   try {
@@ -1120,9 +1336,14 @@ async function runRound() {
       );
 
     const labels = {
-      player: "PLAYER THẮNG",
-      banker: "BANKER THẮNG",
-      tie: "HÒA"
+      player:
+        "PLAYER THẮNG",
+
+      banker:
+        "BANKER THẮNG",
+
+      tie:
+        "HÒA"
     };
 
     if ($("resultBanner")) {
@@ -1133,12 +1354,14 @@ async function runRound() {
         " · "
         +
         (
-          summary.delta >= 0
+          summary.delta > 0
             ? "+"
             : ""
         )
         +
-        formatNXC(summary.delta)
+        formatNXC(
+          summary.delta
+        )
         +
         " NXC";
 
@@ -1161,12 +1384,16 @@ async function runRound() {
       summary
     );
 
-    if (summary.delta > 0) {
+    if (
+      summary.delta > 0
+    ) {
 
       toast(
-        "Thắng "
+        "Thắng +"
         +
-        formatNXC(summary.delta)
+        formatNXC(
+          summary.delta
+        )
         +
         " NXC"
       );
@@ -1179,7 +1406,9 @@ async function runRound() {
         "Thua "
         +
         formatNXC(
-          Math.abs(summary.delta)
+          Math.abs(
+            summary.delta
+          )
         )
         +
         " NXC"
@@ -1187,12 +1416,17 @@ async function runRound() {
 
     } else {
 
-      toast("Hòa vốn");
+      toast(
+        "Hòa vốn"
+      );
     }
 
   } catch (error) {
 
-    console.error(error);
+    console.error(
+      "Lỗi kết quả:",
+      error
+    );
 
     if ($("roundState")) {
       $("roundState").textContent =
@@ -1202,24 +1436,28 @@ async function runRound() {
     alert(
       "Không thể cập nhật NXC: "
       +
-      error.message
+      (
+        error.message ||
+        "Lỗi không xác định"
+      )
     );
   }
 
   /*
-    Xóa cược sau ván
+    Xóa cược của ván vừa rồi
   */
 
   clearBets();
 
   if ($("replayBtn")) {
+
     $("replayBtn")
       .classList
       .remove("hidden");
   }
 
   /*
-    Hiện kết quả 3 giây
+    Giữ kết quả 3 giây
   */
 
   await sleep(3000);
@@ -1227,34 +1465,28 @@ async function runRound() {
   roundRunning = false;
 
   /*
-    Vòng mới
+    Ván tiếp theo
   */
 
   runRound();
 }
 
 
-/* =========================
-   ĐỒNG BỘ KHI QUAY LẠI TAB
-========================= */
+/* =========================================================
+   ĐỒNG BỘ KHI QUAY LẠI TRANG
+========================================================= */
 
 window.addEventListener(
   "pageshow",
   () => {
-
-    if (profile) {
-      loadProfile();
-    }
+    syncBalance();
   }
 );
 
 window.addEventListener(
   "focus",
   () => {
-
-    if (profile) {
-      loadProfile();
-    }
+    syncBalance();
   }
 );
 
@@ -1263,28 +1495,41 @@ document.addEventListener(
   () => {
 
     if (
-      document.visibilityState === "visible"
-      &&
-      profile
+      document.visibilityState
+      ===
+      "visible"
     ) {
-
-      loadProfile();
+      syncBalance();
     }
   }
 );
 
 
-/* =========================
+/* =========================================================
    KHỞI ĐỘNG
-========================= */
+========================================================= */
 
 async function startGame() {
+
+  if ($("gameBalance")) {
+    $("gameBalance").textContent =
+      "...";
+  }
 
   const ok =
     await loadProfile();
 
-  if (!ok) return;
+  if (!ok) {
 
+    if ($("gameBalance")) {
+      $("gameBalance").textContent =
+        "0";
+    }
+
+    return;
+  }
+
+  renderBalance();
   renderBets();
   renderHistory();
 
@@ -1292,113 +1537,3 @@ async function startGame() {
 }
 
 startGame();
-
-async function forceSyncBaccaratBalance() {
-  try {
-
-    const {
-      data: { session },
-      error: sessionError
-    } = await sb.auth.getSession();
-
-    if (sessionError) {
-      console.error("SESSION ERROR:", sessionError);
-
-      if ($("roundState")) {
-        $("roundState").textContent = "LỖI SESSION";
-      }
-
-      return;
-    }
-
-    if (!session) {
-      console.log("Không có session đăng nhập");
-
-      if ($("roundState")) {
-        $("roundState").textContent = "CHƯA ĐĂNG NHẬP";
-      }
-
-      return;
-    }
-
-    console.log("USER ID:", session.user.id);
-
-    const {
-      data,
-      error
-    } = await sb
-      .from("profiles")
-      .select("id, balance")
-      .eq("id", session.user.id)
-      .maybeSingle();
-
-    if (error) {
-      console.error("PROFILE ERROR:", error);
-
-      if ($("roundState")) {
-        $("roundState").textContent =
-          "LỖI: " + error.message;
-      }
-
-      return;
-    }
-
-    if (!data) {
-      console.error("Không tìm thấy profile");
-
-      if ($("roundState")) {
-        $("roundState").textContent =
-          "KHÔNG TÌM THẤY PROFILE";
-      }
-
-      return;
-    }
-
-    console.log("BALANCE SUPABASE:", data.balance);
-
-    const balanceBox =
-      document.getElementById("gameBalance") ||
-      document.getElementById("walletBalance");
-
-    if (balanceBox) {
-      balanceBox.textContent =
-        Number(data.balance || 0).toLocaleString("vi-VN");
-    }
-
-    if (profile) {
-      profile.balance = Number(data.balance || 0);
-    }
-
-  } catch (err) {
-
-    console.error("SYNC ERROR:", err);
-
-    if ($("roundState")) {
-      $("roundState").textContent =
-        "LỖI SYNC";
-    }
-  }
-}
-
-
-/* chạy ngay */
-forceSyncBaccaratBalance();
-
-
-/* khi quay lại trang */
-window.addEventListener("pageshow", () => {
-  forceSyncBaccaratBalance();
-});
-
-
-/* khi quay lại tab */
-window.addEventListener("focus", () => {
-  forceSyncBaccaratBalance();
-});
-
-
-document.addEventListener("visibilitychange", () => {
-  if (document.visibilityState === "visible") {
-    forceSyncBaccaratBalance();
-  }
-});

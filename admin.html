@@ -8,6 +8,7 @@
   <link rel="stylesheet" href="styles.css?v=21">
   <link rel="stylesheet" href="menu.css?v=3">
   <link rel="stylesheet" href="pages.css?v=1">
+  <link rel="stylesheet" href="admin.css?v=1">
 </head>
 <body data-page="admin">
   <header class="topbar">
@@ -386,64 +387,133 @@
 </div>
       </section>
 
-      <section id="adminArea" class="section panel hidden">
-        <div class="section-head"><div><span class="eyebrow">ADMIN ONLY</span><h2>Quản lý người chơi</h2></div><span class="admin-pill">ADMIN</span></div>
-        <input id="playerSearch" placeholder="Tìm theo username...">
-        <div id="playerList" class="player-list"></div>
-<div class="admin-nxc-section">
-<div class="admin-withdraw-section">
+      <section id="adminArea" class="section admin-dashboard hidden">
+        <div class="admin-hero">
+          <div>
+            <span class="eyebrow">LS79WIN CONTROL CENTER</span>
+            <h2>Trung tâm quản trị</h2>
+            <p>Quản lý thành viên, VNC ảo và các yêu cầu đang chờ xử lý.</p>
+          </div>
+          <div class="admin-hero-actions">
+            <span class="admin-live"><i></i> ADMIN ONLINE</span>
+            <button id="adminRefreshAll" class="mini-btn" type="button">↻ Làm mới</button>
+          </div>
+        </div>
 
-  <div class="section-head">
+        <div class="admin-stat-grid">
+          <article class="admin-stat-card">
+            <span class="admin-stat-icon">♟</span>
+            <div>
+              <small>THÀNH VIÊN</small>
+              <strong id="adminStatPlayers">—</strong>
+              <em>Tài khoản player</em>
+            </div>
+          </article>
 
-    <div>
-      <span class="eyebrow">
-        WITHDRAW REQUESTS
-      </span>
+          <article class="admin-stat-card">
+            <span class="admin-stat-icon">◆</span>
+            <div>
+              <small>TỔNG VNC PLAYER</small>
+              <strong id="adminStatBalance">—</strong>
+              <em>Điểm ảo trong hệ thống</em>
+            </div>
+          </article>
 
-      <h2>
-        Lệnh rút VNC
-      </h2>
-    </div>
+          <article class="admin-stat-card">
+            <span class="admin-stat-icon">⌛</span>
+            <div>
+              <small>YÊU CẦU VNC</small>
+              <strong id="adminStatRequests">—</strong>
+              <em>Đang chờ duyệt</em>
+            </div>
+          </article>
 
-    <button
-      id="refreshAdminWithdraw"
-      class="mini-btn"
-      type="button"
-    >
-      Làm mới
-    </button>
+          <article class="admin-stat-card">
+            <span class="admin-stat-icon">↺</span>
+            <div>
+              <small>LỆNH RÚT VNC</small>
+              <strong id="adminStatWithdraws">—</strong>
+              <em>Đang chờ xử lý</em>
+            </div>
+          </article>
+        </div>
 
-  </div>
+        <div class="admin-tabs" role="tablist" aria-label="Quản trị">
+          <button class="admin-tab active" type="button" data-admin-tab="players">Thành viên</button>
+          <button class="admin-tab" type="button" data-admin-tab="requests">
+            Yêu cầu VNC <span id="adminRequestBadge" class="admin-tab-badge hidden">0</span>
+          </button>
+          <button class="admin-tab" type="button" data-admin-tab="withdraws">
+            Rút VNC <span id="adminWithdrawBadge" class="admin-tab-badge hidden">0</span>
+          </button>
+        </div>
 
-  <div id="adminWithdrawList">
+        <section class="admin-panel active" data-admin-panel="players">
+          <div class="admin-panel-head">
+            <div>
+              <span class="eyebrow">PLAYER MANAGEMENT</span>
+              <h3>Quản lý thành viên</h3>
+            </div>
+            <span class="admin-pill">ADMIN ONLY</span>
+          </div>
 
-    <p class="muted">
-      Đang tải lệnh rút...
-    </p>
+          <div class="admin-search-wrap">
+            <span>⌕</span>
+            <input id="playerSearch" type="search" placeholder="Tìm theo username...">
+          </div>
 
-  </div>
+          <div class="admin-help">
+            <span>ⓘ</span>
+            <p>Bạn có thể cộng/trừ VNC ảo hoặc khóa/mở khóa tài khoản. Mọi điều chỉnh VNC vẫn đi qua RPC quản trị hiện tại.</p>
+          </div>
 
-</div>
-  <div class="section-head">
-    <div>
-      <span class="eyebrow">VNC REQUESTS</span>
-      <h2>Yêu cầu VNC</h2>
-    </div>
+          <div id="playerList" class="player-list admin-player-list">
+            <p class="muted">Đang tải thành viên...</p>
+          </div>
+        </section>
 
-    <button
-      id="refreshAdminNxc"
-      class="mini-btn"
-      type="button"
-    >
-      Làm mới
-    </button>
-  </div>
+        <section class="admin-panel" data-admin-panel="requests">
+          <div class="admin-panel-head">
+            <div>
+              <span class="eyebrow">VNC REQUESTS</span>
+              <h3>Yêu cầu VNC đang chờ</h3>
+            </div>
+            <button id="refreshAdminNxc" class="mini-btn" type="button">↻ Làm mới</button>
+          </div>
 
-  <div id="adminNxcRequestList">
-    <p class="muted">Đang tải yêu cầu...</p>
-  </div>
+          <div class="admin-help">
+            <span>◆</span>
+            <p>Đây là yêu cầu cấp <strong>điểm VNC ảo</strong>. Không hiển thị hoặc xử lý tài khoản ngân hàng hay tiền thật.</p>
+          </div>
 
-</div>
+          <div id="adminNxcRequestList">
+            <p class="muted">Đang tải yêu cầu...</p>
+          </div>
+        </section>
+
+        <section class="admin-panel" data-admin-panel="withdraws">
+          <div class="admin-panel-head">
+            <div>
+              <span class="eyebrow">VIRTUAL VNC WITHDRAWS</span>
+              <h3>Lệnh rút VNC ảo</h3>
+            </div>
+            <button id="refreshAdminWithdraw" class="mini-btn" type="button">↻ Làm mới</button>
+          </div>
+
+          <div class="admin-help warning">
+            <span>↺</span>
+            <p>Rút ở đây chỉ là thao tác điểm ảo trong LS79win. Khi từ chối, hệ thống hiện tại hoàn lại VNC theo backend đã cài.</p>
+          </div>
+
+          <div id="adminWithdrawList">
+            <p class="muted">Đang tải lệnh rút...</p>
+          </div>
+        </section>
+
+        <div class="admin-security-note">
+          <span>🔒</span>
+          <p>Trang này chỉ hiển thị cho tài khoản có role <strong>admin</strong>. Quyền thực tế vẫn được kiểm soát bởi Supabase/RPC và RLS hiện tại.</p>
+        </div>
       </section>
     </section>
   </main>
@@ -493,6 +563,7 @@
   </script>
 
   <script src="app.js?v=23"></script>
+  <script src="admin-dashboard.js?v=1"></script>
   <script src="menu.js?v=2"></script>
 </body>
 </html>

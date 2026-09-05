@@ -1,0 +1,207 @@
+
+/* =========================================================
+   LS79win Admin Dashboard v1
+   Dedicated visual layer. Existing backend IDs/functions stay intact.
+========================================================= */
+
+body[data-page="admin"] .route-heading{display:none}
+body[data-page="admin"] #adminArea{
+  max-width:1040px;
+  margin:0 auto;
+  padding:8px 0 24px;
+  background:transparent;
+  border:0;
+  box-shadow:none;
+}
+
+.admin-dashboard{display:grid;gap:13px}
+.admin-dashboard.hidden{display:none!important}
+
+.admin-hero{
+  position:relative;
+  overflow:hidden;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:18px;
+  min-height:124px;
+  padding:22px;
+  border:1px solid rgba(242,196,90,.28);
+  border-radius:20px;
+  background:
+    radial-gradient(circle at 86% 10%,rgba(200,29,20,.24),transparent 30%),
+    radial-gradient(circle at 10% 100%,rgba(244,190,58,.09),transparent 35%),
+    linear-gradient(135deg,#170807,#080404 62%,#110503);
+  box-shadow:0 18px 45px rgba(0,0,0,.28);
+}
+.admin-hero:after{
+  content:"A";
+  position:absolute;
+  right:22px;
+  top:-38px;
+  font-size:170px;
+  line-height:1;
+  font-weight:1000;
+  color:rgba(255,211,83,.035);
+  pointer-events:none;
+}
+.admin-hero h2{margin:4px 0 5px;font-size:29px}
+.admin-hero p{margin:0;color:#a99a91;font-size:12px}
+.admin-hero-actions{position:relative;z-index:1;display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+.admin-live{
+  display:inline-flex;
+  align-items:center;
+  gap:7px;
+  padding:8px 10px;
+  border-radius:999px;
+  border:1px solid rgba(79,196,102,.35);
+  background:rgba(32,91,42,.16);
+  color:#82dc91;
+  font-size:9px;
+  font-weight:1000;
+  letter-spacing:.6px;
+}
+.admin-live i{width:7px;height:7px;border-radius:50%;background:#63d47a;box-shadow:0 0 10px rgba(99,212,122,.8)}
+
+.admin-stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:9px}
+.admin-stat-card{
+  display:grid;
+  grid-template-columns:45px 1fr;
+  gap:10px;
+  align-items:center;
+  min-height:96px;
+  padding:13px;
+  border-radius:16px;
+  border:1px solid rgba(242,196,90,.16);
+  background:linear-gradient(145deg,#130909,#090505);
+}
+.admin-stat-icon{
+  width:44px;height:44px;border-radius:13px;
+  display:grid;place-items:center;
+  color:#ffd76e;
+  border:1px solid rgba(242,196,90,.24);
+  background:linear-gradient(145deg,#2b1b0b,#130908);
+  font-size:19px;
+}
+.admin-stat-card div{display:grid;gap:1px;min-width:0}
+.admin-stat-card small{font-size:8px;letter-spacing:.9px;color:#8f8178;font-weight:900}
+.admin-stat-card strong{font-size:20px;color:#f7e4b2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.admin-stat-card em{font-style:normal;font-size:9px;color:#786d67}
+
+.admin-tabs{
+  position:sticky;
+  top:62px;
+  z-index:8;
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:6px;
+  padding:6px;
+  border:1px solid rgba(242,196,90,.14);
+  border-radius:15px;
+  background:rgba(8,4,4,.93);
+  backdrop-filter:blur(13px);
+}
+.admin-tab{
+  min-height:45px;
+  border:0;
+  border-radius:11px;
+  background:transparent;
+  color:#9d8f86;
+  font-weight:950;
+  font-size:11px;
+}
+.admin-tab.active{
+  color:#ffe078;
+  background:linear-gradient(145deg,#3a2108,#190b06);
+  box-shadow:inset 0 0 0 1px rgba(242,196,90,.24);
+}
+.admin-tab-badge{
+  display:inline-grid;
+  place-items:center;
+  min-width:18px;height:18px;
+  margin-left:4px;
+  padding:0 5px;
+  border-radius:99px;
+  background:#a91f18;
+  color:#fff;
+  font-size:9px;
+}
+.admin-tab-badge.hidden{display:none!important}
+
+.admin-panel{
+  display:none;
+  padding:17px;
+  border:1px solid rgba(242,196,90,.19);
+  border-radius:18px;
+  background:linear-gradient(145deg,#120808,#080404);
+  box-shadow:0 14px 38px rgba(0,0,0,.22);
+}
+.admin-panel.active{display:block}
+.admin-panel-head{
+  display:flex;align-items:center;justify-content:space-between;gap:10px;
+  margin-bottom:13px;
+}
+.admin-panel-head h3{margin:3px 0 0;font-size:19px}
+.admin-search-wrap{position:relative;margin-bottom:10px}
+.admin-search-wrap>span{
+  position:absolute;left:13px;top:50%;transform:translateY(-50%);
+  color:#d5ad49;font-size:18px
+}
+.admin-search-wrap input{
+  width:100%;min-height:48px;padding:0 13px 0 40px;
+  border-radius:12px;border:1px solid rgba(242,196,90,.24);
+  background:#090505;
+}
+
+.admin-help,.admin-security-note{
+  display:flex;gap:9px;align-items:flex-start;
+  margin:8px 0 13px;padding:10px 11px;
+  border-radius:12px;
+  border:1px solid rgba(242,196,90,.1);
+  background:#0c0806;
+}
+.admin-help>span,.admin-security-note>span{color:#ffd35d}
+.admin-help p,.admin-security-note p{margin:0;color:#a99b92;font-size:10px;line-height:1.55}
+.admin-help.warning{border-color:rgba(190,72,54,.18);background:#100706}
+.admin-security-note{margin:0}
+
+.admin-player-list .player-row{
+  padding:12px;
+  border-radius:13px;
+  border:1px solid rgba(242,196,90,.1);
+  background:#0b0606;
+}
+.admin-player-list .player-row + .player-row{margin-top:7px}
+.admin-player-list .player-actions{display:flex;gap:5px;flex-wrap:wrap}
+.admin-player-list .player-actions button{
+  min-height:34px;padding:0 9px;border-radius:9px;font-size:10px;font-weight:1000
+}
+
+/* Existing VNC request + withdrawal cards get a dashboard treatment */
+#adminNxcRequestList > div,
+#adminWithdrawList > div{
+  border-color:rgba(242,196,90,.15)!important;
+  background:linear-gradient(145deg,#0d0707,#080404)!important;
+}
+
+@media(max-width:800px){
+  .admin-stat-grid{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:600px){
+  body[data-page="admin"] #adminArea{padding-top:2px}
+  .admin-hero{min-height:0;padding:15px;border-radius:16px;align-items:flex-start}
+  .admin-hero h2{font-size:22px}
+  .admin-hero p{font-size:10px}
+  .admin-hero-actions{display:grid}
+  .admin-live{font-size:8px}
+  .admin-stat-grid{gap:6px}
+  .admin-stat-card{grid-template-columns:36px 1fr;min-height:78px;padding:9px;gap:7px;border-radius:13px}
+  .admin-stat-icon{width:35px;height:35px;border-radius:10px;font-size:15px}
+  .admin-stat-card strong{font-size:16px}
+  .admin-stat-card em{font-size:8px}
+  .admin-tabs{top:55px;gap:3px;padding:4px;border-radius:12px}
+  .admin-tab{min-height:40px;padding:0 4px;font-size:9px}
+  .admin-panel{padding:12px;border-radius:15px}
+  .admin-panel-head h3{font-size:16px}
+  .admin-help{margin-bottom:9px}
+}

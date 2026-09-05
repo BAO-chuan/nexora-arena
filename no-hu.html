@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#080000">
+  <title>LS79win • Nổ Hũ 777</title>
+  <link rel="stylesheet" href="no-hu.css?v=1">
+</head>
+<body>
+  <main class="slot-app">
+    <header class="slot-topbar">
+      <a class="back-btn" href="games.html" aria-label="Quay lại">‹</a>
+      <a class="slot-brand" href="index.html">
+        <span class="slot-brand-mark">L</span>
+        <span><b>LS79win</b><small>Cược vui thắng lớn</small></span>
+      </a>
+      <button id="soundBtn" class="round-btn" type="button" aria-label="Âm thanh">♪</button>
+    </header>
+
+    <section class="slot-hero">
+      <div>
+        <span class="eyebrow">LS79WIN • VIRTUAL VNC</span>
+        <h1>NỔ HŨ <em>777</em></h1>
+        <p>Slot 5×3 dùng VNC ảo. Kết quả được tạo và thanh toán ở backend.</p>
+      </div>
+      <div class="jackpot-box">
+        <small>HŨ HIỆN TẠI</small>
+        <strong id="jackpotAmount">— VNC</strong>
+        <span>5 số 7 ở hàng giữa = NỔ HŨ</span>
+      </div>
+    </section>
+
+    <section class="wallet-strip">
+      <div>
+        <small>NGƯỜI CHƠI</small>
+        <strong id="slotUsername">Player</strong>
+      </div>
+      <div>
+        <small>SỐ DƯ</small>
+        <strong id="slotBalance">— VNC</strong>
+      </div>
+      <button id="refreshBalance" class="mini-btn" type="button">↻</button>
+    </section>
+
+    <section class="slot-machine">
+      <div class="machine-lights" aria-hidden="true">
+        <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+      </div>
+
+      <div class="machine-title">
+        <span>◆</span>
+        <b>GOLDEN FORTUNE</b>
+        <span>◆</span>
+      </div>
+
+      <div id="reelGrid" class="reel-grid" aria-label="Bảng quay 5 cột 3 hàng">
+        <div class="reel-cell">🍒</div><div class="reel-cell">🍋</div><div class="reel-cell">🔔</div><div class="reel-cell">⭐</div><div class="reel-cell">7️⃣</div>
+        <div class="reel-cell">⭐</div><div class="reel-cell">BAR</div><div class="reel-cell seven">7</div><div class="reel-cell">BAR</div><div class="reel-cell">⭐</div>
+        <div class="reel-cell">💎</div><div class="reel-cell">🍒</div><div class="reel-cell">🔔</div><div class="reel-cell">🍋</div><div class="reel-cell">💎</div>
+      </div>
+
+      <div id="winOverlay" class="win-overlay hidden" aria-live="polite">
+        <small id="winLabel">THẮNG</small>
+        <strong id="winAmount">0 VNC</strong>
+      </div>
+
+      <div class="machine-footer">
+        <div><small>CƯỢC</small><strong id="currentBet">100 VNC</strong></div>
+        <div><small>THẮNG GẦN NHẤT</small><strong id="lastWin">0 VNC</strong></div>
+        <div><small>ĐƯỜNG THẮNG</small><strong id="winningLines">0</strong></div>
+      </div>
+    </section>
+
+    <section class="bet-panel">
+      <div class="bet-title">
+        <div>
+          <span class="eyebrow">BET CONTROL</span>
+          <h2>Chọn mức VNC</h2>
+        </div>
+        <button id="paytableBtn" class="mini-btn" type="button">Bảng thưởng</button>
+      </div>
+
+      <div id="betChips" class="bet-chips">
+        <button type="button" class="active" data-bet="100">100</button>
+        <button type="button" data-bet="500">500</button>
+        <button type="button" data-bet="1000">1K</button>
+        <button type="button" data-bet="5000">5K</button>
+      </div>
+
+      <button id="spinBtn" class="spin-btn" type="button">
+        <span>QUAY</span>
+        <small>SPIN</small>
+      </button>
+
+      <p id="slotMessage" class="slot-message">Chọn mức cược và bấm QUAY.</p>
+    </section>
+
+    <section class="slot-history">
+      <div class="section-head">
+        <div><span class="eyebrow">RECENT SPINS</span><h2>Lượt quay gần đây</h2></div>
+        <button id="refreshHistory" class="mini-btn" type="button">Làm mới</button>
+      </div>
+      <div id="spinHistory"><p class="muted">Đang tải...</p></div>
+    </section>
+
+    <section class="virtual-note">
+      <span>ⓘ</span>
+      <p><strong>VNC là điểm ảo trong LS79win.</strong> Không phải VND, không có giá trị tiền mặt và không thể quy đổi thành tiền thật. Game này chỉ dành cho giải trí bằng điểm ảo.</p>
+    </section>
+  </main>
+
+  <dialog id="paytableDialog" class="paytable-dialog">
+    <form method="dialog">
+      <div class="dialog-head">
+        <div><span class="eyebrow">PAYTABLE</span><h2>Bảng thưởng</h2></div>
+        <button class="round-btn" value="close">×</button>
+      </div>
+      <p>Thắng khi có từ <strong>3 biểu tượng giống nhau liên tiếp từ cột trái</strong> trên một trong 5 đường thắng.</p>
+      <div class="paytable-grid">
+        <div><b>🍒 Cherry</b><span>3×: 2 • 4×: 5 • 5×: 10</span></div>
+        <div><b>🍋 Lemon</b><span>3×: 3 • 4×: 8 • 5×: 15</span></div>
+        <div><b>🔔 Bell</b><span>3×: 5 • 4×: 15 • 5×: 30</span></div>
+        <div><b>⭐ Star</b><span>3×: 8 • 4×: 25 • 5×: 50</span></div>
+        <div><b>BAR</b><span>3×: 12 • 4×: 40 • 5×: 100</span></div>
+        <div><b>7</b><span>3×: 20 • 4×: 80 • 5×: 250</span></div>
+        <div><b>💎 Diamond</b><span>3×: 50 • 4×: 200 • 5×: 1000</span></div>
+      </div>
+      <div class="jackpot-rule">🔥 <strong>NỔ HŨ:</strong> 5 số 7 trên hàng giữa nhận toàn bộ hũ VNC hiện tại.</div>
+    </form>
+  </dialog>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="no-hu.js?v=1"></script>
+</body>
+</html>

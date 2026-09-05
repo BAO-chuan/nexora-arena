@@ -52,6 +52,7 @@ const boResult = $("boResult");
 
 const boPlayerCards = $("boPlayerCards");
 const boBankerCards = $("boBankerCards");
+const boRoadHistory = $("boRoadHistory");
 
 const boBetAmount = $("boBetAmount");
 const boPlaceBet = $("boPlaceBet");
@@ -288,6 +289,7 @@ async function loadRoom() {
     );
 
     await loadCurrentRound();
+    await loadRoadHistory();
 
     subscribeRoom();
 
@@ -1280,6 +1282,54 @@ boCreateRound?.addEventListener(
 
 
 // ================================
+// BACCARAT ROAD HISTORY
+// ================================
+
+async function loadRoadHistory() {
+  if (!currentRoom || !boRoadHistory) return;
+
+  try {
+    const { data, error } = await sb
+      .from("baccarat_rounds")
+      .select("round_number,result")
+      .eq("room_id", currentRoom.id)
+      .eq("status", "finished")
+      .order("round_number", { ascending: false })
+      .limit(30);
+
+    if (error) throw error;
+
+    if (!data || !data.length) {
+      boRoadHistory.innerHTML =
+        '<p class="bo-road-empty">Chưa có lịch sử ván.</p>';
+      return;
+    }
+
+    const rounds = [...data].reverse();
+
+    boRoadHistory.innerHTML = rounds.map(round => {
+      let className = "road-tie";
+      let label = "T";
+
+      if (round.result === "player") {
+        className = "road-player";
+        label = "P";
+      } else if (round.result === "banker") {
+        className = "road-banker";
+        label = "B";
+      }
+
+      return `<div class="bo-road-dot ${className}" title="Ván #${round.round_number}">${label}</div>`;
+    }).join("");
+  } catch (error) {
+    console.error("Load road history:", error);
+    boRoadHistory.innerHTML =
+      '<p class="bo-road-empty">Không thể tải lịch sử.</p>';
+  }
+}
+
+
+// ================================
 // SUPABASE REALTIME
 // ================================
 
@@ -1315,6 +1365,8 @@ function subscribeRoom() {
       await loadProfile();
 
       await loadMyBets();
+
+      await loadRoadHistory();
 
     }
   )

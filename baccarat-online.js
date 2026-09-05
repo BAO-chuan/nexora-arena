@@ -2139,7 +2139,7 @@ async function loadRoadHistory() {
 
     let query = sb
       .from("baccarat_rounds")
-      .select("round_number,result")
+      .select("id,round_number,result")
       .eq("room_id", currentRoom.id)
       .eq("status", "finished");
 
@@ -2156,11 +2156,20 @@ async function loadRoadHistory() {
     if (!data || !data.length) {
       boRoadHistory.innerHTML =
         '<p class="bo-road-empty">Chưa có lịch sử ván.</p>';
+
       if (boBigRoad) {
         boBigRoad.innerHTML =
           '<p class="bo-road-empty">Chưa có dữ liệu đại lộ.</p>';
       }
+
       if (boRoadStats) boRoadStats.textContent = "P 0 · B 0 · T 0";
+      if (boShoePlayerStat) boShoePlayerStat.textContent = "0";
+      if (boShoeBankerStat) boShoeBankerStat.textContent = "0";
+      if (boShoeTieStat) boShoeTieStat.textContent = "0";
+
+      renderDerivedRoad(boBigEyeRoad, [], 1);
+      renderDerivedRoad(boSmallRoad, [], 2);
+      renderDerivedRoad(boCockroachRoad, [], 3);
       return;
     }
 
@@ -2170,6 +2179,11 @@ async function loadRoadHistory() {
     const rounds = [...data]
       .filter(round => {
         if (!hiddenRoundId) return true;
+
+        if (round.id) {
+          return round.id !== hiddenRoundId;
+        }
+
         return !(
           currentRound &&
           currentRound.id === hiddenRoundId &&
@@ -2178,7 +2192,8 @@ async function loadRoadHistory() {
       })
       .reverse();
 
-    const recentRounds = rounds.slice(-30);
+    // Bead Road keeps more of the current shoe visible.
+    const recentRounds = rounds.slice(-72);
 
     boRoadHistory.innerHTML = recentRounds.map(round => {
       let className = "road-tie";
@@ -2207,7 +2222,18 @@ async function loadRoadHistory() {
         `P ${counts.player} · B ${counts.banker} · T ${counts.tie}`;
     }
 
+    // V22.2: the three counters above the road now reflect the
+    // currently visible shoe instead of staying stuck at 0.
+    if (boShoePlayerStat) boShoePlayerStat.textContent = String(counts.player);
+    if (boShoeBankerStat) boShoeBankerStat.textContent = String(counts.banker);
+    if (boShoeTieStat) boShoeTieStat.textContent = String(counts.tie);
+
     renderBigRoad(rounds);
+
+    // Keep all road tabs populated whenever history refreshes.
+    renderDerivedRoad(boBigEyeRoad, rounds, 1);
+    renderDerivedRoad(boSmallRoad, rounds, 2);
+    renderDerivedRoad(boCockroachRoad, rounds, 3);
 
   } catch (error) {
     console.error("Load road history:", error);
@@ -2217,6 +2243,10 @@ async function loadRoadHistory() {
       boBigRoad.innerHTML =
         '<p class="bo-road-empty">Không thể tải đại lộ.</p>';
     }
+
+    if (boShoePlayerStat) boShoePlayerStat.textContent = "—";
+    if (boShoeBankerStat) boShoeBankerStat.textContent = "—";
+    if (boShoeTieStat) boShoeTieStat.textContent = "—";
   }
 }
 

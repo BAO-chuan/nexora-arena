@@ -1770,3 +1770,57 @@ body{
   z-index:10000!important;
   border-radius:10px!important;
 }
+
+
+/* =========================================================
+   LS79win Baccarat V22.2 — ROAD FIX
+   6-row Bead Plate + readable live counters
+========================================================= */
+.bo-live-table-v22 .bo-road-history{
+  display:grid;
+  grid-template-rows:repeat(6,20px);
+  grid-template-columns:none;
+  grid-auto-columns:20px;
+  grid-auto-flow:column;
+  gap:1px;
+  align-content:start;
+  justify-content:start;
+  overflow-x:auto;
+  overflow-y:hidden;
+  min-height:127px;
+  padding:2px;
+  background-color:#fff;
+  background-image:
+    linear-gradient(#dedede 1px,transparent 1px),
+    linear-gradient(90deg,#dedede 1px,transparent 1px);
+  background-size:21px 21px;
+  -webkit-overflow-scrolling:touch;
+}
+.bo-live-table-v22 .bo-road-dot{
+  width:18px;
+  height:18px;
+  margin:auto;
+  font-size:7px;
+  box-shadow:none;
+}
+.bo-live-table-v22 .bo-shoe-stats b{
+  font-size:11px!important;
+  font-weight:1000;
+}
+.bo-live-table-v22 .bo-shoe-stats span:nth-child(1) b{color:#2087d6}
+.bo-live-table-v22 .bo-shoe-stats span:nth-child(2) b{color:#d63a40}
+.bo-live-table-v22 .bo-shoe-stats span:nth-child(3) b{color:#1a9b67}
+
+@media(max-width:480px){
+  .bo-live-table-v22 .bo-road-history{
+    grid-template-rows:repeat(6,18px);
+    grid-auto-columns:18px;
+    min-height:115px;
+    background-size:19px 19px;
+  }
+  .bo-live-table-v22 .bo-road-dot{
+    width:16px;
+    height:16px;
+    font-size:6px;
+  }
+}

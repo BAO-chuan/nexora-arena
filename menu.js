@@ -526,3 +526,17 @@ if(data.role === "admin"){
   );
 
 })();
+
+document.addEventListener(
+  "visibilitychange",
+  () => {
+
+    if(
+      document.visibilityState
+      ===
+      "visible"
+    ){
+      loadMenuProfile();
+    }
+  }
+);

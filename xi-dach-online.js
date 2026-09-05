@@ -80,7 +80,21 @@ function render(s){
   $("dealerCards").innerHTML=(s.dealer.cards||[]).map(cardHTML).join('');
   $("dealerScore").textContent=s.dealer.label||"Bài đang úp";
 
-  $("players").innerHTML=(s.players||[]).map(p=>`<div class="seat ${p.is_turn?'active':''}"><b>${p.username}${p.user_id===me.id?' (Bạn)':''}</b><small>${fmt(p.bet)} VNC</small><div class="cards">${(p.cards||[]).map(cardHTML).join('')}</div><div class="score">${p.label||''}</div><div class="result">${p.result||''}</div></div>`).join('');
+  $("players").innerHTML=(s.players||[]).map(p=>`<div class="seat ${p.is_turn?'active':''}"><b>${p.username}${p.user_id===me.id?' (Bạn)':''}</b><small>${fmt(p.bet)} VNC</small><div class="cards">${(p.cards||[]).map(cardHTML).join('')}</div><div class="score">${p.label||''}</div>${p.can_inspect?`<button class="inspect-btn" data-user-id="${p.user_id}">XÉT BÀI</button>`:''}<div class="result">${p.result||''}</div></div>`).join('');
+
+  document.querySelectorAll(".inspect-btn").forEach(btn=>{
+    btn.onclick=async()=>{
+      try{
+        btn.disabled=true;
+        msg("");
+        await rpc("xidach_inspect_player",{p_room_id:room,p_player_id:btn.dataset.userId});
+        await refresh();
+      }catch(e){
+        msg(e.message||String(e));
+        btn.disabled=false;
+      }
+    };
+  });
 
   const isDealer=s.dealer.user_id===me.id;
   const my=(s.players||[]).find(p=>p.user_id===me.id);

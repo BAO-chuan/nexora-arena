@@ -368,15 +368,16 @@ function renderRound() {
   clearInterval(
     countdownTimer
   );
-if (
-  currentRound?.status !== "finished"
-) {
 
-  clearTimeout(
-    autoRoundTimer
-  );
-}
-  
+  if (
+    currentRound?.status !== "finished"
+  ) {
+
+    clearTimeout(
+      autoRoundTimer
+    );
+  }
+
   if (!currentRound) {
 
     boRoundNumber.textContent = "—";
@@ -389,6 +390,9 @@ if (
     boPlayerScore.textContent = "—";
     boBankerScore.textContent = "—";
 
+    renderCards([], boPlayerCards);
+    renderCards([], boBankerCards);
+
     boResult.textContent =
       "Chưa có kết quả";
 
@@ -400,10 +404,8 @@ if (
     return;
   }
 
-
   boRoundNumber.textContent =
     "#" + currentRound.round_number;
-
 
   const statusMap = {
 
@@ -415,13 +417,11 @@ if (
 
   };
 
-
   boRoundStatus.textContent =
     statusMap[
       currentRound.status
     ] ||
     currentRound.status;
-
 
   if (
     currentRound.status ===
@@ -436,11 +436,23 @@ if (
     boBankerScore.textContent =
       currentRound.banker_score ?? "—";
 
+    renderCards(
+      currentRound.player_cards || [],
+      boPlayerCards
+    );
+
+    renderCards(
+      currentRound.banker_cards || [],
+      boBankerCards
+    );
+
     renderResult();
 
     boTableMessage.textContent =
       "Ván đã kết thúc";
-scheduleNextRound();
+
+    scheduleNextRound();
+
   } else if (
     currentRound.status ===
     "betting"
@@ -448,6 +460,9 @@ scheduleNextRound();
 
     boPlayerScore.textContent = "—";
     boBankerScore.textContent = "—";
+
+    renderCards([], boPlayerCards);
+    renderCards([], boBankerCards);
 
     boResult.textContent =
       "Đang nhận cược";
@@ -461,22 +476,15 @@ scheduleNextRound();
 
     boCountdown.textContent = "—";
 
+    renderCards([], boPlayerCards);
+    renderCards([], boBankerCards);
+
     boTableMessage.textContent =
       "Đang xử lý kết quả";
   }
 
   updateBetButton();
 }
-
-renderCards(
-  [],
-  boPlayerCards
-);
-
-renderCards(
-  [],
-  boBankerCards
-);
 
 // ================================
 // COUNTDOWN

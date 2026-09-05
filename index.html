@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="theme-color" content="#06130f">
   <title>LS79win</title>
-  <link rel="stylesheet" href="styles.css?v=16">
+  <link rel="stylesheet" href="styles.css?v=17">
   <link rel="stylesheet" href="menu.css?v=3">
 </head>
 <body>
@@ -21,28 +21,31 @@
   <main>
     <div class="connection-bar"><span id="statusDot" class="status-dot"></span><span id="connectionStatus">Đang kiểm tra Supabase...</span></div>
 
-    <section id="authArea" class="auth-wrap">
-      <div class="auth-card panel">
-        <h1>Chào mừng đến LS79win</h1>
-        <p class="muted">Cược vui thắng lớn — đăng nhập để vào game và sử dụng NXC ảo.</p>
-        <div class="tabs">
-          <button id="loginTab" class="tab active" type="button">Đăng nhập</button>
-          <button id="signupTab" class="tab" type="button">Tạo tài khoản</button>
-        </div>
-        <form id="loginForm" class="auth-form">
-          <label>Email<input id="loginEmail" type="email" required autocomplete="email"></label>
-          <label>Mật khẩu<input id="loginPassword" type="password" required minlength="6" autocomplete="current-password"></label>
-          <button class="btn primary" type="submit">Vào Arena</button>
-        </form>
-        <form id="signupForm" class="auth-form hidden">
-          <label>Username<input id="signupUsername" required minlength="3" maxlength="24"></label>
-          <label>Email<input id="signupEmail" type="email" required autocomplete="email"></label>
-          <label>Mật khẩu<input id="signupPassword" type="password" required minlength="6" autocomplete="new-password"></label>
-          <button class="btn gold" type="submit">Tạo tài khoản</button>
-        </form>
-        <p class="tiny-note">NXC là điểm ảo trong game, không có giá trị tiền mặt và không thể nạp/rút hay quy đổi.</p>
-      </div>
-    </section>
+    <section id="authArea" class="auth-wrap auth-v2">
+  <div class="auth-brand-stage"><div class="auth-crown">♛</div><div class="auth-logo">LS79<span>win</span></div><div class="auth-slogan">Cược vui thắng lớn</div></div>
+  <div class="auth-card panel">
+    <div class="tabs auth-tabs"><button id="loginTab" class="tab active" type="button">Đăng nhập</button><button id="signupTab" class="tab" type="button">Đăng ký</button></div>
+    <div id="loginIntro" class="auth-heading"><h1>Chào mừng trở lại!</h1><p class="muted">Đăng nhập để tiếp tục trải nghiệm LS79win.</p></div>
+    <form id="loginForm" class="auth-form">
+      <label>Email<div class="auth-input-wrap"><span>✉</span><input id="loginEmail" type="email" required autocomplete="email" placeholder="Email của bạn"></div></label>
+      <label>Mật khẩu<div class="auth-input-wrap"><span>●</span><input id="loginPassword" type="password" required minlength="6" autocomplete="current-password" placeholder="Mật khẩu"><button class="password-toggle" type="button" data-toggle-password="loginPassword">◉</button></div></label>
+      <div class="auth-options"><label class="remember-row"><input id="rememberEmail" type="checkbox"> Ghi nhớ email</label><button id="forgotPasswordBtn" class="auth-text-btn" type="button">Quên mật khẩu?</button></div>
+      <button id="loginSubmitBtn" class="btn gold auth-submit" type="submit">ĐĂNG NHẬP →</button><p id="loginMessage" class="auth-message"></p>
+    </form>
+    <div id="signupIntro" class="auth-heading hidden"><h1>Tạo tài khoản mới</h1><p class="muted">Tham gia LS79win với tài khoản NXC ảo.</p></div>
+    <form id="signupForm" class="auth-form hidden">
+      <label>Username<div class="auth-input-wrap"><span>●</span><input id="signupUsername" required minlength="3" maxlength="24" autocomplete="username" placeholder="Tên hiển thị"></div></label>
+      <label>Email<div class="auth-input-wrap"><span>✉</span><input id="signupEmail" type="email" required autocomplete="email" placeholder="Email của bạn"></div></label>
+      <label>Mật khẩu<div class="auth-input-wrap"><span>●</span><input id="signupPassword" type="password" required minlength="6" autocomplete="new-password" placeholder="Ít nhất 6 ký tự"><button class="password-toggle" type="button" data-toggle-password="signupPassword">◉</button></div></label>
+      <div class="password-strength"><div class="password-strength-track"><i id="passwordStrengthBar"></i></div><small>Độ mạnh: <b id="passwordStrengthText">—</b></small></div>
+      <label>Nhập lại mật khẩu<div class="auth-input-wrap"><span>●</span><input id="signupPasswordConfirm" type="password" required minlength="6" autocomplete="new-password" placeholder="Nhập lại mật khẩu"><button class="password-toggle" type="button" data-toggle-password="signupPasswordConfirm">◉</button></div></label>
+      <div class="password-rules"><span id="ruleLength">○ Ít nhất 6 ký tự</span><span id="ruleLetter">○ Có chữ cái</span><span id="ruleNumber">○ Có ít nhất 1 số</span><span id="ruleMatch">○ Hai mật khẩu phải khớp nhau</span></div>
+      <button id="signupSubmitBtn" class="btn gold auth-submit" type="submit">ĐĂNG KÝ NGAY</button><p id="signupMessage" class="auth-message"></p>
+    </form>
+    <div class="auth-security"><span>◆</span><div><strong>Tài khoản được bảo vệ bởi Supabase</strong><small>An toàn · Nhanh chóng · Đáng tin cậy</small></div></div>
+    <p class="tiny-note">NXC là điểm ảo trong game, không có giá trị tiền mặt và không thể nạp/rút hay quy đổi.</p>
+  </div>
+</section>
 
     <section id="appArea" class="hidden">
       <section id="home" class="hero">
@@ -446,7 +449,7 @@
 </nav>
   <div id="toast" class="toast"></div>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="app.js?v=18"></script>
+  <script src="app.js?v=19"></script>
   <script src="menu.js?v=2"></script>
 </body>
 </html>

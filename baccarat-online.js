@@ -313,7 +313,15 @@ function renderRound() {
   clearInterval(
     countdownTimer
   );
+if (
+  currentRound?.status !== "finished"
+) {
 
+  clearTimeout(
+    autoRoundTimer
+  );
+}
+  
   if (!currentRound) {
 
     boRoundNumber.textContent = "—";

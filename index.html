@@ -80,7 +80,89 @@
           <article class="game-card" data-category="arcade"><div class="game-art dice-art"><div class="dice">⚄</div><div class="dice second">⚂</div></div><div class="game-info"><div><span class="game-tag">ARCADE</span><h3>Dice Duel</h3><p>Nhanh, gọn, nhiều hiệu ứng.</p></div><button class="play-btn" data-game="Dice Duel">Sắp có</button></div></article>
         </div>
       </section>
+<!-- ===== VÍ NXC ===== -->
+<section id="nxcWallet" class="section">
+  <div class="panel nxc-wallet-panel">
 
+    <div class="section-head">
+      <div>
+        <span class="eyebrow">VÍ NXC</span>
+        <h2>Yêu cầu NXC</h2>
+      </div>
+
+      <span class="nxc-virtual-pill">ĐIỂM ẢO</span>
+    </div>
+
+    <div class="wallet-balance-box">
+      <span>Số dư hiện tại</span>
+      <strong id="walletPageBalance">0 NXC</strong>
+    </div>
+
+    <form id="nxcRequestForm" class="nxc-request-form">
+
+      <label>
+        Số NXC muốn yêu cầu
+
+        <input
+          id="nxcRequestAmount"
+          type="number"
+          min="1"
+          step="1"
+          placeholder="Ví dụ: 10000"
+          required
+        >
+      </label>
+
+      <div class="nxc-quick-row">
+        <button type="button" data-nxc="1000">
+          1K
+        </button>
+
+        <button type="button" data-nxc="5000">
+          5K
+        </button>
+
+        <button type="button" data-nxc="10000">
+          10K
+        </button>
+
+        <button type="button" data-nxc="50000">
+          50K
+        </button>
+      </div>
+
+      <button class="btn gold" type="submit">
+        GỬI YÊU CẦU
+      </button>
+
+    </form>
+
+    <p class="tiny-note">
+      Đây chỉ là yêu cầu cấp điểm NXC ảo.
+      NXC không có giá trị tiền mặt và không thể
+      nạp/rút hoặc quy đổi thành tiền.
+    </p>
+
+    <div class="nxc-history-head">
+      <h3>Yêu cầu gần đây</h3>
+
+      <button
+        id="refreshNxcRequests"
+        class="mini-btn"
+        type="button"
+      >
+        Làm mới
+      </button>
+    </div>
+
+    <div id="nxcRequestList">
+      <p class="muted">
+        Đang tải...
+      </p>
+    </div>
+
+  </div>
+</section>
       <section id="leaderboard" class="section split">
         <div class="panel">
           <div class="section-head"><div><span class="eyebrow">XẾP HẠNG</span><h2>Top NXC</h2></div><button id="refreshLeaderboard" class="mini-btn">Làm mới</button></div>

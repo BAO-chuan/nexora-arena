@@ -143,7 +143,7 @@ async function loadProfile() {
 function renderBalance() {
   if (!profile) return;
 
-  const el = document.getElementById("walletBalance");
+  const el = document.getElementById("gameBalance");
 
   if (el) {
     el.textContent =

@@ -23,7 +23,11 @@ let selectedBet = null;
 let countdownTimer = null;
 
 let settlingRoundId = null;
+let autoRoundTimer = null;
+let creatingNextRound = false;
 
+const AUTO_BETTING_SECONDS = 20;
+const RESULT_DISPLAY_MS = 5000;
 // ================================
 // ELEMENTS
 // ================================

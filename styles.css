@@ -821,3 +821,19 @@ input:focus{border-color:#c9912f;box-shadow:0 0 0 3px rgba(242,196,90,.08)}
     justify-self:center;
   }
 }
+
+
+/* LS79win Player Info Lock v1 */
+.player-info-field input.player-info-locked-input{
+  opacity:.78;
+  cursor:not-allowed;
+  border-color:rgba(242,196,90,.12);
+  background:rgba(0,0,0,.28);
+  color:#d8cec6;
+  -webkit-text-fill-color:#d8cec6;
+}
+.player-info-locked-message{
+  color:#f2c45a !important;
+  font-weight:800;
+  line-height:1.5;
+}

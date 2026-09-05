@@ -1001,6 +1001,40 @@ window.addEventListener(
 // PLAYER INFORMATION
 // =========================================
 
+function setPlayerInfoLocked(locked){
+  const ids = [
+    "playerFullName",
+    "playerPhone",
+    "playerBankName",
+    "playerBankAccount"
+  ];
+
+  ids.forEach(id => {
+    const input = document.getElementById(id);
+    if(!input) return;
+    input.readOnly = !!locked;
+    input.classList.toggle("player-info-locked-input", !!locked);
+  });
+
+  const submit = document.getElementById("playerInfoSubmit");
+  if(submit){
+    submit.classList.toggle("hidden", !!locked);
+    submit.disabled = !!locked;
+  }
+
+  const form = document.getElementById("playerInfoForm");
+  if(form){
+    form.dataset.locked = locked ? "true" : "false";
+  }
+
+  const message = document.getElementById("playerInfoMessage");
+  if(message && locked){
+    message.textContent = "🔒 Thông tin đã được lưu và không thể tự chỉnh sửa.";
+    message.classList.add("player-info-locked-message");
+  }
+}
+
+
 async function loadPlayerInfo(){
 
   const form =
@@ -1070,6 +1104,10 @@ async function loadPlayerInfo(){
         info.bank_account || "";
     }
 
+    setPlayerInfoLocked(
+      info.profile_info_locked === true
+    );
+
   }catch(error){
 
     console.error(
@@ -1093,6 +1131,14 @@ if(playerInfoForm){
     async event => {
 
       event.preventDefault();
+
+      if(playerInfoForm.dataset.locked === "true"){
+        const lockedMessage = document.getElementById("playerInfoMessage");
+        if(lockedMessage){
+          lockedMessage.textContent = "🔒 Thông tin đã được khóa sau lần lưu đầu tiên.";
+        }
+        return;
+      }
 
       const message =
         document.getElementById(
@@ -1130,6 +1176,13 @@ if(playerInfoForm){
           )
           ?.value
           .trim() || "";
+
+      if(!fullName || !phone || !bankName || !bankAccount){
+        if(message){
+          message.textContent = "Vui lòng nhập đầy đủ 4 mục trước khi lưu. Sau khi lưu sẽ không thể tự sửa.";
+        }
+        return;
+      }
 
       if(message){
         message.textContent =

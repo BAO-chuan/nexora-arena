@@ -932,3 +932,198 @@ window.addEventListener(
   "pageshow",
   loadAdminNxcRequests
 );
+
+// =========================================
+// PLAYER INFORMATION
+// =========================================
+
+async function loadPlayerInfo(){
+
+  const form =
+    document.getElementById(
+      "playerInfoForm"
+    );
+
+  if(!form) return;
+
+  try{
+
+    const {
+      data,
+      error
+    } = await sb.rpc(
+      "player_get_profile_info"
+    );
+
+    if(error){
+      throw error;
+    }
+
+    const info =
+      Array.isArray(data)
+        ? data[0]
+        : data;
+
+    if(!info) return;
+
+    const fullName =
+      document.getElementById(
+        "playerFullName"
+      );
+
+    const phone =
+      document.getElementById(
+        "playerPhone"
+      );
+
+    const bankName =
+      document.getElementById(
+        "playerBankName"
+      );
+
+    const bankAccount =
+      document.getElementById(
+        "playerBankAccount"
+      );
+
+    if(fullName){
+      fullName.value =
+        info.full_name || "";
+    }
+
+    if(phone){
+      phone.value =
+        info.phone || "";
+    }
+
+    if(bankName){
+      bankName.value =
+        info.bank_name || "";
+    }
+
+    if(bankAccount){
+      bankAccount.value =
+        info.bank_account || "";
+    }
+
+  }catch(error){
+
+    console.error(
+      "Load player info:",
+      error
+    );
+  }
+}
+
+
+const playerInfoForm =
+  document.getElementById(
+    "playerInfoForm"
+  );
+
+
+if(playerInfoForm){
+
+  playerInfoForm.addEventListener(
+    "submit",
+    async event => {
+
+      event.preventDefault();
+
+      const message =
+        document.getElementById(
+          "playerInfoMessage"
+        );
+
+      const fullName =
+        document
+          .getElementById(
+            "playerFullName"
+          )
+          ?.value
+          .trim() || "";
+
+      const phone =
+        document
+          .getElementById(
+            "playerPhone"
+          )
+          ?.value
+          .trim() || "";
+
+      const bankName =
+        document
+          .getElementById(
+            "playerBankName"
+          )
+          ?.value
+          .trim() || "";
+
+      const bankAccount =
+        document
+          .getElementById(
+            "playerBankAccount"
+          )
+          ?.value
+          .trim() || "";
+
+      if(message){
+        message.textContent =
+          "Đang lưu...";
+      }
+
+      try{
+
+        const {
+          error
+        } = await sb.rpc(
+          "player_update_profile_info",
+          {
+            p_full_name:
+              fullName,
+
+            p_phone:
+              phone,
+
+            p_bank_name:
+              bankName,
+
+            p_bank_account:
+              bankAccount
+          }
+        );
+
+        if(error){
+          throw error;
+        }
+
+        if(message){
+          message.textContent =
+            "✓ Đã lưu thông tin";
+        }
+
+        await loadPlayerInfo();
+
+      }catch(error){
+
+        console.error(
+          "Save player info:",
+          error
+        );
+
+        if(message){
+          message.textContent =
+            "Không thể lưu thông tin.";
+        }
+      }
+    }
+  );
+}
+
+
+loadPlayerInfo();
+
+window.addEventListener(
+  "pageshow",
+  loadPlayerInfo
+);

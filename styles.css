@@ -232,3 +232,81 @@
 .admin-request-actions button:disabled{
   opacity:.5;
 }
+
+/* =========================================
+   PLAYER INFORMATION
+========================================= */
+
+.player-info-card{
+  margin-top:18px;
+  padding:18px;
+
+  border-radius:20px;
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(16,55,41,.92),
+      rgba(7,27,20,.96)
+    );
+
+  border:
+    1px solid rgba(224,192,108,.15);
+}
+
+#playerInfoForm{
+  display:grid;
+  gap:14px;
+
+  margin-top:16px;
+}
+
+.player-info-field{
+  display:grid;
+  gap:7px;
+}
+
+.player-info-field span{
+  font-size:12px;
+  font-weight:800;
+  color:#9aafa5;
+}
+
+.player-info-field input{
+  width:100%;
+  box-sizing:border-box;
+
+  padding:13px 14px;
+
+  border-radius:13px;
+
+  border:
+    1px solid rgba(255,255,255,.09);
+
+  background:
+    rgba(0,0,0,.18);
+
+  color:#fff;
+
+  outline:none;
+
+  font-size:15px;
+}
+
+.player-info-field input:focus{
+  border-color:
+    rgba(224,192,108,.45);
+
+  box-shadow:
+    0 0 0 3px
+    rgba(224,192,108,.06);
+}
+
+.player-info-field input::placeholder{
+  color:#63776e;
+}
+
+#playerInfoMessage{
+  min-height:18px;
+  margin:0;
+}

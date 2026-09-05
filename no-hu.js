@@ -26,6 +26,7 @@ let currentBet = 100;
 let spinning = false;
 let soundOn = true;
 let fakeTimer = null;
+let currentBalance = 0;
 
 function fmt(n){ return Number(n||0).toLocaleString("vi-VN"); }
 function setMessage(text){ $("slotMessage").textContent = text; }
@@ -50,18 +51,42 @@ async function ensureAuth(){
   }
 
   $("slotUsername").textContent = p.username || "Player";
-  $("slotBalance").textContent = `${fmt(p.balance)} VNC`;
+  currentBalance = Number(p.balance || 0);
+  $("slotBalance").textContent = `${fmt(currentBalance)} VNC`;
+  updateSpinAvailability();
   return true;
 }
 
 async function refreshBalance(){
-  if(!session) return;
-  const {data:p} = await sb
+  if(!session) return null;
+  const {data:p,error} = await sb
     .from("profiles")
     .select("balance")
     .eq("id",session.user.id)
     .single();
-  if(p) $("slotBalance").textContent = `${fmt(p.balance)} VNC`;
+
+  if(error || !p) return null;
+
+  currentBalance = Number(p.balance || 0);
+  $("slotBalance").textContent = `${fmt(currentBalance)} VNC`;
+  updateSpinAvailability();
+  return currentBalance;
+}
+
+function updateSpinAvailability(){
+  const btn = $("spinBtn");
+  if(!btn) return;
+
+  const insufficient = currentBalance < currentBet;
+  btn.disabled = spinning || insufficient;
+
+  if(!spinning){
+    if(insufficient){
+      setMessage(`Số dư không đủ. Cần ${fmt(currentBet)} VNC để quay.`);
+    }else if($("slotMessage").textContent.startsWith("Số dư không đủ")){
+      setMessage("Chọn mức cược và bấm QUAY.");
+    }
+  }
 }
 
 async function refreshJackpot(){
@@ -120,8 +145,23 @@ function showWin(win,jackpot){
 
 async function spin(){
   if(spinning) return;
+
+  // Luôn lấy số dư mới nhất từ Supabase trước khi chạy animation.
+  const freshBalance = await refreshBalance();
+
+  if(freshBalance === null){
+    setMessage("Không kiểm tra được số dư. Vui lòng thử lại.");
+    return;
+  }
+
+  if(freshBalance < currentBet){
+    setMessage(`Số dư không đủ. Bạn có ${fmt(freshBalance)} VNC, cần ${fmt(currentBet)} VNC để quay.`);
+    updateSpinAvailability();
+    return;
+  }
+
   spinning = true;
-  $("spinBtn").disabled = true;
+  updateSpinAvailability();
   [...document.querySelectorAll(".reel-cell")].forEach(c=>c.classList.remove("win-cell"));
   setMessage("Đang quay...");
   startFakeSpin();
@@ -134,9 +174,16 @@ async function spin(){
 
   if(error){
     spinning = false;
-    $("spinBtn").disabled = false;
-    setMessage(error.message.includes("insufficient") ? "Số dư VNC không đủ." : `Không thể quay: ${error.message}`);
     await refreshBalance();
+
+    const msg = String(error.message || "").toLowerCase();
+    if(msg.includes("insufficient") || msg.includes("không đủ")){
+      setMessage(`Số dư không đủ để quay mức ${fmt(currentBet)} VNC.`);
+    }else{
+      setMessage(`Không thể quay: ${error.message}`);
+    }
+
+    updateSpinAvailability();
     return;
   }
 
@@ -145,7 +192,8 @@ async function spin(){
   renderGrid(grid,lines);
 
   $("winningLines").textContent = String(lines.length);
-  $("slotBalance").textContent = `${fmt(data.balance)} VNC`;
+  currentBalance = Number(data.balance || 0);
+  $("slotBalance").textContent = `${fmt(currentBalance)} VNC`;
   $("jackpotAmount").textContent = `${fmt(data.jackpot_amount)} VNC`;
 
   if(Number(data.win_amount) > 0){
@@ -158,9 +206,8 @@ async function spin(){
 
   await loadHistory();
   spinning = false;
-  $("spinBtn").disabled = false;
+  updateSpinAvailability();
 }
-
 async function loadHistory(){
   if(!session) return;
   const {data,error} = await sb
@@ -201,6 +248,7 @@ document.querySelectorAll("#betChips button").forEach(btn=>{
     btn.classList.add("active");
     currentBet = Number(btn.dataset.bet);
     $("currentBet").textContent = `${fmt(currentBet)} VNC`;
+    updateSpinAvailability();
   });
 });
 

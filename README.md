@@ -1,6 +1,6 @@
 # LS79win Account + Admin
 
-Hệ thống đăng ký/đăng nhập thật bằng Supabase, ví NXC riêng cho từng người chơi, lịch sử giao dịch và Admin Dashboard để cộng/trừ NXC hoặc khóa tài khoản.
+Hệ thống đăng ký/đăng nhập thật bằng Supabase, ví VNC riêng cho từng người chơi, lịch sử giao dịch và Admin Dashboard để cộng/trừ VNC hoặc khóa tài khoản.
 
 ## Cài đặt nhanh
 1. Tạo project tại Supabase.
@@ -12,4 +12,4 @@ Hệ thống đăng ký/đăng nhập thật bằng Supabase, ví NXC riêng cho
 
 **Không bao giờ** đưa `service_role` key vào frontend hoặc GitHub.
 
-NXC là coin ảo, không có giá trị tiền mặt, không nạp/rút và không quy đổi thành tài sản thật.
+VNC là coin ảo, không có giá trị tiền mặt, không nạp/rút và không quy đổi thành tài sản thật.

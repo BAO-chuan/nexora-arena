@@ -80,10 +80,10 @@
 
         <div class="nx-menu-wallet">
 
-          <span>SỐ DƯ NXC</span>
+          <span>SỐ DƯ VNC</span>
 
           <strong id="nxMenuBalance">
-            0 NXC
+            0 VNC
           </strong>
 
         </div>
@@ -114,7 +114,7 @@
             href="index.html#nxcWallet"
           >
             <span>◆</span>
-            Ví NXC
+            Ví VNC
           </a>
 
 
@@ -462,7 +462,7 @@ async function loadAdminRequestBadge(){
             data.balance
           )
           +
-          " NXC";
+          " VNC";
       }
 
 

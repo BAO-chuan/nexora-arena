@@ -1,6 +1,6 @@
 /* =========================================================
    LS79win BACCARAT ROYALE
-   NXC = điểm ảo trong game
+   VNC = điểm ảo trong game
 ========================================================= */
 const SUPABASE_URL =
   "https://efpfhpwxmzpmmynczbce.supabase.co";
@@ -54,7 +54,7 @@ function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-function formatNXC(value) {
+function formatVNC(value) {
   return Number(value || 0).toLocaleString("vi-VN");
 }
 
@@ -179,7 +179,7 @@ function renderBalance() {
   }
 
   el.textContent =
-    formatNXC(profile.balance);
+    formatVNC(profile.balance);
 }
 
 
@@ -250,17 +250,17 @@ function renderBets() {
 
   if ($("betPlayer")) {
     $("betPlayer").textContent =
-      formatNXC(bets.player) + " NXC";
+      formatVNC(bets.player) + " VNC";
   }
 
   if ($("betTie")) {
     $("betTie").textContent =
-      formatNXC(bets.tie) + " NXC";
+      formatVNC(bets.tie) + " VNC";
   }
 
   if ($("betBanker")) {
     $("betBanker").textContent =
-      formatNXC(bets.banker) + " NXC";
+      formatVNC(bets.banker) + " VNC";
   }
 }
 
@@ -367,7 +367,7 @@ document
           available
         ) {
 
-          toast("Không đủ NXC");
+          toast("Không đủ VNC");
           return;
         }
 
@@ -438,7 +438,7 @@ if ($("replayBtn")) {
       ) {
 
         toast(
-          "Không đủ NXC để chơi lại"
+          "Không đủ VNC để chơi lại"
         );
 
         return;
@@ -801,7 +801,7 @@ async function bettingCountdown() {
 
 
 /* =========================================================
-   CẬP NHẬT NXC TRÊN SUPABASE
+   CẬP NHẬT VNC TRÊN SUPABASE
 ========================================================= */
 
 async function applyResult(
@@ -1009,8 +1009,8 @@ function renderHistory() {
 
                 <span>
                   Cược
-                  ${formatNXC(item.staked)}
-                  NXC
+                  ${formatVNC(item.staked)}
+                  VNC
                 </span>
 
               </div>
@@ -1024,7 +1024,7 @@ function renderHistory() {
               "
             >
               ${positive ? "+" : ""}
-              ${formatNXC(item.delta)}
+              ${formatVNC(item.delta)}
             </div>
 
           </div>
@@ -1359,11 +1359,11 @@ async function runRound() {
             : ""
         )
         +
-        formatNXC(
+        formatVNC(
           summary.delta
         )
         +
-        " NXC";
+        " VNC";
 
       $("resultBanner")
         .classList
@@ -1391,11 +1391,11 @@ async function runRound() {
       toast(
         "Thắng +"
         +
-        formatNXC(
+        formatVNC(
           summary.delta
         )
         +
-        " NXC"
+        " VNC"
       );
 
     } else if (
@@ -1405,13 +1405,13 @@ async function runRound() {
       toast(
         "Thua "
         +
-        formatNXC(
+        formatVNC(
           Math.abs(
             summary.delta
           )
         )
         +
-        " NXC"
+        " VNC"
       );
 
     } else {
@@ -1434,7 +1434,7 @@ async function runRound() {
     }
 
     alert(
-      "Không thể cập nhật NXC: "
+      "Không thể cập nhật VNC: "
       +
       (
         error.message ||

@@ -8,7 +8,7 @@ function setStatus(text,ok=true){$("connectionStatus").textContent=text;$("statu
 function switchTab(type){const login=type==="login";$("loginForm").classList.toggle("hidden",!login);$("signupForm").classList.toggle("hidden",login);$("loginTab").classList.toggle("active",login);$("signupTab").classList.toggle("active",!login);$("loginIntro")?.classList.toggle("hidden",!login);$("signupIntro")?.classList.toggle("hidden",login)}
 $("loginTab").onclick=()=>switchTab("login");$("signupTab").onclick=()=>switchTab("signup");
 function showLoggedOut(){$("authArea").classList.remove("hidden");$("appArea").classList.add("hidden");$("bottomNav").classList.add("hidden");$("walletChip").classList.add("hidden");$("logoutBtn").classList.add("hidden");$("sessionBadge").textContent="Khách"}
-function showLoggedIn(user,p){$("authArea").classList.add("hidden");$("appArea").classList.remove("hidden");$("bottomNav").classList.remove("hidden");$("walletChip").classList.remove("hidden");$("logoutBtn").classList.remove("hidden");const bal=Number(p.balance||0).toLocaleString("vi-VN");$("sessionBadge").textContent=p.username||"Player";$("headerBalance").textContent=bal;$("heroBalance").textContent=bal+" NXC";$("heroRole").textContent=String(p.role||"player").toUpperCase();$("profileUsername").textContent=p.username||"Player";$("profileEmail").textContent=user.email||"";$("profileBalance").textContent=bal+" NXC";$("profileRole").textContent=String(p.role||"player").toUpperCase();$("profileAvatar").textContent=(p.username||"N").slice(0,1).toUpperCase();$("adminArea").classList.toggle("hidden",p.role!=="admin")}
+function showLoggedIn(user,p){$("authArea").classList.add("hidden");$("appArea").classList.remove("hidden");$("bottomNav").classList.remove("hidden");$("walletChip").classList.remove("hidden");$("logoutBtn").classList.remove("hidden");const bal=Number(p.balance||0).toLocaleString("vi-VN");$("sessionBadge").textContent=p.username||"Player";$("headerBalance").textContent=bal;$("heroBalance").textContent=bal+" VNC";$("heroRole").textContent=String(p.role||"player").toUpperCase();$("profileUsername").textContent=p.username||"Player";$("profileEmail").textContent=user.email||"";$("profileBalance").textContent=bal+" VNC";$("profileRole").textContent=String(p.role||"player").toUpperCase();$("profileAvatar").textContent=(p.username||"N").slice(0,1).toUpperCase();$("adminArea").classList.toggle("hidden",p.role!=="admin")}
 async function getProfile(id){const {data,error}=await sb.from("profiles").select("*").eq("id",id).single();if(error)throw error;return data}
 async function refresh(){try{const {data:{session},error}=await sb.auth.getSession();if(error)throw error;setStatus("Đã kết nối Supabase ✓",true);if(!session){showLoggedOut();return}const p=await getProfile(session.user.id);if(p.is_suspended){await sb.auth.signOut();alert("Tài khoản đang bị khóa.");showLoggedOut();return}showLoggedIn(session.user,p);await loadTransactions(session.user.id);await loadLeaderboard();if(p.role==="admin")await loadPlayers()}catch(err){console.error(err);setStatus("Lỗi kết nối: "+err.message,false)}}
 function authErrorVi(err){const m=String(err?.message||err||"").toLowerCase();if(m.includes("invalid login credentials"))return"Email hoặc mật khẩu chưa đúng.";if(m.includes("email not confirmed"))return"Email chưa được xác nhận. Hãy kiểm tra hộp thư.";if(m.includes("already registered"))return"Email này đã được đăng ký.";if(m.includes("rate limit"))return"Bạn thao tác quá nhanh. Vui lòng thử lại sau.";return err?.message||"Có lỗi xảy ra. Vui lòng thử lại."}
@@ -21,11 +21,11 @@ $("forgotPasswordBtn").onclick=async()=>{const email=$("loginEmail").value.trim(
 $("signupForm").onsubmit=async e=>{e.preventDefault();const btn=$("signupSubmitBtn"),username=$("signupUsername").value.trim(),email=$("signupEmail").value.trim(),password=$("signupPassword").value,confirm=$("signupPasswordConfirm").value;$("signupMessage").textContent="";if(password!==confirm){$("signupMessage").textContent="Hai mật khẩu chưa khớp nhau.";return}if(!/[A-Za-zÀ-ỹ]/.test(password)||!/\d/.test(password)){$("signupMessage").textContent="Mật khẩu cần có ít nhất một chữ cái và một số.";return}authBusy(btn,true,"ĐĂNG KÝ NGAY","ĐANG TẠO TÀI KHOẢN...");try{const{data,error}=await sb.auth.signUp({email,password,options:{data:{username},emailRedirectTo:`${location.origin}${location.pathname}`}});if(error)throw error;const msg=data.session?"Tạo tài khoản thành công.":"Tạo tài khoản thành công. Hãy kiểm tra email để xác nhận.";$("signupMessage").textContent=msg;toast(msg);if(data.session)await refresh()}catch(err){$("signupMessage").textContent=authErrorVi(err)}finally{authBusy(btn,false,"ĐĂNG KÝ NGAY","ĐANG TẠO TÀI KHOẢN...")}};
 $("loginForm").onsubmit=async e=>{e.preventDefault();const btn=$("loginSubmitBtn"),email=$("loginEmail").value.trim();$("loginMessage").textContent="";authBusy(btn,true,"ĐĂNG NHẬP →","ĐANG ĐĂNG NHẬP...");try{const{error}=await sb.auth.signInWithPassword({email,password:$("loginPassword").value});if(error)throw error;try{if($("rememberEmail").checked)localStorage.setItem("ls79win_remember_email",email);else localStorage.removeItem("ls79win_remember_email")}catch(_){}await refresh()}catch(err){$("loginMessage").textContent=authErrorVi(err)}finally{authBusy(btn,false,"ĐĂNG NHẬP →","ĐANG ĐĂNG NHẬP...")}};
 $("logoutBtn").onclick=async()=>{await sb.auth.signOut();showLoggedOut()};
-async function loadTransactions(userId){const el=$("transactionList");const {data,error}=await sb.from("coin_transactions").select("*").eq("player_id",userId).order("created_at",{ascending:false}).limit(8);if(error){console.error(error);el.innerHTML='<p class="muted">Chưa tải được lịch sử.</p>';return}el.innerHTML=data?.length?data.map(t=>{const amount=Number(t.amount||0);return `<div class="tx-row"><div><strong>${amount>0?"+":""}${amount.toLocaleString("vi-VN")} NXC</strong><span>${esc(t.reason||t.type||"Giao dịch")}</span></div><span>${new Date(t.created_at).toLocaleDateString("vi-VN")}</span></div>`}).join(""):'<p class="muted">Chưa có giao dịch.</p>'}
-async function loadLeaderboard(){const el=$("leaderboardList");let {data,error}=await sb.rpc("admin_list_players",{search_text:null});if(error){const res=await sb.from("profiles").select("username,balance,role").order("balance",{ascending:false}).limit(10);data=res.data;error=res.error}if(error){el.innerHTML='<p class="muted">Chưa tải được bảng xếp hạng.</p>';return}const rows=(data||[]).filter(p=>p.role!=="admin").sort((a,b)=>Number(b.balance||0)-Number(a.balance||0)).slice(0,10);el.innerHTML=rows.length?rows.map((p,i)=>`<div class="rank-row"><div class="rank-left"><div class="rank-num">${i+1}</div><div><strong>${esc(p.username||"Player")}</strong><span>PLAYER</span></div></div><strong>${Number(p.balance||0).toLocaleString("vi-VN")} NXC</strong></div>`).join(""):'<p class="muted">Chưa có người chơi để xếp hạng.</p>'}
+async function loadTransactions(userId){const el=$("transactionList");const {data,error}=await sb.from("coin_transactions").select("*").eq("player_id",userId).order("created_at",{ascending:false}).limit(8);if(error){console.error(error);el.innerHTML='<p class="muted">Chưa tải được lịch sử.</p>';return}el.innerHTML=data?.length?data.map(t=>{const amount=Number(t.amount||0);return `<div class="tx-row"><div><strong>${amount>0?"+":""}${amount.toLocaleString("vi-VN")} VNC</strong><span>${esc(t.reason||t.type||"Giao dịch")}</span></div><span>${new Date(t.created_at).toLocaleDateString("vi-VN")}</span></div>`}).join(""):'<p class="muted">Chưa có giao dịch.</p>'}
+async function loadLeaderboard(){const el=$("leaderboardList");let {data,error}=await sb.rpc("admin_list_players",{search_text:null});if(error){const res=await sb.from("profiles").select("username,balance,role").order("balance",{ascending:false}).limit(10);data=res.data;error=res.error}if(error){el.innerHTML='<p class="muted">Chưa tải được bảng xếp hạng.</p>';return}const rows=(data||[]).filter(p=>p.role!=="admin").sort((a,b)=>Number(b.balance||0)-Number(a.balance||0)).slice(0,10);el.innerHTML=rows.length?rows.map((p,i)=>`<div class="rank-row"><div class="rank-left"><div class="rank-num">${i+1}</div><div><strong>${esc(p.username||"Player")}</strong><span>PLAYER</span></div></div><strong>${Number(p.balance||0).toLocaleString("vi-VN")} VNC</strong></div>`).join(""):'<p class="muted">Chưa có người chơi để xếp hạng.</p>'}
 $("refreshLeaderboard").onclick=loadLeaderboard;
-async function loadPlayers(search=""){const el=$("playerList");const {data,error}=await sb.rpc("admin_list_players",{search_text:search||null});if(error){el.innerHTML='<p class="muted">'+esc(error.message)+'</p>';return}el.innerHTML=data?.length?data.map(p=>`<div class="player-row"><div><strong>${esc(p.username||"Player")}</strong><span>${Number(p.balance||0).toLocaleString("vi-VN")} NXC · ${p.is_suspended?"Đã khóa":p.role}</span></div>${p.role==="admin"?'<span class="admin-pill">ADMIN</span>':`<div class="player-actions"><button class="add" onclick="adjustNxc('${p.id}',1000)">+1K</button><button class="sub" onclick="adjustNxc('${p.id}',-1000)">-1K</button><button class="lock" onclick="setSuspended('${p.id}',${!p.is_suspended})">${p.is_suspended?"Mở khóa":"Khóa"}</button></div>`}</div>`).join(""):'<p class="muted">Chưa có tài khoản.</p>'}
-window.adjustNxc=async(id,amount)=>{const reason=prompt("Lý do điều chỉnh NXC:","Admin adjustment");if(reason===null)return;const {error}=await sb.rpc("admin_adjust_balance",{target_player_id:id,delta_amount:amount,adjustment_reason:reason||"Admin adjustment"});if(error){alert(error.message);return}toast(amount>0?"Đã cộng NXC":"Đã trừ NXC");await loadPlayers($("playerSearch").value);await loadLeaderboard()};
+async function loadPlayers(search=""){const el=$("playerList");const {data,error}=await sb.rpc("admin_list_players",{search_text:search||null});if(error){el.innerHTML='<p class="muted">'+esc(error.message)+'</p>';return}el.innerHTML=data?.length?data.map(p=>`<div class="player-row"><div><strong>${esc(p.username||"Player")}</strong><span>${Number(p.balance||0).toLocaleString("vi-VN")} VNC · ${p.is_suspended?"Đã khóa":p.role}</span></div>${p.role==="admin"?'<span class="admin-pill">ADMIN</span>':`<div class="player-actions"><button class="add" onclick="adjustNxc('${p.id}',1000)">+1K</button><button class="sub" onclick="adjustNxc('${p.id}',-1000)">-1K</button><button class="lock" onclick="setSuspended('${p.id}',${!p.is_suspended})">${p.is_suspended?"Mở khóa":"Khóa"}</button></div>`}</div>`).join(""):'<p class="muted">Chưa có tài khoản.</p>'}
+window.adjustNxc=async(id,amount)=>{const reason=prompt("Lý do điều chỉnh VNC:","Admin adjustment");if(reason===null)return;const {error}=await sb.rpc("admin_adjust_balance",{target_player_id:id,delta_amount:amount,adjustment_reason:reason||"Admin adjustment"});if(error){alert(error.message);return}toast(amount>0?"Đã cộng VNC":"Đã trừ VNC");await loadPlayers($("playerSearch").value);await loadLeaderboard()};
 window.setSuspended=async(id,suspended)=>{if(!confirm(suspended?"Khóa tài khoản này?":"Mở khóa tài khoản này?"))return;const {error}=await sb.rpc("admin_set_suspended",{target_player_id:id,suspended});if(error){alert(error.message);return}toast(suspended?"Đã khóa tài khoản":"Đã mở khóa tài khoản");await loadPlayers($("playerSearch").value)};
 $("playerSearch").oninput=e=>loadPlayers(e.target.value);
 document.querySelectorAll(".category").forEach(btn=>{btn.onclick=()=>{document.querySelectorAll(".category").forEach(b=>b.classList.remove("active"));btn.classList.add("active");const f=btn.dataset.filter;document.querySelectorAll(".game-card").forEach(card=>card.classList.toggle("hidden",f!=="all"&&card.dataset.category!==f))}});
@@ -41,9 +41,9 @@ document.querySelectorAll(".play-btn").forEach(btn=>{
 document.querySelectorAll(".nav-item").forEach(item=>{item.onclick=()=>{document.querySelectorAll(".nav-item").forEach(n=>n.classList.remove("active"));item.classList.add("active")}});
 sb.auth.onAuthStateChange(()=>setTimeout(refresh,0));refresh();
 
-/* ===== ĐỒNG BỘ NXC TRANG CHÍNH ===== */
+/* ===== ĐỒNG BỘ VNC TRANG CHÍNH ===== */
 
-async function syncNXC(){
+async function syncVNC(){
   try{
     const { data: { session } } = await sb.auth.getSession();
 
@@ -56,7 +56,7 @@ async function syncNXC(){
       .single();
 
     if(error){
-      console.error("Lỗi đồng bộ NXC:", error);
+      console.error("Lỗi đồng bộ VNC:", error);
       return;
     }
 
@@ -66,43 +66,43 @@ async function syncNXC(){
 
     if(heroBalance){
       heroBalance.textContent =
-        balance.toLocaleString("vi-VN") + " NXC";
+        balance.toLocaleString("vi-VN") + " VNC";
     }
 
   }catch(error){
-    console.error("syncNXC:", error);
+    console.error("syncVNC:", error);
   }
 }
 
 
 /* Mở trang */
-syncNXC();
+syncVNC();
 
 
 /* Từ Baccarat quay về */
 window.addEventListener("pageshow", ()=>{
-  syncNXC();
+  syncVNC();
 });
 
 
 /* Quay lại tab */
 window.addEventListener("focus", ()=>{
-  syncNXC();
+  syncVNC();
 });
 
 
 /* iPhone/Safari quay lại trang */
 document.addEventListener("visibilitychange", ()=>{
   if(document.visibilityState === "visible"){
-    syncNXC();
+    syncVNC();
   }
 });
 
 /* =====================================================
-   LS79win - NXC REQUESTS
+   LS79win - VNC REQUESTS
 ===================================================== */
 
-function formatRequestNXC(value){
+function formatRequestVNC(value){
   return Number(value || 0)
     .toLocaleString("vi-VN");
 }
@@ -147,7 +147,7 @@ async function syncWalletPage(){
       wallet.textContent =
         balance.toLocaleString("vi-VN")
         +
-        " NXC";
+        " VNC";
     }
 
     /*
@@ -164,14 +164,14 @@ async function syncWalletPage(){
       $("heroBalance").textContent =
         balance.toLocaleString("vi-VN")
         +
-        " NXC";
+        " VNC";
     }
 
     if($("profileBalance")){
       $("profileBalance").textContent =
         balance.toLocaleString("vi-VN")
         +
-        " NXC";
+        " VNC";
     }
 
   }catch(error){
@@ -228,7 +228,7 @@ async function loadNxcRequests(){
     if(!data || data.length === 0){
 
       list.innerHTML =
-        '<p class="muted">Chưa có yêu cầu NXC.</p>';
+        '<p class="muted">Chưa có yêu cầu VNC.</p>';
 
       return;
     }
@@ -267,8 +267,8 @@ async function loadNxcRequests(){
             <div class="nxc-request-info">
 
               <strong>
-                ${formatRequestNXC(request.amount)}
-                NXC
+                ${formatRequestVNC(request.amount)}
+                VNC
               </strong>
 
               <span>
@@ -368,7 +368,7 @@ if(nxcRequestForm){
           amount <= 0
         ){
           toast(
-            "Hãy nhập số NXC hợp lệ"
+            "Hãy nhập số VNC hợp lệ"
           );
 
           return;
@@ -382,7 +382,7 @@ if(nxcRequestForm){
         if(amount > 1000000){
 
           toast(
-            "Mỗi yêu cầu tối đa 1.000.000 NXC"
+            "Mỗi yêu cầu tối đa 1.000.000 VNC"
           );
 
           return;
@@ -417,7 +417,7 @@ if(nxcRequestForm){
           "";
 
         toast(
-          "Đã gửi yêu cầu NXC"
+          "Đã gửi yêu cầu VNC"
         );
 
         await loadNxcRequests();
@@ -425,7 +425,7 @@ if(nxcRequestForm){
       }catch(error){
 
         console.error(
-          "Create NXC request:",
+          "Create VNC request:",
           error
         );
 
@@ -458,7 +458,7 @@ if($("refreshNxcRequests")){
       await syncWalletPage();
       await loadNxcRequests();
 
-      toast("Đã làm mới Ví NXC");
+      toast("Đã làm mới Ví VNC");
     };
 }
 
@@ -502,7 +502,7 @@ document.addEventListener(
 refreshNxcWallet();
 
 /* =====================================================
-   LS79win ADMIN - NXC REQUESTS
+   LS79win ADMIN - VNC REQUESTS
 ===================================================== */
 
 async function loadAdminNxcRequests(){
@@ -579,7 +579,7 @@ async function loadAdminNxcRequests(){
     ){
 
       list.innerHTML =
-        '<p class="muted">Không có yêu cầu NXC đang chờ.</p>';
+        '<p class="muted">Không có yêu cầu VNC đang chờ.</p>';
 
       return;
     }
@@ -660,7 +660,7 @@ async function loadAdminNxcRequests(){
               </div>
 
               <div class="admin-request-amount">
-                ${amount} NXC
+                ${amount} VNC
               </div>
 
             </div>
@@ -698,7 +698,7 @@ async function loadAdminNxcRequests(){
   }catch(error){
 
     console.error(
-      "Admin NXC:",
+      "Admin VNC:",
       error
     );
 
@@ -763,7 +763,7 @@ async function approveNxcRequest(
 
   if(
     !confirm(
-      "Duyệt yêu cầu và cộng NXC cho người chơi?"
+      "Duyệt yêu cầu và cộng VNC cho người chơi?"
     )
   ){
     return;
@@ -794,7 +794,7 @@ async function approveNxcRequest(
 
 
     toast(
-      "Đã duyệt và cộng NXC"
+      "Đã duyệt và cộng VNC"
     );
 
 
@@ -825,7 +825,7 @@ async function approveNxcRequest(
   }catch(error){
 
     console.error(
-      "Approve NXC:",
+      "Approve VNC:",
       error
     );
 
@@ -862,7 +862,7 @@ async function rejectNxcRequest(
 
   if(
     !confirm(
-      "Từ chối yêu cầu NXC này?"
+      "Từ chối yêu cầu VNC này?"
     )
   ){
     return;
@@ -902,7 +902,7 @@ async function rejectNxcRequest(
   }catch(error){
 
     console.error(
-      "Reject NXC:",
+      "Reject VNC:",
       error
     );
 
@@ -1136,10 +1136,10 @@ window.addEventListener(
 );
 
 // =========================================
-// NXC WITHDRAW
+// VNC WITHDRAW
 // =========================================
 
-function formatWithdrawNXC(value){
+function formatWithdrawVNC(value){
 
   return Number(value || 0)
     .toLocaleString("vi-VN");
@@ -1235,7 +1235,7 @@ async function loadNxcWithdrawRequests(){
             <div class="withdraw-request-top">
 
               <strong class="withdraw-request-amount">
-                ${formatWithdrawNXC(item.amount)} NXC
+                ${formatWithdrawVNC(item.amount)} VNC
               </strong>
 
               <span
@@ -1341,7 +1341,7 @@ if(nxcWithdrawForm){
         if(message){
 
           message.textContent =
-            "Số NXC không hợp lệ.";
+            "Số VNC không hợp lệ.";
         }
 
         return;
@@ -1399,12 +1399,12 @@ if(nxcWithdrawForm){
 
 
         if(
-          typeof syncNXC
+          typeof syncVNC
           ===
           "function"
         ){
 
-          await syncNXC();
+          await syncVNC();
         }
 
 
@@ -1459,7 +1459,7 @@ window.addEventListener(
   loadNxcWithdrawRequests
 );
 // =========================================
-// ADMIN NXC WITHDRAW REQUESTS
+// ADMIN VNC WITHDRAW REQUESTS
 // =========================================
 
 async function loadAdminWithdrawRequests(){
@@ -1558,7 +1558,7 @@ async function loadAdminWithdrawRequests(){
               </div>
 
               <div class="admin-withdraw-amount">
-                ${Number(item.amount || 0).toLocaleString("vi-VN")} NXC
+                ${Number(item.amount || 0).toLocaleString("vi-VN")} VNC
               </div>
 
             </div>

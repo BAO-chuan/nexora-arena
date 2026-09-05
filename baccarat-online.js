@@ -201,7 +201,7 @@ async function animateFinishedRound(round) {
   scheduleNextRound(true);
 }
 
-function formatNXC(value) {
+function formatVNC(value) {
 
   return Number(value || 0)
     .toLocaleString("vi-VN");
@@ -314,7 +314,7 @@ async function loadProfile() {
   currentProfile = data;
 
   boBalance.textContent =
-    formatNXC(data.balance);
+    formatVNC(data.balance);
 
   if (data.is_suspended) {
 
@@ -1092,7 +1092,7 @@ boPlaceBet?.addEventListener(
     ) {
 
       setBetMessage(
-        "Số NXC không hợp lệ.",
+        "Số VNC không hợp lệ.",
         true
       );
 
@@ -1131,7 +1131,7 @@ boPlaceBet?.addEventListener(
 
 
       setBetMessage(
-        `✓ Đã cược ${formatNXC(amount)} NXC`
+        `✓ Đã cược ${formatVNC(amount)} VNC`
       );
 
 
@@ -1184,7 +1184,7 @@ boPlaceBet?.addEventListener(
 // ================================
 
 function resetBetStatsUI() {
-  const zeroAmount = "0 NXC";
+  const zeroAmount = "0 VNC";
   const zeroPlayers = "0 người";
 
   if (boPlayerBetAmount) boPlayerBetAmount.textContent = zeroAmount;
@@ -1202,7 +1202,7 @@ function setBetStat(amountEl, playersEl, stats) {
   const players = Number(stats?.players || 0);
 
   if (amountEl) {
-    amountEl.textContent = `${formatNXC(amount)} NXC`;
+    amountEl.textContent = `${formatVNC(amount)} VNC`;
   }
 
   if (playersEl) {
@@ -1246,7 +1246,7 @@ async function loadBetStats() {
 
     if (boTableBetAmount) {
       boTableBetAmount.textContent =
-        `${formatNXC(Number(stats.total_amount || 0))} NXC`;
+        `${formatVNC(Number(stats.total_amount || 0))} VNC`;
     }
 
     if (boTableBetPlayers) {
@@ -1375,7 +1375,7 @@ async function loadMyBets() {
             </div>
 
             <strong>
-              ${formatNXC(bet.amount)} NXC
+              ${formatVNC(bet.amount)} VNC
             </strong>
 
           </div>

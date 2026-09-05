@@ -120,3 +120,150 @@
 
   setTimeout(refreshDashboardStats, 600);
 })();
+
+
+/* =========================================================
+   Admin Player Profile v1
+========================================================= */
+(function(){
+  const dialog = document.getElementById("adminPlayerInfoDialog");
+  if(!dialog) return;
+
+  const $id = id => document.getElementById(id);
+
+  function setMessage(text, isError=false){
+    const el = $id("adminPlayerInfoMessage");
+    if(!el) return;
+    el.textContent = text || "";
+    el.classList.toggle("error", !!isError);
+  }
+
+  function setBusy(busy){
+    ["adminSavePlayerInfo","adminUnlockPlayerInfo"].forEach(id=>{
+      const el = $id(id);
+      if(el) el.disabled = !!busy;
+    });
+  }
+
+  function showLockStatus(locked){
+    const el = $id("adminPlayerInfoLockStatus");
+    if(!el) return;
+    el.textContent = locked ? "🔒 ĐÃ KHÓA" : "🔓 ĐANG MỞ";
+    el.classList.toggle("locked", !!locked);
+    el.classList.toggle("unlocked", !locked);
+  }
+
+  window.openPlayerInfoAdmin = async function(playerId){
+    if(!playerId) return;
+
+    setMessage("Đang tải thông tin...");
+    setBusy(true);
+
+    try{
+      const {data,error} = await sb.rpc("admin_get_player_profile_info",{
+        p_player_id: playerId
+      });
+
+      if(error) throw error;
+
+      const info = Array.isArray(data) ? data[0] : data;
+      if(!info) throw new Error("Không tìm thấy người chơi.");
+
+      $id("adminPlayerInfoId").value = playerId;
+      $id("adminPlayerInfoIdentity").textContent =
+        `${info.username || "Player"} • ${info.email || "—"}`;
+      $id("adminPlayerFullName").value = info.full_name || "";
+      $id("adminPlayerPhone").value = info.phone || "";
+      $id("adminPlayerBankName").value = info.bank_name || "";
+      $id("adminPlayerBankAccount").value = info.bank_account || "";
+      showLockStatus(info.profile_info_locked === true);
+      setMessage("");
+
+      if(typeof dialog.showModal === "function"){
+        dialog.showModal();
+      }else{
+        dialog.setAttribute("open","");
+      }
+    }catch(err){
+      console.error("Admin player profile:",err);
+      if(typeof toast === "function") toast(err.message || "Không tải được thông tin.");
+      else alert(err.message || "Không tải được thông tin.");
+    }finally{
+      setBusy(false);
+    }
+  };
+
+  $id("adminPlayerInfoClose")?.addEventListener("click",()=>{
+    if(typeof dialog.close === "function") dialog.close();
+    else dialog.removeAttribute("open");
+  });
+
+  $id("adminSavePlayerInfo")?.addEventListener("click",async()=>{
+    const playerId = $id("adminPlayerInfoId").value;
+    if(!playerId) return;
+
+    const fullName = $id("adminPlayerFullName").value.trim();
+    const phone = $id("adminPlayerPhone").value.trim();
+    const bankName = $id("adminPlayerBankName").value.trim();
+    const bankAccount = $id("adminPlayerBankAccount").value.trim();
+
+    if(!fullName || !phone || !bankName || !bankAccount){
+      setMessage("Vui lòng nhập đầy đủ 4 mục trước khi lưu.",true);
+      return;
+    }
+
+    if(!confirm("Lưu thông tin này và khóa lại ngay?")) return;
+
+    setBusy(true);
+    setMessage("Đang lưu...");
+
+    try{
+      const {error} = await sb.rpc("admin_update_player_profile_info",{
+        p_player_id:playerId,
+        p_full_name:fullName,
+        p_phone:phone,
+        p_bank_name:bankName,
+        p_bank_account:bankAccount
+      });
+
+      if(error) throw error;
+
+      showLockStatus(true);
+      setMessage("✓ Đã cập nhật và khóa thông tin người chơi.");
+      if(typeof toast === "function") toast("Đã cập nhật thông tin");
+    }catch(err){
+      console.error("Admin update profile:",err);
+      setMessage(err.message || "Không thể cập nhật thông tin.",true);
+    }finally{
+      setBusy(false);
+    }
+  });
+
+  $id("adminUnlockPlayerInfo")?.addEventListener("click",async()=>{
+    const playerId = $id("adminPlayerInfoId").value;
+    if(!playerId) return;
+
+    if(!confirm("Mở khóa để người chơi có thể tự sửa và lưu lại một lần?")) return;
+
+    setBusy(true);
+    setMessage("Đang mở khóa...");
+
+    try{
+      const {error} = await sb.rpc("admin_set_player_profile_lock",{
+        p_player_id:playerId,
+        p_locked:false
+      });
+
+      if(error) throw error;
+
+      showLockStatus(false);
+      setMessage("✓ Đã mở khóa. Người chơi có thể tự sửa và lưu thêm 1 lần.");
+      if(typeof toast === "function") toast("Đã mở khóa thông tin");
+    }catch(err){
+      console.error("Admin unlock profile:",err);
+      setMessage(err.message || "Không thể mở khóa.",true);
+    }finally{
+      setBusy(false);
+    }
+  });
+})();

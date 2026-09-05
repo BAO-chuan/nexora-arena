@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="styles.css?v=21">
   <link rel="stylesheet" href="menu.css?v=3">
   <link rel="stylesheet" href="pages.css?v=1">
-  <link rel="stylesheet" href="admin.css?v=1">
+  <link rel="stylesheet" href="admin.css?v=2">
 </head>
 <body data-page="admin">
   <header class="topbar">
@@ -562,8 +562,63 @@
     })();
   </script>
 
-  <script src="app.js?v=23"></script>
-  <script src="admin-dashboard.js?v=1"></script>
+  <script src="app.js?v=26"></script>
+  <script src="admin-dashboard.js?v=2"></script>
   <script src="menu.js?v=2"></script>
+
+  <dialog id="adminPlayerInfoDialog" class="admin-player-info-dialog">
+    <form id="adminPlayerInfoForm" method="dialog">
+      <div class="admin-player-info-head">
+        <div>
+          <span class="eyebrow">PLAYER PROFILE</span>
+          <h3>Thông tin người chơi</h3>
+          <p id="adminPlayerInfoIdentity" class="muted">—</p>
+        </div>
+        <button id="adminPlayerInfoClose" class="admin-dialog-close" type="button">×</button>
+      </div>
+
+      <input id="adminPlayerInfoId" type="hidden">
+
+      <div class="admin-player-info-status">
+        <span>Trạng thái chỉnh sửa</span>
+        <strong id="adminPlayerInfoLockStatus">—</strong>
+      </div>
+
+      <div class="admin-player-info-grid">
+        <label>
+          <span>Họ và tên</span>
+          <input id="adminPlayerFullName" type="text" maxlength="100">
+        </label>
+        <label>
+          <span>Số điện thoại</span>
+          <input id="adminPlayerPhone" type="tel" maxlength="20">
+        </label>
+        <label>
+          <span>Ngân hàng</span>
+          <input id="adminPlayerBankName" type="text" maxlength="100">
+        </label>
+        <label>
+          <span>Số tài khoản</span>
+          <input id="adminPlayerBankAccount" type="text" maxlength="30">
+        </label>
+      </div>
+
+      <p id="adminPlayerInfoMessage" class="muted"></p>
+
+      <div class="admin-player-info-actions">
+        <button id="adminSavePlayerInfo" class="admin-save-profile" type="button">
+          LƯU & KHÓA LẠI
+        </button>
+        <button id="adminUnlockPlayerInfo" class="admin-unlock-profile" type="button">
+          MỞ KHÓA CHO NGƯỜI CHƠI
+        </button>
+      </div>
+
+      <p class="admin-player-info-note">
+        Admin có thể sửa trực tiếp và khóa lại ngay. “Mở khóa” chỉ cho phép người chơi tự lưu thông tin thêm một lần; sau lần lưu tiếp theo hệ thống sẽ tự khóa lại.
+      </p>
+    </form>
+  </dialog>
+
 </body>
 </html>

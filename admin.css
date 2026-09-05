@@ -205,3 +205,154 @@ body[data-page="admin"] #adminArea{
   .admin-panel-head h3{font-size:16px}
   .admin-help{margin-bottom:9px}
 }
+
+
+/* =========================================================
+   LS79win Admin Player Profile v1
+========================================================= */
+.admin-info-btn{
+  background:linear-gradient(135deg,#6f430b,#c48a1d) !important;
+  color:#fff4c8 !important;
+}
+
+.admin-player-info-dialog{
+  width:min(620px,calc(100% - 22px));
+  max-height:86vh;
+  overflow:auto;
+  padding:0;
+  border-radius:22px;
+  border:1px solid rgba(242,196,90,.32);
+  background:linear-gradient(155deg,#190707,#070303);
+  color:#fff8ec;
+  box-shadow:0 28px 80px rgba(0,0,0,.65);
+}
+
+.admin-player-info-dialog::backdrop{
+  background:rgba(0,0,0,.78);
+  backdrop-filter:blur(4px);
+}
+
+#adminPlayerInfoForm{
+  padding:18px;
+}
+
+.admin-player-info-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  gap:12px;
+}
+
+.admin-player-info-head h3{
+  margin:4px 0;
+  font-size:22px;
+}
+
+.admin-dialog-close{
+  width:40px;
+  height:40px;
+  border-radius:12px;
+  border:1px solid rgba(242,196,90,.18);
+  background:#190707;
+  color:#ffe39a;
+  font-size:24px;
+}
+
+.admin-player-info-status{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin:14px 0;
+  padding:11px 12px;
+  border-radius:13px;
+  background:rgba(0,0,0,.22);
+  border:1px solid rgba(242,196,90,.10);
+  font-size:12px;
+}
+
+#adminPlayerInfoLockStatus.locked{color:#f6ca5f}
+#adminPlayerInfoLockStatus.unlocked{color:#7ce0a5}
+
+.admin-player-info-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:11px;
+}
+
+.admin-player-info-grid label{
+  display:grid;
+  gap:6px;
+}
+
+.admin-player-info-grid label span{
+  color:#c2b4aa;
+  font-size:11px;
+  font-weight:800;
+}
+
+.admin-player-info-grid input{
+  width:100%;
+  padding:12px;
+  border-radius:12px;
+  border:1px solid rgba(242,196,90,.15);
+  background:#0b0404;
+  color:#fff;
+  outline:none;
+}
+
+.admin-player-info-grid input:focus{
+  border-color:#c9932c;
+  box-shadow:0 0 0 3px rgba(242,196,90,.07);
+}
+
+#adminPlayerInfoMessage{
+  min-height:20px;
+  margin:12px 0 4px;
+  color:#e5c46e;
+  font-size:11px;
+}
+#adminPlayerInfoMessage.error{color:#ff8d8d}
+
+.admin-player-info-actions{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:9px;
+  margin-top:10px;
+}
+
+.admin-player-info-actions button{
+  min-height:45px;
+  border-radius:12px;
+  font-weight:950;
+  border:1px solid transparent;
+}
+
+.admin-save-profile{
+  background:linear-gradient(135deg,#8e0710,#d90b16);
+  color:#fff;
+  border-color:rgba(255,214,101,.2) !important;
+}
+
+.admin-unlock-profile{
+  background:#181006;
+  color:#ffe091;
+  border-color:rgba(242,196,90,.24) !important;
+}
+
+.admin-player-info-actions button:disabled{
+  opacity:.5;
+}
+
+.admin-player-info-note{
+  margin:12px 0 0;
+  color:#9f9289;
+  font-size:9px;
+  line-height:1.5;
+}
+
+@media(max-width:560px){
+  .admin-player-info-grid,
+  .admin-player-info-actions{
+    grid-template-columns:1fr;
+  }
+}

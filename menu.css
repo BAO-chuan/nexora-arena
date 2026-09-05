@@ -1,1 +1,222 @@
+/* =========================================
+   NEXORA SLIDE MENU
+========================================= */
 
+.nx-menu-btn{
+  width:48px;
+  height:48px;
+  border:1px solid rgba(224,192,108,.18);
+  border-radius:15px;
+  background:#0c3024;
+  color:#f5dc94;
+  font-size:22px;
+  font-weight:900;
+  display:grid;
+  place-items:center;
+  cursor:pointer;
+}
+
+.nx-menu-overlay{
+  position:fixed;
+  inset:0;
+  z-index:998;
+  background:rgba(0,0,0,.62);
+  backdrop-filter:blur(4px);
+  opacity:0;
+  visibility:hidden;
+  transition:.25s;
+}
+
+.nx-menu-overlay.open{
+  opacity:1;
+  visibility:visible;
+}
+
+.nx-menu{
+  position:absolute;
+  left:0;
+  top:0;
+  bottom:0;
+
+  width:min(330px,86vw);
+
+  padding:
+    max(22px,env(safe-area-inset-top))
+    18px
+    max(22px,env(safe-area-inset-bottom));
+
+  background:
+    linear-gradient(
+      180deg,
+      #09251b,
+      #05140f
+    );
+
+  border-right:
+    1px solid rgba(224,192,108,.17);
+
+  transform:translateX(-105%);
+  transition:.28s ease;
+
+  overflow-y:auto;
+}
+
+.nx-menu-overlay.open .nx-menu{
+  transform:translateX(0);
+}
+
+.nx-menu-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+
+  padding-bottom:18px;
+
+  border-bottom:
+    1px solid rgba(255,255,255,.07);
+}
+
+.nx-menu-brand{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+.nx-menu-logo{
+  width:43px;
+  height:43px;
+
+  border-radius:14px;
+
+  display:grid;
+  place-items:center;
+
+  color:#f5dc94;
+  font-size:20px;
+  font-weight:950;
+
+  background:#103c2d;
+
+  border:
+    1px solid rgba(224,192,108,.3);
+}
+
+.nx-menu-brand strong{
+  display:block;
+  letter-spacing:2px;
+}
+
+.nx-menu-brand small{
+  display:block;
+  margin-top:2px;
+  color:#83998f;
+}
+
+.nx-menu-close{
+  border:0;
+  width:38px;
+  height:38px;
+  border-radius:12px;
+  background:rgba(255,255,255,.05);
+  color:white;
+  font-size:20px;
+}
+
+.nx-menu-wallet{
+  margin:18px 0;
+  padding:16px;
+
+  border-radius:18px;
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(224,192,108,.13),
+      rgba(15,61,45,.55)
+    );
+
+  border:
+    1px solid rgba(224,192,108,.17);
+}
+
+.nx-menu-wallet span{
+  display:block;
+  color:#92a79e;
+  font-size:11px;
+}
+
+.nx-menu-wallet strong{
+  display:block;
+  margin-top:4px;
+  color:#f5dc94;
+  font-size:24px;
+}
+
+.nx-menu-links{
+  display:grid;
+  gap:7px;
+}
+
+.nx-menu-link{
+  display:flex;
+  align-items:center;
+  gap:13px;
+
+  padding:13px;
+
+  border-radius:14px;
+
+  text-decoration:none;
+  color:#c5d1cc;
+
+  font-weight:800;
+
+  background:transparent;
+  border:0;
+
+  width:100%;
+  text-align:left;
+  font-size:14px;
+}
+
+.nx-menu-link span{
+  width:29px;
+  height:29px;
+
+  display:grid;
+  place-items:center;
+
+  border-radius:9px;
+
+  color:#e7ca75;
+
+  background:
+    rgba(224,192,108,.07);
+}
+
+.nx-menu-link:hover,
+.nx-menu-link.active{
+  background:rgba(224,192,108,.09);
+  color:#f5dc94;
+}
+
+.nx-admin-link{
+  color:#82dfbd;
+}
+
+.nx-menu-footer{
+  margin-top:18px;
+  padding-top:15px;
+
+  border-top:
+    1px solid rgba(255,255,255,.07);
+}
+
+.nx-menu-logout{
+  color:#ffaaaa;
+}
+
+body.nx-menu-open{
+  overflow:hidden;
+}

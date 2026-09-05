@@ -66,6 +66,7 @@ const boRoadStats = $("boRoadStats");
 const boShoeNumber = $("boShoeNumber");
 const boShoeProgress = $("boShoeProgress");
 const boShuffleStatus = $("boShuffleStatus");
+const boCardShoe = $("boCardShoe");
 
 const boBetAmount = $("boBetAmount");
 const boPlaceBet = $("boPlaceBet");
@@ -123,6 +124,28 @@ function cardHTML(card, extraClass = "") {
 }
 
 
+
+function dealCardHTML(card) {
+  if (!card) return "";
+
+  const suit = String(card.suit || "");
+  const isRed = suit === "♥" || suit === "♦";
+
+  return `
+    <div class="bo-deal-card dealing face-down">
+      <div class="bo-deal-card-inner">
+        <div class="bo-card-back">
+          <div class="bo-card-back-mark">LS79</div>
+        </div>
+        <div class="bo-card-front bo-card ${isRed ? "red" : ""}">
+          <span class="bo-card-rank">${card.rank || "?"}</span>
+          <span class="bo-card-suit">${suit}</span>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
 function renderCards(cards, container) {
 
   if (!container) return;
@@ -150,12 +173,43 @@ function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-function appendAnimatedCard(card, container) {
+async function appendAnimatedCard(card, container, token) {
   if (!card || !container) return;
+
+  boCardShoe?.classList.add("is-dealing");
+
   container.insertAdjacentHTML(
     "beforeend",
-    cardHTML(card, "dealing")
+    dealCardHTML(card)
   );
+
+  const dealt = container.lastElementChild;
+  if (!dealt) return;
+
+  // Lá bài bay từ shoe tới cửa chơi và vẫn úp.
+  await sleep(520);
+  if (token !== dealAnimationToken) return;
+
+  dealt.classList.remove("dealing");
+  dealt.classList.add("landed");
+
+  // Dừng ngắn như dealer chuẩn bị mở bài.
+  await sleep(360);
+  if (token !== dealAnimationToken) return;
+
+  boTableMessage.textContent = "Đang mở bài";
+  boResult.textContent = "ĐANG MỞ BÀI...";
+
+  // Lật lá từ từ.
+  dealt.classList.remove("face-down");
+  dealt.classList.add("flipping");
+
+  await sleep(760);
+  if (token !== dealAnimationToken) return;
+
+  dealt.classList.remove("flipping");
+  dealt.classList.add("face-up");
+  boCardShoe?.classList.remove("is-dealing");
 }
 
 async function animateFinishedRound(round) {
@@ -170,9 +224,11 @@ async function animateFinishedRound(round) {
 
   boPlayerScore.textContent = "—";
   boBankerScore.textContent = "—";
-  boResult.textContent = "Đang chia bài...";
+  boResult.textContent = "ĐANG CHIA BÀI...";
   boResult.classList.add("dealing-result");
   document.querySelector(".bo-hands")?.classList.add("is-dealing");
+  document.querySelector(".bo-table")?.classList.add("opening-cards");
+  boCardShoe?.classList.add("active");
   boTableMessage.textContent = "Đang chia bài";
 
   const dealOrder = [
@@ -186,8 +242,11 @@ async function animateFinishedRound(round) {
 
   for (const [card, container] of dealOrder) {
     if (token !== dealAnimationToken) return;
-    appendAnimatedCard(card, container);
-    await sleep(1500);
+    boTableMessage.textContent = "Đang chia bài";
+    boResult.textContent = "ĐANG CHIA BÀI...";
+    await appendAnimatedCard(card, container, token);
+    if (token !== dealAnimationToken) return;
+    await sleep(420);
   }
 
   if (token !== dealAnimationToken) return;
@@ -204,6 +263,8 @@ async function animateFinishedRound(round) {
 
   boResult.classList.remove("dealing-result");
   document.querySelector(".bo-hands")?.classList.remove("is-dealing");
+  document.querySelector(".bo-table")?.classList.remove("opening-cards");
+  boCardShoe?.classList.remove("active", "is-dealing");
   renderResult();
   boTableMessage.textContent = "Ván đã kết thúc";
 
@@ -480,6 +541,8 @@ function renderRound() {
     ++dealAnimationToken;
     boResult?.classList.remove("dealing-result");
     document.querySelector(".bo-hands")?.classList.remove("is-dealing");
+    document.querySelector(".bo-table")?.classList.remove("opening-cards");
+    boCardShoe?.classList.remove("active", "is-dealing");
   }
 
   if (!currentRound) {

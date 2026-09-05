@@ -1218,3 +1218,185 @@ body{
   .bo-chip.chip-tap,#boShuffleStatus.is-shuffling,
   .bo-table.is-shuffling .bo-table-inner:after{animation:none}
 }
+
+/* =========================================================
+   LS79win Baccarat V18 — Real Casino Deal
+   Visual-only dealing sequence; backend result is unchanged.
+========================================================= */
+
+.bo-table-title{
+  position:relative;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  min-height:42px;
+}
+.bo-table-title>div:first-child{
+  text-align:center;
+}
+.bo-card-shoe{
+  position:absolute;
+  right:2px;
+  top:-2px;
+  width:49px;
+  height:43px;
+  opacity:.92;
+  transition:transform .25s ease,filter .25s ease;
+}
+.bo-card-shoe small{
+  position:absolute;
+  right:0;
+  bottom:-4px;
+  width:42px;
+  text-align:center;
+  color:#c9b27a;
+  font-size:6px;
+  font-weight:950;
+  letter-spacing:.8px;
+}
+.bo-shoe-card{
+  position:absolute;
+  width:31px;
+  height:42px;
+  right:5px;
+  top:0;
+  border-radius:4px;
+  border:1px solid rgba(255,227,154,.6);
+  background:
+    linear-gradient(45deg,rgba(255,255,255,.08) 25%,transparent 25%,transparent 75%,rgba(255,255,255,.08) 75%),
+    linear-gradient(-45deg,rgba(255,255,255,.08) 25%,#8b0710 25%,#8b0710 75%,rgba(255,255,255,.08) 75%);
+  background-size:7px 7px;
+  box-shadow:0 3px 8px rgba(0,0,0,.42);
+}
+.bo-shoe-card-2{transform:translate(-3px,2px)}
+.bo-shoe-card-3{transform:translate(-6px,4px)}
+.bo-card-shoe.active{
+  filter:drop-shadow(0 0 8px rgba(242,196,90,.35));
+}
+.bo-card-shoe.is-dealing{
+  transform:translateY(-2px) rotate(-2deg) scale(1.04);
+}
+
+/* Animated card wrapper */
+.bo-deal-card{
+  width:43px;
+  height:60px;
+  perspective:700px;
+  flex:0 0 43px;
+  position:relative;
+}
+.bo-deal-card-inner{
+  position:absolute;
+  inset:0;
+  transform-style:preserve-3d;
+  transition:transform .72s cubic-bezier(.2,.72,.2,1);
+}
+.bo-deal-card.face-down .bo-deal-card-inner{
+  transform:rotateY(180deg);
+}
+.bo-deal-card.flipping .bo-deal-card-inner,
+.bo-deal-card.face-up .bo-deal-card-inner{
+  transform:rotateY(0deg);
+}
+.bo-card-front,
+.bo-card-back{
+  position:absolute!important;
+  inset:0;
+  width:100%!important;
+  height:100%!important;
+  backface-visibility:hidden;
+  -webkit-backface-visibility:hidden;
+}
+.bo-card-front{
+  transform:rotateY(0deg);
+}
+.bo-card-back{
+  transform:rotateY(180deg);
+  border-radius:7px;
+  border:2px solid #f1d079;
+  display:grid;
+  place-items:center;
+  background:
+    repeating-linear-gradient(45deg,rgba(255,255,255,.08) 0 3px,transparent 3px 6px),
+    radial-gradient(circle at center,#b30a15,#5f0308 72%);
+  box-shadow:0 8px 18px rgba(0,0,0,.35);
+}
+.bo-card-back:before{
+  content:"";
+  position:absolute;
+  inset:4px;
+  border:1px solid rgba(255,230,160,.65);
+  border-radius:4px;
+}
+.bo-card-back-mark{
+  position:relative;
+  color:#ffe39a;
+  font-size:8px;
+  font-weight:950;
+  letter-spacing:.5px;
+  transform:rotate(-18deg);
+}
+
+/* Card flies in face-down from the shoe on the right */
+.bo-deal-card.dealing{
+  z-index:12;
+  animation:boRealDeal .52s cubic-bezier(.18,.78,.2,1) both;
+}
+@keyframes boRealDeal{
+  0%{
+    opacity:.25;
+    transform:translate(105px,-80px) rotate(15deg) scale(.72);
+    filter:blur(1.5px);
+  }
+  72%{
+    opacity:1;
+    transform:translate(-2px,3px) rotate(-2deg) scale(1.03);
+    filter:blur(0);
+  }
+  100%{
+    opacity:1;
+    transform:translate(0,0) rotate(0) scale(1);
+  }
+}
+.bo-deal-card.landed{
+  animation:boCardLand .22s ease-out;
+}
+@keyframes boCardLand{
+  0%{transform:translateY(-2px)}
+  55%{transform:translateY(2px)}
+  100%{transform:translateY(0)}
+}
+.bo-deal-card.flipping{
+  filter:drop-shadow(0 0 10px rgba(242,196,90,.22));
+}
+
+.bo-table.opening-cards #boTableMessage{
+  color:#ffe39a;
+  animation:boOpeningText .65s ease-in-out infinite alternate;
+}
+.bo-table.opening-cards #boResult{
+  color:#ffd05a;
+  font-weight:950;
+  letter-spacing:.8px;
+}
+@keyframes boOpeningText{
+  from{opacity:.6}
+  to{opacity:1;text-shadow:0 0 12px rgba(242,196,90,.45)}
+}
+
+@media(max-width:420px){
+  .bo-card-shoe{right:-1px;transform:scale(.88);transform-origin:100% 0}
+  .bo-card-shoe.is-dealing{transform:translateY(-2px) rotate(-2deg) scale(.92)}
+  .bo-deal-card{width:40px;height:57px;flex-basis:40px}
+}
+
+@media(prefers-reduced-motion:reduce){
+  .bo-deal-card.dealing,
+  .bo-deal-card.landed,
+  .bo-table.opening-cards #boTableMessage{
+    animation:none;
+  }
+  .bo-deal-card-inner{
+    transition:none;
+  }
+}

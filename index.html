@@ -175,6 +175,75 @@
           <div class="profile-stats"><div><span>Số dư</span><strong id="profileBalance">0 NXC</strong></div><div><span>Quyền</span><strong id="profileRole">PLAYER</strong></div></div>
           <h3 class="subhead">Lịch sử NXC</h3><div id="transactionList"><p class="muted">Chưa có giao dịch.</p></div>
         </div>
+        <div class="player-info-card">
+
+  <div class="section-head">
+    <div>
+      <span class="eyebrow">PLAYER INFO</span>
+      <h3>Thông tin người chơi</h3>
+    </div>
+  </div>
+
+  <form id="playerInfoForm">
+
+    <label class="player-info-field">
+      <span>Họ và tên</span>
+      <input
+        id="playerFullName"
+        type="text"
+        maxlength="100"
+        autocomplete="name"
+        placeholder="Nguyễn Văn A"
+      >
+    </label>
+
+    <label class="player-info-field">
+      <span>Số điện thoại</span>
+      <input
+        id="playerPhone"
+        type="tel"
+        maxlength="20"
+        autocomplete="tel"
+        placeholder="09xxxxxxxx"
+      >
+    </label>
+
+    <label class="player-info-field">
+      <span>Ngân hàng</span>
+      <input
+        id="playerBankName"
+        type="text"
+        maxlength="100"
+        placeholder="Ví dụ: Vietcombank"
+      >
+    </label>
+
+    <label class="player-info-field">
+      <span>Số tài khoản</span>
+      <input
+        id="playerBankAccount"
+        type="text"
+        inputmode="numeric"
+        maxlength="30"
+        placeholder="Nhập số tài khoản"
+      >
+    </label>
+
+    <button
+      class="primary-btn"
+      type="submit"
+    >
+      LƯU THÔNG TIN
+    </button>
+
+    <p
+      id="playerInfoMessage"
+      class="muted"
+    ></p>
+
+  </form>
+
+</div>
       </section>
 
       <section id="adminArea" class="section panel hidden">

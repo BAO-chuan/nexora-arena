@@ -327,7 +327,73 @@
     );
   }
 
+async function loadAdminRequestBadge(){
 
+  const badge =
+    document.getElementById(
+      "nxAdminBadge"
+    );
+
+  if(!badge) return;
+
+
+  try{
+
+    const {
+      count,
+      error
+    } = await menuSb
+      .from("nxc_requests")
+      .select(
+        "id",
+        {
+          count:"exact",
+          head:true
+        }
+      )
+      .eq(
+        "status",
+        "pending"
+      );
+
+
+    if(error){
+      throw error;
+    }
+
+
+    const total =
+      Number(count || 0);
+
+
+    if(total > 0){
+
+      badge.textContent =
+        total > 99
+          ? "99+"
+          : String(total);
+
+      badge.hidden =
+        false;
+
+    }else{
+
+      badge.hidden =
+        true;
+    }
+
+
+  }catch(error){
+
+    console.error(
+      "Admin badge:",
+      error
+    );
+
+    badge.hidden =
+      true;
+  }
+}
   async function loadMenuProfile(){
 
     try{

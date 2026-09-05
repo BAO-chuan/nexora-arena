@@ -68,6 +68,18 @@ const boShoeNumber = $("boShoeNumber");
 const boShoeProgress = $("boShoeProgress");
 const boShuffleStatus = $("boShuffleStatus");
 const boCardShoe = $("boCardShoe");
+const boPlayerChipStack = $("boPlayerChipStack");
+const boTieChipStack = $("boTieChipStack");
+const boBankerChipStack = $("boBankerChipStack");
+const boPlayerOwnBet = $("boPlayerOwnBet");
+const boTieOwnBet = $("boTieOwnBet");
+const boBankerOwnBet = $("boBankerOwnBet");
+const boShoePlayerStat = $("boShoePlayerStat");
+const boShoeBankerStat = $("boShoeBankerStat");
+const boShoeTieStat = $("boShoeTieStat");
+const boBigEyeRoad = $("boBigEyeRoad");
+const boSmallRoad = $("boSmallRoad");
+const boCockroachRoad = $("boCockroachRoad");
 
 const boBetAmount = $("boBetAmount");
 const boPlaceBet = $("boPlaceBet");
@@ -1505,6 +1517,7 @@ async function loadMyBets() {
         <span>TIE <b>${formatVNC(roundTotals.tie)}</b></span>
         <span>BANKER <b>${formatVNC(roundTotals.banker)}</b></span>
       `;
+    renderOwnRoundBets({ player: player, tie: tie, banker: banker });
     }
 
     if (
@@ -1847,6 +1860,93 @@ async function loadRoadHistory() {
 }
 
 
+
+function chipLabel(amount) {
+  if (amount >= 1000000) return `${Math.floor(amount / 1000000)}M`;
+  if (amount >= 1000) return `${Math.floor(amount / 1000)}K`;
+  return String(amount);
+}
+
+function chipClass(amount) {
+  if (amount >= 1000000) return "c1m";
+  if (amount >= 500000) return "c500";
+  if (amount >= 100000) return "c100";
+  if (amount >= 50000) return "c50";
+  return "c10";
+}
+
+function renderOwnChipStack(container, total) {
+  if (!container) return;
+  container.innerHTML = "";
+  if (!total) return;
+
+  const denoms = [1000000, 500000, 100000, 50000, 10000];
+  let remaining = total;
+  const chips = [];
+
+  for (const denom of denoms) {
+    while (remaining >= denom && chips.length < 5) {
+      chips.push(denom);
+      remaining -= denom;
+    }
+  }
+
+  if (!chips.length) chips.push(Math.min(total, 10000));
+
+  chips.slice(-5).forEach((amount, index) => {
+    const chip = document.createElement("span");
+    chip.className = `bo-mini-chip ${chipClass(amount)}`;
+    chip.textContent = chipLabel(amount);
+    chip.style.setProperty("--chip-i", index);
+    container.appendChild(chip);
+  });
+}
+
+function renderOwnRoundBets(totals = {}) {
+  const player = Number(totals.player || 0);
+  const tie = Number(totals.tie || 0);
+  const banker = Number(totals.banker || 0);
+
+  if (boPlayerOwnBet) boPlayerOwnBet.textContent = `Bạn: ${formatVNC(player)} VNC`;
+  if (boTieOwnBet) boTieOwnBet.textContent = `Bạn: ${formatVNC(tie)} VNC`;
+  if (boBankerOwnBet) boBankerOwnBet.textContent = `Bạn: ${formatVNC(banker)} VNC`;
+
+  renderOwnChipStack(boPlayerChipStack, player);
+  renderOwnChipStack(boTieChipStack, tie);
+  renderOwnChipStack(boBankerChipStack, banker);
+}
+
+function renderDerivedRoad(container, items, offset) {
+  if (!container) return;
+  container.innerHTML = "";
+
+  const decisive = items.filter(x => x.result === "player" || x.result === "banker");
+  if (decisive.length <= offset) {
+    container.innerHTML = '<p class="bo-road-empty">Chưa đủ dữ liệu.</p>';
+    return;
+  }
+
+  decisive.slice(offset).forEach((item, index) => {
+    const prev = decisive[index];
+    const same = prev && prev.result === item.result;
+    const dot = document.createElement("span");
+    dot.className = `bo-derived-dot ${same ? "red" : "blue"}`;
+    dot.title = same ? "Đỏ" : "Xanh";
+    container.appendChild(dot);
+  });
+}
+
+function setupRoadTypeTabs() {
+  document.querySelectorAll("[data-road-type]").forEach(btn => {
+    btn.addEventListener("click", () => {
+      document.querySelectorAll("[data-road-type]").forEach(x => x.classList.remove("active"));
+      document.querySelectorAll("[data-road-panel]").forEach(x => x.classList.remove("active"));
+      btn.classList.add("active");
+      document.querySelector(`[data-road-panel="${btn.dataset.roadType}"]`)?.classList.add("active");
+    });
+  });
+}
+
 async function loadShoeState({ animate = false } = {}) {
   if (!currentRoom) return null;
 
@@ -2054,3 +2154,5 @@ function setBaccaratTab(tabName) {
 document.querySelectorAll("[data-bo-tab]").forEach(button => {
   button.addEventListener("click", () => setBaccaratTab(button.dataset.boTab));
 });
+
+setupRoadTypeTabs();

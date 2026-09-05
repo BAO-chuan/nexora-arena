@@ -8,7 +8,7 @@
 <title>
     LS79win Baccarat Online
   </title>
-<link href="baccarat-online.css?v=12" rel="stylesheet"/>
+<link href="baccarat-online.css?v=20" rel="stylesheet"/>
 <link href="menu.css?v=3" rel="stylesheet"/>
 </head>
 <body>
@@ -140,6 +140,8 @@
 <b id="boPlayerBetAmount">0 VNC</b>
 <small id="boPlayerBetPlayers">0 người</small>
 </div>
+<div class="bo-table-chip-stack" id="boPlayerChipStack" aria-label="Chip PLAYER của bạn"></div>
+<div class="bo-own-bet" id="boPlayerOwnBet">Bạn: 0 VNC</div>
 </button>
 <button class="bo-bet-btn tie" data-bet-on="tie" type="button">
 <span>TIE</span>
@@ -148,6 +150,8 @@
 <b id="boTieBetAmount">0 VNC</b>
 <small id="boTieBetPlayers">0 người</small>
 </div>
+<div class="bo-table-chip-stack" id="boTieChipStack" aria-label="Chip TIE của bạn"></div>
+<div class="bo-own-bet" id="boTieOwnBet">Bạn: 0 VNC</div>
 </button>
 <button class="bo-bet-btn banker" data-bet-on="banker" type="button">
 <span>BANKER</span>
@@ -156,6 +160,8 @@
 <b id="boBankerBetAmount">0 VNC</b>
 <small id="boBankerBetPlayers">0 người</small>
 </div>
+<div class="bo-table-chip-stack" id="boBankerChipStack" aria-label="Chip BANKER của bạn"></div>
+<div class="bo-own-bet" id="boBankerOwnBet">Bạn: 0 VNC</div>
 </button>
 </div>
 <label class="bo-amount-field">
@@ -196,10 +202,24 @@
 <span class="road-tie">T</span>
 </div>
 </div>
-<div class="bo-road-history" id="boRoadHistory">
-<p class="bo-road-empty">Đang tải lịch sử...</p>
+<div class="bo-shoe-stats" id="boShoeStats">
+  <span>PLAYER <b id="boShoePlayerStat">0</b></span>
+  <span>BANKER <b id="boShoeBankerStat">0</b></span>
+  <span>TIE <b id="boShoeTieStat">0</b></span>
 </div>
-<div class="bo-big-road-wrap">
+<div class="bo-road-type-tabs" role="tablist" aria-label="Loại cầu">
+  <button class="active" data-road-type="bead" type="button">BEAD</button>
+  <button data-road-type="big" type="button">BIG ROAD</button>
+  <button data-road-type="eye" type="button">BIG EYE</button>
+  <button data-road-type="small" type="button">SMALL</button>
+  <button data-road-type="cockroach" type="button">COCKROACH</button>
+</div>
+<div class="bo-road-type-panel active" data-road-panel="bead">
+  <div class="bo-road-history" id="boRoadHistory">
+    <p class="bo-road-empty">Đang tải lịch sử...</p>
+  </div>
+</div>
+<div class="bo-big-road-wrap bo-road-type-panel" data-road-panel="big">
 <div class="bo-big-road-title">
 <div>
 <span>BIG ROAD</span>
@@ -214,6 +234,15 @@
 <p class="bo-road-empty">Đang tải đại lộ...</p>
 </div>
 </div>
+</div>
+<div class="bo-derived-road bo-road-type-panel" data-road-panel="eye">
+  <div class="bo-derived-road-grid" id="boBigEyeRoad"><p class="bo-road-empty">Chưa có dữ liệu.</p></div>
+</div>
+<div class="bo-derived-road bo-road-type-panel" data-road-panel="small">
+  <div class="bo-derived-road-grid" id="boSmallRoad"><p class="bo-road-empty">Chưa có dữ liệu.</p></div>
+</div>
+<div class="bo-derived-road bo-road-type-panel" data-road-panel="cockroach">
+  <div class="bo-derived-road-grid" id="boCockroachRoad"><p class="bo-road-empty">Chưa có dữ liệu.</p></div>
 </div>
 </section><section class="bo-history-card bo-tab-panel" data-bo-panel="bets">
 <div class="bo-section-head">
@@ -260,7 +289,7 @@
 </section>
 </main>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="baccarat-online.js?v=19.1"></script>
+<script src="baccarat-online.js?v=20"></script>
 <script src="menu.js?v=2"></script>
 </body>
 </html>

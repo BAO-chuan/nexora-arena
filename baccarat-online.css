@@ -1500,3 +1500,99 @@ body{
     transition:none;
   }
 }
+
+/* =========================================================
+   LS79win Baccarat V20 — PRO TABLE
+   Table chips + phases + professional road selector
+========================================================= */
+.bo-bet-btn{position:relative;overflow:visible}
+.bo-table-chip-stack{
+  height:30px;
+  margin-top:4px;
+  position:relative;
+  display:flex;
+  justify-content:center;
+  align-items:flex-end;
+}
+.bo-mini-chip{
+  --chip-i:0;
+  position:absolute;
+  bottom:calc(var(--chip-i) * 3px);
+  width:27px;height:27px;border-radius:50%;
+  display:grid;place-items:center;
+  border:2px dashed rgba(255,255,255,.8);
+  outline:1px solid rgba(255,227,154,.42);
+  outline-offset:-4px;
+  color:#fff;font-size:6px;font-weight:950;
+  text-shadow:0 1px 2px #000;
+  box-shadow:0 3px 7px rgba(0,0,0,.38);
+  animation:boStackChip .38s cubic-bezier(.2,.8,.2,1) both;
+}
+.bo-mini-chip.c10{background:#176641}
+.bo-mini-chip.c50{background:#155d96}
+.bo-mini-chip.c100{background:#9b1720}
+.bo-mini-chip.c500{background:#5d287d}
+.bo-mini-chip.c1m{background:#a87a12}
+@keyframes boStackChip{
+  from{opacity:0;transform:translateY(-28px) scale(.7) rotate(12deg)}
+  to{opacity:1;transform:translateY(0) scale(1) rotate(0)}
+}
+.bo-own-bet{
+  margin-top:3px;color:#ffe39a;font-size:7px;font-weight:900;
+  white-space:nowrap
+}
+.bo-bet-btn:disabled{filter:saturate(.55)}
+.bo-room-card.bet-closing #boRoundStatus{color:#ff4a54}
+.bo-table.opening-cards{border-color:rgba(242,196,90,.62)}
+
+.bo-shoe-stats{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:5px;margin:0 0 8px
+}
+.bo-shoe-stats span{
+  padding:6px 4px;border-radius:8px;text-align:center;
+  background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.05);
+  color:var(--muted);font-size:7px;font-weight:900
+}
+.bo-shoe-stats b{display:block;margin-top:2px;color:#ffe39a;font-size:10px}
+
+.bo-road-type-tabs{
+  display:flex;gap:4px;overflow-x:auto;padding:3px;margin-bottom:7px;
+  -webkit-overflow-scrolling:touch
+}
+.bo-road-type-tabs button{
+  flex:0 0 auto;border:1px solid rgba(242,196,90,.12);
+  background:#0c0303;color:#a99c93;border-radius:8px;
+  padding:7px 8px;font-size:7px;font-weight:950
+}
+.bo-road-type-tabs button.active{
+  color:#ffe39a;background:rgba(217,11,22,.22);
+  border-color:rgba(242,196,90,.3)
+}
+.bo-road-type-panel{display:none!important}
+.bo-road-type-panel.active{display:block!important}
+.bo-derived-road{overflow-x:auto}
+.bo-derived-road-grid{
+  min-height:132px;min-width:280px;padding:7px;
+  display:grid;grid-template-rows:repeat(6,18px);
+  grid-auto-flow:column;grid-auto-columns:18px;gap:2px;
+  background:
+    linear-gradient(rgba(255,255,255,.05) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,255,255,.05) 1px,transparent 1px),
+    rgba(0,0,0,.17);
+  background-size:20px 20px;border-radius:10px
+}
+.bo-derived-dot{
+  width:11px;height:11px;border-radius:50%;
+  align-self:center;justify-self:center;border:2px solid
+}
+.bo-derived-dot.red{border-color:#e35259}
+.bo-derived-dot.blue{border-color:#4a9ee2}
+
+@media(max-width:420px){
+  .bo-table-chip-stack{height:26px}
+  .bo-mini-chip{width:23px;height:23px;font-size:5.5px}
+  .bo-own-bet{font-size:6.5px}
+}
+@media(prefers-reduced-motion:reduce){
+  .bo-mini-chip{animation:none}
+}

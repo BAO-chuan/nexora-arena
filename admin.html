@@ -547,24 +547,6 @@
 
 </nav>
   <div id="toast" class="toast"></div>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  
-  <script>
-    (function(){
-      const page = document.body.dataset.page || "home";
-      document.querySelectorAll("[data-nav-page]").forEach(a => {
-        a.classList.toggle("active", a.dataset.navPage === page || (page === "withdraw" && a.dataset.navPage === "vnc"));
-      });
-      if(page === "withdraw"){
-        const details = document.querySelector(".vnc-withdraw-details");
-        if(details) details.open = true;
-      }
-    })();
-  </script>
-
-  <script src="app.js?v=26"></script>
-  <script src="admin-dashboard.js?v=2"></script>
-  <script src="menu.js?v=2"></script>
 
   <dialog id="adminPlayerInfoDialog" class="admin-player-info-dialog">
     <form id="adminPlayerInfoForm" method="dialog">
@@ -619,6 +601,26 @@
       </p>
     </form>
   </dialog>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  
+  <script>
+    (function(){
+      const page = document.body.dataset.page || "home";
+      document.querySelectorAll("[data-nav-page]").forEach(a => {
+        a.classList.toggle("active", a.dataset.navPage === page || (page === "withdraw" && a.dataset.navPage === "vnc"));
+      });
+      if(page === "withdraw"){
+        const details = document.querySelector(".vnc-withdraw-details");
+        if(details) details.open = true;
+      }
+    })();
+  </script>
+
+  <script src="app.js?v=26"></script>
+  <script src="admin-dashboard.js?v=3"></script>
+  <script src="menu.js?v=2"></script>
+
 
 </body>
 </html>

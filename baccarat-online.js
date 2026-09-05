@@ -38,6 +38,7 @@ let boAudioContext = null;
 let boSoundEnabled = localStorage.getItem("ls79win_baccarat_sound") !== "off";
 let boDealerOverlay = null;
 let boResultFxTimer = null;
+let lastResultFxRoundId = null;
 let lastOwnRoundTotals = { player: 0, banker: 0, tie: 0 };
 
 const AUTO_BETTING_SECONDS = 20;
@@ -174,7 +175,7 @@ function ensureV21UI() {
         border-color:rgba(217,11,22,.55);
         box-shadow:0 24px 70px rgba(0,0,0,.6),0 0 34px rgba(217,11,22,.26)
       }
-      .bo-result-fx.neutral{opacity:.96}
+      .bo-result-fx.neutral{border-color:rgba(242,196,90,.46)}
       .bo-table.v21-result-player .bo-hand:first-child,
       .bo-table.v21-result-banker .bo-hand:last-child{
         animation:boV21WinnerPulse .72s ease 2
@@ -350,7 +351,8 @@ function resultLabel(result) {
 }
 
 async function showV21ResultFx(round) {
-  if (!round) return;
+  if (!round || lastResultFxRoundId === round.id) return;
+  lastResultFxRoundId = round.id;
   ensureV21UI();
 
   const fx = document.getElementById("boResultFx");
@@ -413,6 +415,13 @@ async function showV21ResultFx(round) {
   boResultFxTimer = window.setTimeout(() => {
     fx.classList.remove("show");
     table?.classList.remove("v21-result-player", "v21-result-banker", "v21-result-tie");
+
+    window.setTimeout(() => {
+      if (!fx.classList.contains("show")) {
+        fx.className = "bo-result-fx";
+        fx.innerHTML = "";
+      }
+    }, 320);
   }, 2600);
 }
 

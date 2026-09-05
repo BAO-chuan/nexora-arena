@@ -29,7 +29,7 @@ let lastAnimatedRoundId = null;
 let dealAnimationToken = 0;
 
 const AUTO_BETTING_SECONDS = 30;
-const RESULT_DISPLAY_MS = 5000;
+const RESULT_DISPLAY_MS = 8000;
 // ================================
 // ELEMENTS
 // ================================
@@ -167,13 +167,21 @@ async function animateFinishedRound(round) {
   for (const [card, container] of dealOrder) {
     if (token !== dealAnimationToken) return;
     appendAnimatedCard(card, container);
-    await sleep(360);
+    await sleep(800);
   }
 
   if (token !== dealAnimationToken) return;
 
+  await sleep(700);
+  if (token !== dealAnimationToken) return;
+
   boPlayerScore.textContent = round.player_score ?? "—";
   boBankerScore.textContent = round.banker_score ?? "—";
+  boTableMessage.textContent = "Đã tính điểm";
+
+  await sleep(600);
+  if (token !== dealAnimationToken) return;
+
   boResult.classList.remove("dealing-result");
   document.querySelector(".bo-hands")?.classList.remove("is-dealing");
   renderResult();
@@ -503,7 +511,7 @@ function renderRound() {
 
     const isFreshResult =
       finishedAt > 0 &&
-      Date.now() - finishedAt < 8000;
+      Date.now() - finishedAt < 10000;
 
     const shouldAnimate =
       isFreshResult &&

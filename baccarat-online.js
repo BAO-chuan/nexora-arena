@@ -26,7 +26,7 @@ let settlingRoundId = null;
 let autoRoundTimer = null;
 let creatingNextRound = false;
 
-const AUTO_BETTING_SECONDS = 20;
+const AUTO_BETTING_SECONDS = 30;
 const RESULT_DISPLAY_MS = 5000;
 // ================================
 // ELEMENTS
@@ -563,6 +563,142 @@ async function settleCurrentRound() {
   } finally {
 
     settlingRoundId = null;
+  }
+}
+// ================================
+// AUTO NEXT ROUND
+// ================================
+
+function scheduleNextRound() {
+
+  clearTimeout(
+    autoRoundTimer
+  );
+
+
+  if (
+    !currentRoom ||
+    !currentRound ||
+    currentRound.status !== "finished"
+  ) {
+
+    return;
+  }
+
+
+  const finishedAt =
+    currentRound.finished_at
+      ? new Date(
+          currentRound.finished_at
+        ).getTime()
+      : Date.now();
+
+
+  const elapsed =
+    Date.now() - finishedAt;
+
+
+  const wait =
+    Math.max(
+      500,
+      RESULT_DISPLAY_MS - elapsed
+    );
+
+
+  boTableMessage.textContent =
+    "Ván đã kết thúc • Chuẩn bị ván mới";
+
+
+  autoRoundTimer =
+    setTimeout(
+      createNextRound,
+      wait
+    );
+}
+
+
+async function createNextRound() {
+
+  if (
+    !currentRoom ||
+    creatingNextRound
+  ) {
+
+    return;
+  }
+
+
+  creatingNextRound = true;
+
+
+  try {
+
+    const {
+      error
+    } = await sb.rpc(
+      "baccarat_create_next_round",
+      {
+        p_room_id:
+          currentRoom.id,
+
+        p_betting_seconds:
+          AUTO_BETTING_SECONDS
+      }
+    );
+
+
+    if (error) throw error;
+
+
+    await loadCurrentRound();
+
+
+    // Có thể request đến sớm hơn
+    // mốc 5 giây của server.
+    // Nếu round vẫn finished thì thử lại.
+
+    if (
+      currentRound?.status ===
+      "finished"
+    ) {
+
+      clearTimeout(
+        autoRoundTimer
+      );
+
+      autoRoundTimer =
+        setTimeout(
+          createNextRound,
+          1200
+        );
+    }
+
+
+  } catch (error) {
+
+    console.error(
+      "Create next round:",
+      error
+    );
+
+
+    // Lỗi mạng tạm thời:
+    // thử lại sau vài giây.
+
+    clearTimeout(
+      autoRoundTimer
+    );
+
+    autoRoundTimer =
+      setTimeout(
+        createNextRound,
+        3000
+      );
+
+
+  } finally {
+
+    creatingNextRound = false;
   }
 }
 

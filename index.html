@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="theme-color" content="#06130f">
   <title>LS79win</title>
-  <link rel="stylesheet" href="styles.css?v=19">
+  <link rel="stylesheet" href="styles.css?v=20">
   <link rel="stylesheet" href="menu.css?v=3">
 </head>
 <body>
@@ -162,197 +162,140 @@
       </section>
 
 <!-- ===== VÍ VNC ===== -->
-<section id="nxcWallet" class="section">
-  <div class="panel nxc-wallet-panel">
-
-    <div class="section-head">
+<section id="nxcWallet" class="section vnc-request-page">
+  <div class="vnc-request-shell">
+    <div class="vnc-request-top">
+      <a class="vnc-back" href="#home" aria-label="Quay lại">‹</a>
       <div>
-        <span class="eyebrow">VÍ VNC</span>
+        <span class="eyebrow">LS79WIN • VÍ ĐIỂM ẢO</span>
         <h2>Yêu cầu VNC</h2>
       </div>
-
       <span class="nxc-virtual-pill">ĐIỂM ẢO</span>
     </div>
 
-    <div class="wallet-balance-box">
-      <span>Số dư hiện tại</span>
-      <strong id="walletPageBalance">0 VNC</strong>
+    <div class="vnc-player-summary">
+      <div class="vnc-player-avatar">♛</div>
+      <div class="vnc-player-name">
+        <small>TÀI KHOẢN</small>
+        <strong id="vncRequestUsername">Player</strong>
+        <span>Thành viên LS79win</span>
+      </div>
+      <div class="vnc-current-balance">
+        <small>SỐ DƯ HIỆN TẠI</small>
+        <strong id="walletPageBalance">0 VNC</strong>
+      </div>
     </div>
 
-    <form id="nxcRequestForm" class="nxc-request-form">
+    <div class="vnc-mode-tabs">
+      <button type="button" class="active"><span>◆</span> Yêu cầu điểm VNC</button>
+      <button type="button" disabled title="VNC chỉ là điểm ảo"><span>ⓘ</span> Không phải tiền thật</button>
+    </div>
 
-      <label>
-        Số VNC muốn yêu cầu
-
-        <input
-          id="nxcRequestAmount"
-          type="number"
-          min="1"
-          step="1"
-          placeholder="Ví dụ: 10000"
-          required
-        >
-      </label>
-
-      <div class="nxc-quick-row">
-        <button type="button" data-nxc="1000">
-          1K
-        </button>
-
-        <button type="button" data-nxc="5000">
-          5K
-        </button>
-
-        <button type="button" data-nxc="10000">
-          10K
-        </button>
-
-        <button type="button" data-nxc="50000">
-          50K
-        </button>
+    <div class="vnc-request-card">
+      <div class="vnc-request-card-head">
+        <div>
+          <span class="eyebrow">REQUEST VNC</span>
+          <h3>Chọn số VNC muốn yêu cầu</h3>
+        </div>
+        <span class="vnc-safe-badge">AN TOÀN</span>
       </div>
 
-      <button class="btn gold" type="submit">
-        GỬI YÊU CẦU
-      </button>
+      <form id="nxcRequestForm" class="vnc-request-form">
+        <label class="vnc-amount-label" for="nxcRequestAmount">Số VNC yêu cầu</label>
 
-    </form>
+        <div class="vnc-amount-input">
+          <span>◎</span>
+          <input
+            id="nxcRequestAmount"
+            type="number"
+            min="1"
+            max="1000000"
+            step="1"
+            inputmode="numeric"
+            placeholder="Nhập số VNC"
+            required
+          >
+          <b>VNC</b>
+        </div>
 
-    <p class="tiny-note">
-      Đây chỉ là yêu cầu cấp điểm VNC ảo.
-      VNC không có giá trị tiền mặt và không thể
-      nạp/rút hoặc quy đổi thành tiền.
+        <div class="vnc-quick-grid">
+          <button type="button" data-nxc="1000">1,000</button>
+          <button type="button" data-nxc="5000">5,000</button>
+          <button type="button" data-nxc="10000">10,000</button>
+          <button type="button" data-nxc="20000">20,000</button>
+          <button type="button" data-nxc="50000">50,000</button>
+          <button type="button" data-nxc="100000">100,000</button>
+        </div>
+
+        <div class="vnc-request-note">
+          <span>ⓘ</span>
+          <p>Yêu cầu sẽ được gửi cho Admin. Khi Admin duyệt, số VNC được cấp sẽ xuất hiện trong ví của bạn.</p>
+        </div>
+
+        <button id="vncRequestSubmit" class="btn gold vnc-submit" type="submit">
+          GỬI YÊU CẦU VNC
+        </button>
+      </form>
+    </div>
+
+    <div id="vncRequestReceipt" class="vnc-request-receipt hidden" aria-live="polite">
+      <div class="vnc-receipt-icon">✓</div>
+      <span class="eyebrow">ĐÃ GỬI YÊU CẦU</span>
+      <h3 id="vncReceiptAmount">0 VNC</h3>
+      <div class="vnc-receipt-grid">
+        <div><span>Mã yêu cầu</span><strong id="vncReceiptId">—</strong></div>
+        <div><span>Trạng thái</span><strong class="pending">Chờ Admin duyệt</strong></div>
+      </div>
+      <p>Không cần chuyển tiền hoặc cung cấp thông tin ngân hàng. Đây chỉ là yêu cầu cấp điểm VNC ảo trong LS79win.</p>
+      <button id="vncNewRequestBtn" class="mini-btn" type="button">Tạo yêu cầu khác</button>
+    </div>
+
+    <div class="vnc-history-card">
+      <div class="nxc-history-head">
+        <div>
+          <span class="eyebrow">REQUEST HISTORY</span>
+          <h3>Yêu cầu gần đây</h3>
+        </div>
+        <button id="refreshNxcRequests" class="mini-btn" type="button">Làm mới</button>
+      </div>
+      <div id="nxcRequestList"><p class="muted">Đang tải...</p></div>
+    </div>
+
+    <p class="tiny-note vnc-disclaimer">
+      VNC là điểm ảo trong LS79win, không phải VND, không có giá trị tiền mặt và không thể quy đổi thành tiền thật.
     </p>
 
-    <div class="nxc-history-head">
-      <h3>Yêu cầu gần đây</h3>
-
-      <button
-        id="refreshNxcRequests"
-        class="mini-btn"
-        type="button"
-      >
-        Làm mới
-      </button>
-    </div>
-
-    <div id="nxcRequestList">
-      <p class="muted">
-        Đang tải...
-      </p>
-    </div>
-<div class="nxc-withdraw-card">
-
-  <div class="section-head">
-    <div>
-      <span class="eyebrow">WITHDRAW VNC</span>
-      <h3>Rút VNC</h3>
-    </div>
-  </div>
-
-  <p class="muted">
-    VNC sẽ bị trừ ngay khi gửi lệnh.
-    Nếu Admin từ chối, VNC sẽ được hoàn lại.
-  </p>
-
-  <form id="nxcWithdrawForm">
-
-    <label class="player-info-field">
-      <span>Số VNC muốn rút</span>
-
-      <input
-        id="nxcWithdrawAmount"
-        type="number"
-        min="1"
-        step="1"
-        inputmode="numeric"
-        placeholder="Ví dụ: 1000"
-        required
-      >
-    </label>
-
-    <div class="nxc-quick-row">
-
-      <button
-        type="button"
-        class="mini-btn"
-        data-withdraw-nxc="1000"
-      >
-        1K
-      </button>
-
-      <button
-        type="button"
-        class="mini-btn"
-        data-withdraw-nxc="5000"
-      >
-        5K
-      </button>
-
-      <button
-        type="button"
-        class="mini-btn"
-        data-withdraw-nxc="10000"
-      >
-        10K
-      </button>
-
-      <button
-        type="button"
-        class="mini-btn"
-        data-withdraw-nxc="50000"
-      >
-        50K
-      </button>
-
-    </div>
-
-    <button
-      class="primary-btn"
-      type="submit"
-    >
-      GỬI LỆNH RÚT
-    </button>
-
-    <p
-      id="nxcWithdrawMessage"
-      class="muted"
-    ></p>
-
-  </form>
-
-  <div class="nxc-history-head">
-
-    <div>
-      <span class="eyebrow">
-        WITHDRAW HISTORY
-      </span>
-
-      <h3>
-        Lịch sử rút VNC
-      </h3>
-    </div>
-
-    <button
-      id="refreshWithdrawRequests"
-      class="mini-btn"
-      type="button"
-    >
-      Làm mới
-    </button>
-
-  </div>
-
-  <div id="nxcWithdrawList">
-    <p class="muted">
-      Đang tải lệnh rút...
-    </p>
-  </div>
-
-</div>
+    <details class="vnc-withdraw-details">
+      <summary>Quản lý VNC ảo khác</summary>
+      <div class="nxc-withdraw-card">
+        <div class="section-head">
+          <div><span class="eyebrow">VIRTUAL VNC</span><h3>Rút VNC ảo</h3></div>
+        </div>
+        <p class="muted">VNC sẽ bị trừ khi gửi lệnh. Nếu Admin từ chối, VNC sẽ được hoàn lại.</p>
+        <form id="nxcWithdrawForm">
+          <label class="player-info-field"><span>Số VNC muốn rút</span>
+            <input id="nxcWithdrawAmount" type="number" min="1" step="1" inputmode="numeric" placeholder="Ví dụ: 1000" required>
+          </label>
+          <div class="nxc-quick-row">
+            <button type="button" class="mini-btn" data-withdraw-nxc="1000">1K</button>
+            <button type="button" class="mini-btn" data-withdraw-nxc="5000">5K</button>
+            <button type="button" class="mini-btn" data-withdraw-nxc="10000">10K</button>
+            <button type="button" class="mini-btn" data-withdraw-nxc="50000">50K</button>
+          </div>
+          <button class="primary-btn" type="submit">GỬI LỆNH RÚT VNC ẢO</button>
+          <p id="nxcWithdrawMessage" class="muted"></p>
+        </form>
+        <div class="nxc-history-head">
+          <div><span class="eyebrow">WITHDRAW HISTORY</span><h3>Lịch sử rút VNC</h3></div>
+          <button id="refreshWithdrawRequests" class="mini-btn" type="button">Làm mới</button>
+        </div>
+        <div id="nxcWithdrawList"><p class="muted">Đang tải...</p></div>
+      </div>
+    </details>
   </div>
 </section>
-      <section id="leaderboard" class="section split">
+
+<section id="leaderboard" class="section split">
         <div class="panel">
           <div class="section-head"><div><span class="eyebrow">XẾP HẠNG</span><h2>Top VNC</h2></div><button id="refreshLeaderboard" class="mini-btn">Làm mới</button></div>
           <div id="leaderboardList"><p class="muted">Đang tải...</p></div>
@@ -526,7 +469,7 @@
 </nav>
   <div id="toast" class="toast"></div>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="app.js?v=21"></script>
+  <script src="app.js?v=22"></script>
   <script src="menu.js?v=2"></script>
 </body>
 </html>

@@ -8,7 +8,7 @@ function setStatus(text,ok=true){$("connectionStatus").textContent=text;$("statu
 function switchTab(type){const login=type==="login";$("loginForm").classList.toggle("hidden",!login);$("signupForm").classList.toggle("hidden",login);$("loginTab").classList.toggle("active",login);$("signupTab").classList.toggle("active",!login);$("loginIntro")?.classList.toggle("hidden",!login);$("signupIntro")?.classList.toggle("hidden",login)}
 $("loginTab").onclick=()=>switchTab("login");$("signupTab").onclick=()=>switchTab("signup");
 function showLoggedOut(){$("authArea").classList.remove("hidden");$("appArea").classList.add("hidden");$("bottomNav").classList.add("hidden");$("walletChip").classList.add("hidden");$("logoutBtn").classList.add("hidden");$("sessionBadge").textContent="Khách"}
-function showLoggedIn(user,p){$("authArea").classList.add("hidden");$("appArea").classList.remove("hidden");$("bottomNav").classList.remove("hidden");$("walletChip").classList.remove("hidden");$("logoutBtn").classList.remove("hidden");const bal=Number(p.balance||0).toLocaleString("vi-VN");$("sessionBadge").textContent=p.username||"Player";if($("v3Username"))$("v3Username").textContent=p.username||"Player";$("headerBalance").textContent=bal;$("heroBalance").textContent=bal+" VNC";$("heroRole").textContent=String(p.role||"player").toUpperCase();$("profileUsername").textContent=p.username||"Player";$("profileEmail").textContent=user.email||"";$("profileBalance").textContent=bal+" VNC";$("profileRole").textContent=String(p.role||"player").toUpperCase();$("profileAvatar").textContent=(p.username||"N").slice(0,1).toUpperCase();$("adminArea").classList.toggle("hidden",p.role!=="admin")}
+function showLoggedIn(user,p){$("authArea").classList.add("hidden");$("appArea").classList.remove("hidden");$("bottomNav").classList.remove("hidden");$("walletChip").classList.remove("hidden");$("logoutBtn").classList.remove("hidden");const bal=Number(p.balance||0).toLocaleString("vi-VN");$("sessionBadge").textContent=p.username||"Player";if($("v3Username"))$("v3Username").textContent=p.username||"Player";if($("vncRequestUsername"))$("vncRequestUsername").textContent=p.username||"Player";$("headerBalance").textContent=bal;$("heroBalance").textContent=bal+" VNC";$("heroRole").textContent=String(p.role||"player").toUpperCase();$("profileUsername").textContent=p.username||"Player";$("profileEmail").textContent=user.email||"";$("profileBalance").textContent=bal+" VNC";$("profileRole").textContent=String(p.role||"player").toUpperCase();$("profileAvatar").textContent=(p.username||"N").slice(0,1).toUpperCase();$("adminArea").classList.toggle("hidden",p.role!=="admin")}
 async function getProfile(id){const {data,error}=await sb.from("profiles").select("*").eq("id",id).single();if(error)throw error;return data}
 async function refresh(){try{const {data:{session},error}=await sb.auth.getSession();if(error)throw error;setStatus("Đã kết nối Supabase ✓",true);if(!session){showLoggedOut();return}const p=await getProfile(session.user.id);if(p.is_suspended){await sb.auth.signOut();alert("Tài khoản đang bị khóa.");showLoggedOut();return}showLoggedIn(session.user,p);await loadTransactions(session.user.id);await loadLeaderboard();if(p.role==="admin")await loadPlayers()}catch(err){console.error(err);setStatus("Lỗi kết nối: "+err.message,false)}}
 function authErrorVi(err){const m=String(err?.message||err||"").toLowerCase();if(m.includes("invalid login credentials"))return"Email hoặc mật khẩu chưa đúng.";if(m.includes("email not confirmed"))return"Email chưa được xác nhận. Hãy kiểm tra hộp thư.";if(m.includes("already registered"))return"Email này đã được đăng ký.";if(m.includes("rate limit"))return"Bạn thao tác quá nhanh. Vui lòng thử lại sau.";return err?.message||"Có lỗi xảy ra. Vui lòng thử lại."}
@@ -395,6 +395,7 @@ if(nxcRequestForm){
           "ĐANG GỬI...";
 
         const {
+          data: createdRequest,
           error
         } = await sb
           .from("nxc_requests")
@@ -407,18 +408,33 @@ if(nxcRequestForm){
 
             status:
               "pending"
-          });
+          })
+          .select("id,amount,status,created_at")
+          .single();
 
         if(error){
           throw error;
         }
 
-        $("nxcRequestAmount").value =
-          "";
+        $("nxcRequestAmount").value = "";
 
-        toast(
-          "Đã gửi yêu cầu VNC"
-        );
+        if($("vncReceiptAmount")){
+          $("vncReceiptAmount").textContent =
+            `${formatRequestVNC(amount)} VNC`;
+        }
+
+        if($("vncReceiptId")){
+          const shortId =
+            createdRequest?.id
+              ? String(createdRequest.id).split("-")[0].toUpperCase()
+              : "ĐÃ TẠO";
+          $("vncReceiptId").textContent = shortId;
+        }
+
+        $("vncRequestReceipt")?.classList.remove("hidden");
+        nxcRequestForm.classList.add("hidden");
+
+        toast("Đã gửi yêu cầu VNC");
 
         await loadNxcRequests();
 
@@ -447,6 +463,16 @@ if(nxcRequestForm){
   );
 }
 
+
+
+/* ===== TẠO YÊU CẦU MỚI SAU KHI GỬI ===== */
+if($("vncNewRequestBtn")){
+  $("vncNewRequestBtn").onclick = () => {
+    $("vncRequestReceipt")?.classList.add("hidden");
+    nxcRequestForm?.classList.remove("hidden");
+    $("nxcRequestAmount")?.focus();
+  };
+}
 
 /* ===== LÀM MỚI ===== */
 

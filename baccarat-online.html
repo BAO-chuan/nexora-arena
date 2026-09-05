@@ -8,7 +8,7 @@
 <title>
     LS79win Baccarat Online
   </title>
-<link href="baccarat-online.css?v=9" rel="stylesheet"/>
+<link href="baccarat-online.css?v=10" rel="stylesheet"/>
 <link href="menu.css?v=3" rel="stylesheet"/>
 </head>
 <body>
@@ -68,6 +68,11 @@
             —
           </strong>
 </div>
+</div>
+<div class="bo-shoe-strip">
+  <span>BỘ BÀI <b id="boShoeNumber">#1</b></span>
+  <span>VÁN TRONG BỘ <b id="boShoeProgress">0/—</b></span>
+  <span id="boShuffleStatus">Đang chơi</span>
 </div>
 </section>
 <section class="bo-table">
@@ -155,11 +160,13 @@
         </span>
 <input id="boBetAmount" inputmode="numeric" min="10000" max="1000000" placeholder="10.000 - 1.000.000 VNC" step="1000" type="number"/>
 </label>
-<div class="bo-quick-row">
-<button data-bo-amount="10000" type="button">10K</button>
-<button data-bo-amount="50000" type="button">50K</button>
-<button data-bo-amount="100000" type="button">100K</button>
-<button data-bo-amount="1000000" type="button">1M</button>
+<div class="bo-chip-rack" aria-label="Chip đặt cược">
+  <button class="bo-chip bo-chip-10" data-bo-amount="10000" type="button"><span>10K</span></button>
+  <button class="bo-chip bo-chip-50" data-bo-amount="50000" type="button"><span>50K</span></button>
+  <button class="bo-chip bo-chip-100" data-bo-amount="100000" type="button"><span>100K</span></button>
+  <button class="bo-chip bo-chip-500" data-bo-amount="500000" type="button"><span>500K</span></button>
+  <button class="bo-chip bo-chip-1m" data-bo-amount="1000000" type="button"><span>1M</span></button>
+  <button class="bo-chip-clear" data-bo-clear type="button">XÓA</button>
 </div>
 <div class="bo-bet-preview" id="boBetPreview">Chọn PLAYER, TIE hoặc BANKER để đặt cược.</div>
 <div class="bo-my-round-bets" id="boMyRoundBets">
@@ -249,7 +256,7 @@
 </section>
 </main>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="baccarat-online.js?v=16"></script>
+<script src="baccarat-online.js?v=17"></script>
 <script src="menu.js?v=2"></script>
 </body>
 </html>

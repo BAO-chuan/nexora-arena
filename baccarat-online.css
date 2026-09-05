@@ -1087,3 +1087,134 @@ body{
   #boCountdown.warning,#boCountdown.danger,.bo-bet-btn.chip-land,
   .bo-table.winner-player #boResult,.bo-table.winner-banker #boResult,.bo-table.winner-tie #boResult{animation:none}
 }
+
+/* =========================================================
+   LS79win Baccarat V17 — Chips + Shoe Cycle
+========================================================= */
+.bo-shoe-strip{
+  margin-top:7px;
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:5px;
+}
+.bo-shoe-strip>span{
+  min-width:0;
+  padding:6px 5px;
+  border-radius:9px;
+  text-align:center;
+  background:rgba(242,196,90,.045);
+  border:1px solid rgba(242,196,90,.10);
+  color:var(--muted);
+  font-size:7px;
+  font-weight:900;
+  letter-spacing:.3px;
+}
+.bo-shoe-strip b{
+  display:block;
+  margin-top:2px;
+  color:#ffe39a;
+  font-size:10px;
+}
+#boShuffleStatus{
+  display:grid;
+  place-items:center;
+  color:#b6aaa1;
+}
+#boShuffleStatus.is-shuffling{
+  color:#ffcf55;
+  animation:boShuffleText .55s ease-in-out infinite alternate;
+}
+
+.bo-chip-rack{
+  margin-top:7px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:5px;
+  overflow-x:auto;
+  padding:4px 1px 6px;
+  -webkit-overflow-scrolling:touch;
+}
+.bo-chip{
+  flex:0 0 48px;
+  width:48px;
+  height:48px;
+  border-radius:50%;
+  border:3px dashed rgba(255,255,255,.82);
+  outline:2px solid rgba(242,196,90,.22);
+  outline-offset:-5px;
+  display:grid;
+  place-items:center;
+  padding:0;
+  color:#fff;
+  font-weight:950;
+  font-size:10px;
+  text-shadow:0 1px 3px rgba(0,0,0,.65);
+  box-shadow:0 5px 13px rgba(0,0,0,.34), inset 0 0 0 4px rgba(255,255,255,.08);
+}
+.bo-chip span{
+  width:31px;
+  height:31px;
+  border-radius:50%;
+  display:grid;
+  place-items:center;
+  background:rgba(5,1,1,.55);
+  border:1px solid rgba(255,255,255,.22);
+}
+.bo-chip-10{background:radial-gradient(circle,#2c9b65,#0e5034)}
+.bo-chip-50{background:radial-gradient(circle,#247fc7,#103c6b)}
+.bo-chip-100{background:radial-gradient(circle,#d13b46,#73141b)}
+.bo-chip-500{background:radial-gradient(circle,#8d51bd,#45205f)}
+.bo-chip-1m{background:radial-gradient(circle,#d7a92e,#73530c);color:#fff7d8}
+.bo-chip.chip-tap{animation:boCasinoChipTap .32s ease}
+.bo-chip-clear{
+  flex:0 0 43px;
+  height:34px;
+  border-radius:10px;
+  border:1px solid rgba(242,196,90,.18);
+  background:#120404;
+  color:#d7c7bd;
+  font-size:8px;
+  font-weight:950;
+}
+@keyframes boCasinoChipTap{
+  0%{transform:translateY(0) scale(1)}
+  45%{transform:translateY(-5px) scale(1.1)}
+  100%{transform:translateY(0) scale(1)}
+}
+
+.bo-table.is-shuffling .bo-table-inner{
+  overflow:hidden;
+  position:relative;
+}
+.bo-table.is-shuffling .bo-table-inner:after{
+  content:"♠  ♥  ♦  ♣";
+  position:absolute;
+  inset:0;
+  display:grid;
+  place-items:center;
+  background:rgba(6,1,1,.88);
+  color:#ffe08b;
+  font-size:30px;
+  letter-spacing:10px;
+  font-weight:950;
+  z-index:8;
+  animation:boShuffleCards .52s ease-in-out infinite alternate;
+}
+@keyframes boShuffleCards{
+  from{transform:translateX(-8px) rotate(-1deg);opacity:.7}
+  to{transform:translateX(8px) rotate(1deg);opacity:1;text-shadow:0 0 18px rgba(242,196,90,.55)}
+}
+@keyframes boShuffleText{
+  from{opacity:.55}
+  to{opacity:1}
+}
+@media(max-width:420px){
+  .bo-chip{flex-basis:44px;width:44px;height:44px;font-size:9px}
+  .bo-chip span{width:28px;height:28px}
+  .bo-chip-clear{flex-basis:40px}
+}
+@media(prefers-reduced-motion:reduce){
+  .bo-chip.chip-tap,#boShuffleStatus.is-shuffling,
+  .bo-table.is-shuffling .bo-table-inner:after{animation:none}
+}

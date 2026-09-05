@@ -28,6 +28,9 @@ let creatingNextRound = false;
 let lastAnimatedRoundId = null;
 let dealAnimationToken = 0;
 let betStatsTimer = null;
+let currentShoeState = null;
+let lastSeenShoeNumber = null;
+let shuffleFxTimer = null;
 
 const AUTO_BETTING_SECONDS = 20;
 const MIN_BET_AMOUNT = 10000;
@@ -60,6 +63,9 @@ const boBankerCards = $("boBankerCards");
 const boRoadHistory = $("boRoadHistory");
 const boBigRoad = $("boBigRoad");
 const boRoadStats = $("boRoadStats");
+const boShoeNumber = $("boShoeNumber");
+const boShoeProgress = $("boShoeProgress");
+const boShuffleStatus = $("boShuffleStatus");
 
 const boBetAmount = $("boBetAmount");
 const boPlaceBet = $("boPlaceBet");
@@ -995,21 +1001,39 @@ document
 // ================================
 
 document
-  .querySelectorAll(
-    "[data-bo-amount]"
-  )
+  .querySelectorAll("[data-bo-amount]")
   .forEach(button => {
+    button.addEventListener("click", () => {
+      const chip = Number(button.dataset.boAmount || 0);
+      const current = Math.max(0, Math.floor(Number(boBetAmount.value || 0)));
+      const next = Math.min(MAX_BET_AMOUNT, current + chip);
 
-    button.addEventListener(
-      "click",
-      () => {
+      boBetAmount.value = next;
 
-        boBetAmount.value =
-          button.dataset.boAmount;
+      button.classList.remove("chip-tap");
+      void button.offsetWidth;
+      button.classList.add("chip-tap");
+      setTimeout(() => button.classList.remove("chip-tap"), 340);
 
-        updateBetButton();
+      if (current + chip > MAX_BET_AMOUNT) {
+        setBetMessage(
+          `Tối đa ${formatVNC(MAX_BET_AMOUNT)} VNC mỗi lần cược.`,
+          true
+        );
+      } else {
+        setBetMessage("");
       }
-    );
+
+      updateBetButton();
+    });
+  });
+
+document
+  .querySelector("[data-bo-clear]")
+  ?.addEventListener("click", () => {
+    boBetAmount.value = "";
+    setBetMessage("");
+    updateBetButton();
   });
 
 
@@ -1651,11 +1675,21 @@ async function loadRoadHistory() {
   if (!currentRoom || !boRoadHistory) return;
 
   try {
-    const { data, error } = await sb
+    const shoe = await loadShoeState({ animate: true });
+    const lastShuffleRound =
+      Number(shoe?.last_shuffle_round_number || 0);
+
+    let query = sb
       .from("baccarat_rounds")
       .select("round_number,result")
       .eq("room_id", currentRoom.id)
-      .eq("status", "finished")
+      .eq("status", "finished");
+
+    if (lastShuffleRound > 0) {
+      query = query.gt("round_number", lastShuffleRound);
+    }
+
+    const { data, error } = await query
       .order("round_number", { ascending: false })
       .limit(80);
 
@@ -1713,6 +1747,79 @@ async function loadRoadHistory() {
         '<p class="bo-road-empty">Không thể tải đại lộ.</p>';
     }
   }
+}
+
+
+async function loadShoeState({ animate = false } = {}) {
+  if (!currentRoom) return null;
+
+  try {
+    const { data, error } = await sb.rpc(
+      "baccarat_get_shoe_state",
+      { p_room_id: currentRoom.id }
+    );
+
+    if (error) throw error;
+
+    const state = Array.isArray(data) ? data[0] : data;
+    if (!state) return null;
+
+    const previous = lastSeenShoeNumber;
+    currentShoeState = state;
+    lastSeenShoeNumber = Number(state.shoe_number);
+
+    if (boShoeNumber) {
+      boShoeNumber.textContent = `#${state.shoe_number}`;
+    }
+
+    if (boShoeProgress) {
+      boShoeProgress.textContent =
+        `${state.rounds_played}/${state.target_rounds}`;
+    }
+
+    if (boShuffleStatus) {
+      boShuffleStatus.textContent = "Đang chơi";
+      boShuffleStatus.classList.remove("is-shuffling");
+    }
+
+    if (
+      animate &&
+      previous !== null &&
+      Number(state.shoe_number) > Number(previous)
+    ) {
+      playShuffleEffect();
+    }
+
+    return state;
+  } catch (error) {
+    console.error("Load shoe state:", error);
+    if (boShoeProgress) boShoeProgress.textContent = "—";
+    return null;
+  }
+}
+
+function playShuffleEffect() {
+  clearTimeout(shuffleFxTimer);
+
+  const table = document.querySelector(".bo-table");
+  table?.classList.add("is-shuffling");
+
+  if (boShuffleStatus) {
+    boShuffleStatus.textContent = "ĐANG XÀO BÀI";
+    boShuffleStatus.classList.add("is-shuffling");
+  }
+
+  if (boTableMessage) {
+    boTableMessage.textContent = "Đang xào bài • Bắt đầu bộ bài mới";
+  }
+
+  shuffleFxTimer = setTimeout(() => {
+    table?.classList.remove("is-shuffling");
+    if (boShuffleStatus) {
+      boShuffleStatus.textContent = "Bộ bài mới";
+      boShuffleStatus.classList.remove("is-shuffling");
+    }
+  }, 2800);
 }
 
 // ================================

@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="theme-color" content="#06130f">
   <title>LS79win</title>
-  <link rel="stylesheet" href="styles.css?v=18">
+  <link rel="stylesheet" href="styles.css?v=19">
   <link rel="stylesheet" href="menu.css?v=3">
 </head>
 <body>
@@ -48,42 +48,119 @@
 </section>
 
     <section id="appArea" class="hidden">
-      <section id="home" class="hero">
-        <div class="hero-copy">
-          <span class="eyebrow">LS79WIN</span>
-          <h1>Cược vui.<br><span>Thắng lớn.</span></h1>
-          <p>LS79win — Cược vui thắng lớn. Trải nghiệm game tối ưu cho điện thoại với tài khoản VNC ảo.</p>
-          <div class="hero-actions"><a class="btn gold" href="#games">Khám phá game</a><a class="btn ghost" href="#leaderboard">Xem xếp hạng</a></div>
+
+      <section id="home" class="lobby-v3">
+
+        <section class="v3-promo">
+          <div class="v3-promo-copy">
+            <span class="v3-kicker">LS79WIN • GAME LOBBY</span>
+            <h1>CHÀO MỪNG<br><b>TRỞ LẠI!</b></h1>
+            <p>Khám phá game, theo dõi số dư VNC và tham gia Baccarat Online.</p>
+            <a href="#games" class="v3-promo-btn">CHƠI NGAY →</a>
+          </div>
+          <div class="v3-promo-art" aria-hidden="true">
+            <div class="v3-card v3-card-a">A♠</div>
+            <div class="v3-card v3-card-k">K♦</div>
+            <div class="v3-chip">LS</div>
+            <div class="v3-gift">◆</div>
+          </div>
+          <div class="v3-slider-dots"><i class="active"></i><i></i><i></i></div>
+        </section>
+
+        <div class="v3-marquee">
+          <span class="v3-speaker">◖</span>
+          <div><b>LS79win</b> • VNC là điểm ảo trong game • Baccarat Online đang hoạt động</div>
+          <span>›</span>
         </div>
-        <div class="hero-card">
-  
-          <div class="hero-stat"><span>Số dư</span><strong id="heroBalance">0 VNC</strong></div>
-          <div class="hero-stat"><span>Vai trò</span><strong id="heroRole">PLAYER</strong></div>
-        </div>
+
+        <section class="v3-account-strip">
+          <div class="v3-user-card">
+            <div class="v3-avatar">♛</div>
+            <div class="v3-user-copy">
+              <small>TÀI KHOẢN</small>
+              <strong id="v3Username">LS79win Player</strong>
+              <span><b>VIP</b> Thành viên</span>
+            </div>
+          </div>
+
+          <div class="v3-balance-card">
+            <small>SỐ DƯ VNC</small>
+            <strong id="heroBalance">0 VNC</strong>
+            <span id="heroRole">PLAYER</span>
+          </div>
+
+          <div class="v3-quick-actions">
+            <a href="#nxcWallet"><span>◆</span><b>Yêu cầu VNC</b></a>
+            <a href="#nxcWallet"><span>↺</span><b>Rút VNC ảo</b></a>
+            <a href="#leaderboard"><span>♛</span><b>Xếp hạng</b></a>
+            <a href="#account"><span>●</span><b>Tài khoản</b></a>
+          </div>
+        </section>
+
+        <section id="games" class="v3-games-shell">
+          <aside class="v3-side-categories">
+            <button class="category active" data-filter="all"><span>🔥</span><b>HOT</b></button>
+            <button class="category" data-filter="table"><span>♠</span><b>CASINO</b></button>
+            <button class="category" data-filter="quick"><span>777</span><b>NỔ HŨ</b></button>
+            <button class="category" data-filter="arcade"><span>🎮</span><b>ARCADE</b></button>
+          </aside>
+
+          <div class="v3-game-content">
+            <div class="v3-game-tabs">
+              <span class="active">HOT</span>
+              <span>LIVE CASINO</span>
+              <span>GAME BÀI</span>
+              <span>ARCADE</span>
+            </div>
+
+            <div class="game-grid v3-game-grid">
+              <article class="game-card featured v3-game-card" data-category="table">
+                <div class="game-art baccarat-art v3-art">
+                  <div class="v3-art-title">BACCARAT</div>
+                  <div class="playing-card card-a">A♠</div>
+                  <div class="playing-card card-k">K♦</div>
+                  <div class="table-glow"></div>
+                </div>
+                <div class="game-info">
+                  <div><span class="game-tag">● LIVE</span><h3>Baccarat Online</h3><p>Phòng chơi trực tuyến.</p></div>
+                  <a class="play-btn" href="baccarat-online.html">CHƠI NGAY</a>
+                </div>
+              </article>
+
+              <article class="game-card v3-game-card" data-category="table">
+                <div class="game-art blackjack-art v3-art"><div class="v3-art-symbol">21</div><div class="v3-art-title">BLACKJACK</div></div>
+                <div class="game-info"><div><span class="game-tag">TABLE</span><h3>Blackjack 21</h3><p>Đạt 21 thật chuẩn.</p></div><button class="play-btn" data-game="Blackjack">Sắp có</button></div>
+              </article>
+
+              <article class="game-card v3-game-card" data-category="quick">
+                <div class="game-art roulette-art v3-art"><div class="roulette-wheel">◆</div><div class="v3-art-title">ROULETTE</div></div>
+                <div class="game-info"><div><span class="game-tag">QUICK</span><h3>Roulette</h3><p>Vòng quay tốc độ cao.</p></div><button class="play-btn" data-game="Roulette">Sắp có</button></div>
+              </article>
+
+              <article class="game-card v3-game-card" data-category="arcade">
+                <div class="game-art dice-art v3-art"><div class="dice">⚄</div><div class="dice second">⚂</div><div class="v3-art-title">DICE</div></div>
+                <div class="game-info"><div><span class="game-tag">ARCADE</span><h3>Dice Duel</h3><p>Game nhanh nhiều hiệu ứng.</p></div><button class="play-btn" data-game="Dice Duel">Sắp có</button></div>
+              </article>
+
+              <article class="game-card v3-game-card" data-category="arcade">
+                <div class="game-art v3-art v3-fish-art"><div class="v3-art-symbol">🐟</div><div class="v3-art-title">FISHING</div></div>
+                <div class="game-info"><div><span class="game-tag">ARCADE</span><h3>Fishing Arena</h3><p>Khu arcade giải trí.</p></div><button class="play-btn" data-game="Fishing">Sắp có</button></div>
+              </article>
+
+              <article class="game-card v3-game-card" data-category="quick">
+                <div class="game-art v3-art v3-slot-art"><div class="v3-art-symbol">777</div><div class="v3-art-title">LUCKY 777</div></div>
+                <div class="game-info"><div><span class="game-tag">QUICK</span><h3>Lucky 777</h3><p>Game giải trí đang phát triển.</p></div><button class="play-btn" data-game="Lucky 777">Sắp có</button></div>
+              </article>
+            </div>
+          </div>
+        </section>
+
+        <section class="v3-mini-banner">
+          <div><span>LS79WIN</span><h2>NHIỀU GAME MỚI<br>ĐANG ĐƯỢC PHÁT TRIỂN</h2></div>
+          <a href="#games">XEM GAME</a>
+        </section>
       </section>
 
-      <section class="section">
-        <div class="section-head"><div><span class="eyebrow">DANH MỤC</span><h2>Chọn trải nghiệm</h2></div></div>
-        <div class="category-row">
-          <button class="category active" data-filter="all">Tất cả</button>
-          <button class="category" data-filter="table">Bàn chơi</button>
-          <button class="category" data-filter="quick">Nhanh</button>
-          <button class="category" data-filter="arcade">Arcade</button>
-        </div>
-      </section>
-
-      <section id="games" class="section">
-        <div class="section-head"><div><span class="eyebrow">GAME NỔI BẬT</span><h2>LS79win Games</h2></div><span class="live-pill">● LIVE UI</span></div>
-        <div class="game-grid">
-          <article class="game-card featured" data-category="table">
-            <div class="game-art baccarat-art"><div class="playing-card card-a">A♠</div><div class="playing-card card-k">K♦</div><div class="table-glow"></div></div>
-            <div class="game-info"><div><span class="game-tag">● LIVE</span><h3>Baccarat Online</h3><p>Chơi trực tiếp cùng người chơi khác.</p></div><a class="play-btn" href="baccarat-online.html">CHƠI NGAY</a>
-          </article>
-          <article class="game-card" data-category="table"><div class="game-art blackjack-art"><div class="chip-stack">21</div></div><div class="game-info"><div><span class="game-tag">TABLE</span><h3>Blackjack 21</h3><p>Đạt 21 thật chuẩn.</p></div><button class="play-btn" data-game="Blackjack">Sắp có</button></div></article>
-          <article class="game-card" data-category="quick"><div class="game-art roulette-art"><div class="roulette-wheel">◆</div></div><div class="game-info"><div><span class="game-tag">QUICK</span><h3>Roulette</h3><p>Vòng quay tốc độ cao.</p></div><button class="play-btn" data-game="Roulette">Sắp có</button></div></article>
-          <article class="game-card" data-category="arcade"><div class="game-art dice-art"><div class="dice">⚄</div><div class="dice second">⚂</div></div><div class="game-info"><div><span class="game-tag">ARCADE</span><h3>Dice Duel</h3><p>Nhanh, gọn, nhiều hiệu ứng.</p></div><button class="play-btn" data-game="Dice Duel">Sắp có</button></div></article>
-        </div>
-      </section>
 <!-- ===== VÍ VNC ===== -->
 <section id="nxcWallet" class="section">
   <div class="panel nxc-wallet-panel">
@@ -449,7 +526,7 @@
 </nav>
   <div id="toast" class="toast"></div>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="app.js?v=20"></script>
+  <script src="app.js?v=21"></script>
   <script src="menu.js?v=2"></script>
 </body>
 </html>

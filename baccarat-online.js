@@ -29,7 +29,7 @@ let lastAnimatedRoundId = null;
 let dealAnimationToken = 0;
 
 const AUTO_BETTING_SECONDS = 30;
-const RESULT_DISPLAY_MS = 8000;
+const RESULT_DISPLAY_MS = 10000;
 // ================================
 // ELEMENTS
 // ================================
@@ -167,25 +167,28 @@ async function animateFinishedRound(round) {
   for (const [card, container] of dealOrder) {
     if (token !== dealAnimationToken) return;
     appendAnimatedCard(card, container);
-    await sleep(800);
+    await sleep(1500);
   }
 
   if (token !== dealAnimationToken) return;
 
-  await sleep(700);
+  await sleep(1000);
   if (token !== dealAnimationToken) return;
 
   boPlayerScore.textContent = round.player_score ?? "—";
   boBankerScore.textContent = round.banker_score ?? "—";
   boTableMessage.textContent = "Đã tính điểm";
 
-  await sleep(600);
+  await sleep(1000);
   if (token !== dealAnimationToken) return;
 
   boResult.classList.remove("dealing-result");
   document.querySelector(".bo-hands")?.classList.remove("is-dealing");
   renderResult();
   boTableMessage.textContent = "Ván đã kết thúc";
+
+  // Chỉ bắt đầu đếm thời gian sang ván mới sau khi chia bài xong.
+  scheduleNextRound(true);
 }
 
 function formatNXC(value) {
@@ -546,7 +549,9 @@ function renderRound() {
         "Ván đã kết thúc";
     }
 
-    scheduleNextRound();
+    if (!shouldAnimate) {
+      scheduleNextRound(false);
+    }
 
   } else if (
     currentRound.status ===
@@ -744,7 +749,7 @@ async function settleCurrentRound() {
 // AUTO NEXT ROUND
 // ================================
 
-function scheduleNextRound() {
+function scheduleNextRound(afterAnimation = false) {
 
   clearTimeout(
     autoRoundTimer
@@ -761,23 +766,28 @@ function scheduleNextRound() {
   }
 
 
-  const finishedAt =
-    currentRound.finished_at
-      ? new Date(
-          currentRound.finished_at
-        ).getTime()
-      : Date.now();
+  let wait;
 
+  if (afterAnimation) {
+    // Giữ kết quả đủ lâu sau khi animation hoàn tất.
+    wait = RESULT_DISPLAY_MS;
+  } else {
+    // Với ván cũ/đã xem rồi, vẫn giữ cơ chế phục hồi auto-loop.
+    const finishedAt =
+      currentRound.finished_at
+        ? new Date(
+            currentRound.finished_at
+          ).getTime()
+        : Date.now();
 
-  const elapsed =
-    Date.now() - finishedAt;
+    const elapsed =
+      Date.now() - finishedAt;
 
-
-  const wait =
-    Math.max(
+    wait = Math.max(
       500,
       RESULT_DISPLAY_MS - elapsed
     );
+  }
 
 
   boTableMessage.textContent =

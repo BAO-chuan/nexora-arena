@@ -22,6 +22,7 @@ let currentRound = null;
 let selectedBet = null;
 let countdownTimer = null;
 
+let settlingRoundId = null;
 
 // ================================
 // ELEMENTS

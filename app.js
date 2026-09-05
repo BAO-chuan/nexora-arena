@@ -493,3 +493,442 @@ document.addEventListener(
 /* chạy lần đầu */
 
 refreshNxcWallet();
+
+/* =====================================================
+   NEXORA ADMIN - NXC REQUESTS
+===================================================== */
+
+async function loadAdminNxcRequests(){
+
+  const list =
+    $("adminNxcRequestList");
+
+  if(!list) return;
+
+  try{
+
+    const {
+      data: { session }
+    } = await sb.auth.getSession();
+
+    if(!session) return;
+
+
+    /*
+      Kiểm tra role hiện tại trước.
+      Player bình thường không chạy phần admin.
+    */
+
+    const {
+      data: myProfile,
+      error: profileError
+    } = await sb
+      .from("profiles")
+      .select("role")
+      .eq("id", session.user.id)
+      .single();
+
+    if(profileError){
+      throw profileError;
+    }
+
+    if(myProfile.role !== "admin"){
+      return;
+    }
+
+
+    list.innerHTML =
+      '<p class="muted">Đang tải yêu cầu...</p>';
+
+
+    /*
+      Lấy các request đang chờ.
+    */
+
+    const {
+      data: requests,
+      error
+    } = await sb
+      .from("nxc_requests")
+      .select(
+        "id,user_id,amount,status,created_at"
+      )
+      .eq("status", "pending")
+      .order(
+        "created_at",
+        { ascending:true }
+      );
+
+
+    if(error){
+      throw error;
+    }
+
+
+    if(
+      !requests
+      ||
+      requests.length === 0
+    ){
+
+      list.innerHTML =
+        '<p class="muted">Không có yêu cầu NXC đang chờ.</p>';
+
+      return;
+    }
+
+
+    /*
+      Lấy username từ admin_list_players
+      mà hệ thống Admin hiện tại đã có.
+    */
+
+    let players = [];
+
+    const {
+      data: playerData,
+      error: playerError
+    } = await sb.rpc(
+      "admin_list_players"
+    );
+
+
+    if(!playerError && playerData){
+      players = playerData;
+    }
+
+
+    const usernameMap = {};
+
+    players.forEach(player => {
+
+      usernameMap[player.id] =
+        player.username || "Player";
+
+    });
+
+
+    list.innerHTML =
+      requests.map(request => {
+
+        const username =
+          usernameMap[request.user_id]
+          ||
+          "Player";
+
+        const amount =
+          Number(request.amount || 0)
+            .toLocaleString("vi-VN");
+
+        const date =
+          new Date(
+            request.created_at
+          ).toLocaleString(
+            "vi-VN",
+            {
+              dateStyle:"short",
+              timeStyle:"short"
+            }
+          );
+
+
+        return `
+          <div
+            class="admin-request-card"
+            data-request-id="${request.id}"
+          >
+
+            <div class="admin-request-top">
+
+              <div class="admin-request-user">
+
+                <strong>
+                  ${esc(username)}
+                </strong>
+
+                <span>
+                  ${date}
+                </span>
+
+              </div>
+
+              <div class="admin-request-amount">
+                ${amount} NXC
+              </div>
+
+            </div>
+
+
+            <div class="admin-request-actions">
+
+              <button
+                class="approve-nxc"
+                data-approve-nxc="${request.id}"
+                type="button"
+              >
+                ✓ DUYỆT
+              </button>
+
+              <button
+                class="reject-nxc"
+                data-reject-nxc="${request.id}"
+                type="button"
+              >
+                × TỪ CHỐI
+              </button>
+
+            </div>
+
+          </div>
+        `;
+
+      }).join("");
+
+
+    bindAdminNxcButtons();
+
+
+  }catch(error){
+
+    console.error(
+      "Admin NXC:",
+      error
+    );
+
+    list.innerHTML =
+      `<p class="muted">
+        Không tải được yêu cầu:
+        ${esc(error.message)}
+      </p>`;
+  }
+}
+
+
+/* ===== GẮN NÚT DUYỆT / TỪ CHỐI ===== */
+
+function bindAdminNxcButtons(){
+
+  document
+    .querySelectorAll(
+      "[data-approve-nxc]"
+    )
+    .forEach(button => {
+
+      button.onclick =
+        () => approveNxcRequest(
+          button.dataset.approveNxc
+        );
+
+    });
+
+
+  document
+    .querySelectorAll(
+      "[data-reject-nxc]"
+    )
+    .forEach(button => {
+
+      button.onclick =
+        () => rejectNxcRequest(
+          button.dataset.rejectNxc
+        );
+
+    });
+}
+
+
+/* ===== DUYỆT ===== */
+
+async function approveNxcRequest(
+  requestId
+){
+
+  const card =
+    document.querySelector(
+      `[data-request-id="${requestId}"]`
+    );
+
+  const buttons =
+    card
+      ? card.querySelectorAll("button")
+      : [];
+
+
+  if(
+    !confirm(
+      "Duyệt yêu cầu và cộng NXC cho người chơi?"
+    )
+  ){
+    return;
+  }
+
+
+  buttons.forEach(button => {
+    button.disabled = true;
+  });
+
+
+  try{
+
+    const {
+      error
+    } = await sb.rpc(
+      "admin_approve_nxc_request",
+      {
+        request_id:
+          requestId
+      }
+    );
+
+
+    if(error){
+      throw error;
+    }
+
+
+    toast(
+      "Đã duyệt và cộng NXC"
+    );
+
+
+    await loadAdminNxcRequests();
+
+    /*
+      Làm mới danh sách player,
+      leaderboard và balance admin.
+    */
+
+    if(
+      typeof loadPlayers ===
+      "function"
+    ){
+      await loadPlayers();
+    }
+
+    if(
+      typeof loadLeaderboard ===
+      "function"
+    ){
+      await loadLeaderboard();
+    }
+
+    await syncWalletPage();
+
+
+  }catch(error){
+
+    console.error(
+      "Approve NXC:",
+      error
+    );
+
+    alert(
+      "Không duyệt được: "
+      +
+      error.message
+    );
+
+
+    buttons.forEach(button => {
+      button.disabled = false;
+    });
+  }
+}
+
+
+/* ===== TỪ CHỐI ===== */
+
+async function rejectNxcRequest(
+  requestId
+){
+
+  const card =
+    document.querySelector(
+      `[data-request-id="${requestId}"]`
+    );
+
+  const buttons =
+    card
+      ? card.querySelectorAll("button")
+      : [];
+
+
+  if(
+    !confirm(
+      "Từ chối yêu cầu NXC này?"
+    )
+  ){
+    return;
+  }
+
+
+  buttons.forEach(button => {
+    button.disabled = true;
+  });
+
+
+  try{
+
+    const {
+      error
+    } = await sb.rpc(
+      "admin_reject_nxc_request",
+      {
+        request_id:
+          requestId
+      }
+    );
+
+
+    if(error){
+      throw error;
+    }
+
+
+    toast(
+      "Đã từ chối yêu cầu"
+    );
+
+    await loadAdminNxcRequests();
+
+
+  }catch(error){
+
+    console.error(
+      "Reject NXC:",
+      error
+    );
+
+    alert(
+      "Không từ chối được: "
+      +
+      error.message
+    );
+
+
+    buttons.forEach(button => {
+      button.disabled = false;
+    });
+  }
+}
+
+
+/* ===== ADMIN REFRESH ===== */
+
+if($("refreshAdminNxc")){
+
+  $("refreshAdminNxc").onclick =
+    loadAdminNxcRequests;
+}
+
+
+/*
+  Load khi trang xuất hiện.
+  Hàm tự kiểm tra role nên player
+  bình thường không được xử lý admin.
+*/
+
+window.addEventListener(
+  "pageshow",
+  loadAdminNxcRequests
+);

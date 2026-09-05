@@ -468,6 +468,15 @@ scheduleNextRound();
   updateBetButton();
 }
 
+renderCards(
+  [],
+  boPlayerCards
+);
+
+renderCards(
+  [],
+  boBankerCards
+);
 
 // ================================
 // COUNTDOWN

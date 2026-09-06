@@ -1,6 +1,102 @@
-<!doctype html><html lang="vi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#080000"><title>Xì Dách Online • LS79win</title><link rel="stylesheet" href="xi-dach-online.css?v=2"></head><body>
-<header><a href="index.html" class="back">‹</a><div><b>LS79<span>win</span></b><small>XÌ DÁCH ONLINE</small></div><div class="wallet"><small>VNC</small><strong id="balance">—</strong></div></header>
-<main><section id="gate" class="panel"><div class="hero"><span>♠ ♥ ♦ ♣</span><h1>XÌ DÁCH<br><b>ONLINE</b></h1><p>Phòng riêng • 2–6 người • 1 người làm Nhà Cái</p></div><button id="createBtn" class="gold">TẠO PHÒNG</button><div class="join"><input id="roomCode" maxlength="6" placeholder="MÃ PHÒNG" autocomplete="off"><button id="joinBtn">VÀO PHÒNG</button></div><p id="gateMsg" class="msg"></p></section>
-<section id="table" class="hidden"><div class="roombar"><div><small>PHÒNG</small><strong id="code">—</strong></div><div id="phase" class="phase">Đang chờ</div><button id="leaveBtn">RỜI</button></div><div class="felt"><div class="dealer-zone"><div class="role">♛ NHÀ CÁI</div><div id="dealerName">—</div><div id="dealerCards" class="cards"></div><div id="dealerScore" class="score"></div></div><div id="players" class="players"></div></div>
-<div class="controls panel"><div id="turnText">Đang chờ người chơi...</div><div id="betBox" class="betbox"><input id="betAmount" type="number" min="100" max="1000000" step="100" value="1000"><button id="betBtn" class="gold">ĐẶT VNC</button></div><div class="actions"><button id="startBtn" class="gold hidden">BẮT ĐẦU VÁN</button><button id="hitBtn" class="hidden">RÚT BÀI</button><button id="standBtn" class="hidden">DỪNG</button><button id="newBtn" class="gold hidden">VÁN MỚI</button></div><p class="note">VNC là điểm ảo trong LS79win, không có giá trị tiền mặt và không thể quy đổi thành tiền thật.</p><p id="tableMsg" class="msg"></p></div></section></main>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="xi-dach-online.js?v=5"></script></body></html>
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#080000">
+  <title>Xì Dách Online • LS79win</title>
+  <link rel="stylesheet" href="xi-dach-online.css?v=6">
+</head>
+<body>
+<header class="xd-header">
+  <a href="index.html" class="back" aria-label="Quay lại">‹</a>
+  <div class="xd-brand"><b>LS79<span>win</span></b><small>XÌ DÁCH ONLINE</small></div>
+  <div class="wallet"><small>SỐ DƯ</small><strong id="balance">—</strong></div>
+</header>
+
+<main>
+  <section id="gate" class="gate panel">
+    <div class="hero">
+      <div class="hero-suits">♠ <i>♥</i> ♦ ♣</div>
+      <span class="kicker">LS79WIN • MULTIPLAYER</span>
+      <h1>XÌ DÁCH <b>ONLINE</b></h1>
+      <p>Phòng riêng 2–6 người • Một người làm Nhà Cái • Bài được giữ kín cho tới lúc xét.</p>
+    </div>
+    <button id="createBtn" class="btn gold wide">TẠO PHÒNG MỚI</button>
+    <div class="or"><span></span><b>HOẶC</b><span></span></div>
+    <div class="join">
+      <input id="roomCode" maxlength="6" placeholder="NHẬP MÃ PHÒNG" autocomplete="off" autocapitalize="characters">
+      <button id="joinBtn" class="btn">VÀO PHÒNG</button>
+    </div>
+    <p id="gateMsg" class="msg"></p>
+    <p class="note">VNC là điểm ảo trong LS79win, không phải VND, không có giá trị tiền mặt và không thể quy đổi thành tiền thật.</p>
+  </section>
+
+  <section id="table" class="hidden">
+    <div class="room-top">
+      <div class="room-code"><small>PHÒNG</small><strong id="code">—</strong><button id="copyCodeBtn" type="button">SAO CHÉP</button></div>
+      <div id="phase" class="phase">ĐANG CHỜ</div>
+      <button id="leaveBtn" class="leave" type="button">RỜI</button>
+    </div>
+
+    <section class="round-stats">
+      <div><small>VÁN</small><strong id="roundNo">#1</strong></div>
+      <div><small>TỔNG CƯỢC</small><strong id="totalBets">0 VNC</strong></div>
+      <div><small>BẢO CHỨNG</small><strong id="escrow">0 VNC</strong></div>
+      <div id="dealerBalanceBox" class="hidden"><small>VNC NHÀ CÁI</small><strong id="dealerBalance">0 VNC</strong></div>
+    </section>
+
+    <section class="table-shell">
+      <div class="felt">
+        <div class="felt-title">LS79<span>win</span></div>
+        <div id="dealerSeat" class="dealer-seat seat-card">
+          <div class="seat-head">
+            <div class="avatar dealer-avatar">♛</div>
+            <div><span class="role">NHÀ CÁI</span><strong id="dealerName">—</strong></div>
+            <em id="dealerTurnBadge" class="turn-badge hidden">LƯỢT</em>
+          </div>
+          <div id="dealerCards" class="cards"></div>
+          <div id="dealerScore" class="score muted-score">Bài đang úp</div>
+        </div>
+
+        <div id="players" class="players"></div>
+      </div>
+    </section>
+
+    <section class="controls panel">
+      <div class="turn-line"><span class="pulse"></span><strong id="turnText">Đang chờ người chơi...</strong></div>
+
+      <div id="coverBox" class="cover-box hidden">
+        <div><span>Nhà Cái cần bảo chứng</span><strong id="requiredCover">0 VNC</strong></div>
+        <small id="coverStatus">Đang tính...</small>
+      </div>
+
+      <div id="betBox" class="betbox">
+        <label>SỐ VNC CƯỢC</label>
+        <div class="bet-entry"><input id="betAmount" type="number" min="100" max="1000000" step="100" value="1000"><button id="betBtn" class="btn gold">ĐẶT VNC</button></div>
+        <div class="quick-bets"><button data-bet="1000">1K</button><button data-bet="5000">5K</button><button data-bet="10000">10K</button><button data-bet="50000">50K</button></div>
+      </div>
+
+      <div class="actions">
+        <button id="startBtn" class="btn gold hidden">BẮT ĐẦU VÁN</button>
+        <button id="hitBtn" class="btn red hidden">RÚT BÀI</button>
+        <button id="standBtn" class="btn dark hidden">DẰN</button>
+        <button id="newBtn" class="btn gold hidden">VÁN MỚI</button>
+      </div>
+      <p id="tableMsg" class="msg"></p>
+    </section>
+
+    <details class="history panel" id="historyBox">
+      <summary><span>▣</span><b>LỊCH SỬ VÁN</b><small>Chạm để xem</small></summary>
+      <div class="history-head"><span>Kết quả gần đây</span><button id="refreshHistory" type="button">LÀM MỚI</button></div>
+      <div id="historyList"><p class="empty">Chưa có ván đã kết toán.</p></div>
+    </details>
+
+    <p class="note footer-note">VNC là điểm ảo trong LS79win, không có giá trị tiền mặt và không thể quy đổi thành tiền thật.</p>
+  </section>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="xi-dach-online.js?v=8"></script>
+</body>
+</html>

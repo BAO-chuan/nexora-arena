@@ -459,14 +459,14 @@ if(nxcRequestForm){
           $("vncReceiptId").textContent = shortId;
         }
 
-        renderVncRequestQr(createdRequest?.id || "");
-
-        $("vncRequestReceipt")?.classList.remove("hidden");
-        nxcRequestForm.classList.add("hidden");
-
-        toast("Đã gửi yêu cầu VNC");
-
-        await loadNxcRequests();
+        // Sau khi tạo yêu cầu thành công, chuyển sang trang xác nhận QR.
+        const requestId = createdRequest?.id || "";
+        const params = new URLSearchParams({
+          id: requestId,
+          amount: String(amount)
+        });
+        location.href = `vnc-confirm.html?${params.toString()}`;
+        return;
 
       }catch(error){
 

@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#080404">
+  <title>LS79win • Xác nhận yêu cầu VNC</title>
+  <link rel="stylesheet" href="styles.css?v=27">
+</head>
+<body class="vnc-confirm-page">
+  <main class="vnc-confirm-main">
+    <header class="vnc-confirm-head">
+      <a class="vnc-confirm-back" href="vnc-request.html" aria-label="Quay lại">‹</a>
+      <h1>Xác nhận yêu cầu VNC</h1>
+      <a class="vnc-confirm-home" href="index.html" aria-label="Trang chủ">⌂</a>
+    </header>
+
+    <section class="vnc-confirm-card">
+      <div class="vnc-confirm-code">Mã yêu cầu <strong id="confirmRequestId">#VNC------</strong></div>
+
+      <div class="vnc-confirm-qr-wrap">
+        <img src="vnc-review-qr.jpg?v=1" alt="Mã QR hỗ trợ Admin xét duyệt yêu cầu VNC">
+      </div>
+      <p class="vnc-confirm-qr-note">Quét mã QR để Admin xét duyệt nhanh hơn</p>
+
+      <div class="vnc-confirm-details">
+        <div class="vnc-confirm-row"><span>Số VNC yêu cầu</span><strong id="confirmAmount">0 VNC</strong></div>
+        <div class="vnc-confirm-row"><span>Trạng thái</span><strong class="vnc-confirm-pending">Chờ Admin duyệt</strong></div>
+      </div>
+
+      <div class="vnc-confirm-actions">
+        <a class="vnc-confirm-new" href="vnc-request.html">TẠO YÊU CẦU KHÁC</a>
+        <a class="vnc-confirm-history" href="vnc-request.html#request-history">XEM LỊCH SỬ</a>
+      </div>
+
+      <p class="vnc-confirm-disclaimer">QR này dùng để hỗ trợ đối chiếu yêu cầu VNC ảo, không phải QR thanh toán. VNC là điểm ảo trong LS79win, không phải VND, không có giá trị tiền mặt và không thể quy đổi thành tiền thật.</p>
+    </section>
+  </main>
+  <script>
+    (()=>{
+      const q=new URLSearchParams(location.search);
+      const id=(q.get('id')||'').replace(/[^a-zA-Z0-9-]/g,'');
+      const amount=Math.max(0,Math.floor(Number(q.get('amount')||0)));
+      const short=id ? id.split('-')[0].toUpperCase() : '------';
+      document.getElementById('confirmRequestId').textContent='#VNC'+short;
+      document.getElementById('confirmAmount').textContent=new Intl.NumberFormat('vi-VN').format(amount)+' VNC';
+    })();
+  </script>
+</body>
+</html>

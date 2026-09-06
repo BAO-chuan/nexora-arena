@@ -71,10 +71,12 @@ async function refresh(showError=true){
   }
 }
 
-function cardHTML(c,i=0){
-  if(!c||c.rank==='?') return `<div class="card back" style="--i:${i}"><span>LS</span></div>`;
+function cardHTML(c,i=0,fxClass="",delayMs=0){
+  const extra=fxClass?` ${fxClass}`:"";
+  const style=`--i:${i};--fx-delay:${Math.max(0,Number(delayMs)||0)}ms`;
+  if(!c||c.rank==='?') return `<div class="card back${extra}" style="${style}"><span>LS</span></div>`;
   const red=c.suit==='♥'||c.suit==='♦';
-  return `<div class="card ${red?'red':''}" style="--i:${i}"><b>${c.rank}</b><span>${c.suit}</span></div>`;
+  return `<div class="card ${red?'red':''}${extra}" style="${style}"><b>${c.rank}</b><span>${c.suit}</span></div>`;
 }
 
 function statusClass(p){
@@ -108,38 +110,49 @@ function render(s){
   $("dealerName").textContent=s.dealer.username+(isDealer?" (Bạn)":"");
   const prevDealerCards=prevState?.dealer?.cards||[];
   const dealerNewFrom=prevDealerCards.length;
+  const dealerRevealAll=!!prevState && prevState.room?.status!=="finished" && s.room.status==="finished";
   $("dealerCards").innerHTML=(s.dealer.cards||[]).map((c,i)=>{
-    const html=cardHTML(c,i);
-    return i>=dealerNewFrom&&prevState ? html.replace('class="card ', 'class="card fx-deal ') : html;
+    const isNew=!!prevState && i>=dealerNewFrom;
+    const fx=dealerRevealAll?"fx-flip":isNew?"fx-deal":"";
+    return cardHTML(c,i,fx,(i-(dealerRevealAll?0:dealerNewFrom))*90);
   }).join('');
   $("dealerScore").textContent=s.dealer.label||"Bài đang úp";
   $("dealerSeat").classList.toggle("active",!!s.dealer.is_turn);
   $("dealerTurnBadge").classList.toggle("hidden",!s.dealer.is_turn);
 
+  const finishedNow=!!prevState && prevState.room?.status!=="finished" && s.room.status==="finished";
+  const dealerBustFinish=finishedNow && Number(s.dealer.score)>21;
   $("players").dataset.count=String((s.players||[]).length);
-  $("players").innerHTML=(s.players||[]).map(p=>{
+  $("players").innerHTML=(s.players||[]).map((p,seatIndex)=>{
     const pp=(prevState?.players||[]).find(x=>x.user_id===p.user_id);
     const justInspected=!!prevState && !pp?.dealer_inspected && !!p.dealer_inspected;
     const justResult=!!p.result && pp?.result!==p.result;
     const newFrom=(pp?.cards||[]).length;
+    const revealAtFinish=finishedNow && (p.cards||[]).some((c,i)=>c?.rank!=='?' && pp?.cards?.[i]?.rank==='?');
     const cards=(p.cards||[]).map((c,i)=>{
-      let html=cardHTML(c,i);
-      if(prevState && i>=newFrom) html=html.replace('class="card ', 'class="card fx-deal ');
-      if(justInspected) html=html.replace('class="card ', 'class="card fx-flip ');
-      return html;
+      let fx="";
+      let delay=0;
+      if(justInspected || revealAtFinish){
+        fx="fx-flip";
+        delay=(dealerBustFinish?seatIndex*150:seatIndex*70)+i*85;
+      }else if(prevState && i>=newFrom){
+        fx="fx-deal";
+        delay=(i-newFrom)*90;
+      }
+      return cardHTML(c,i,fx,delay);
     }).join('');
+    const statusText=p.result||p.status_text||'';
     return `
     <article class="seat-card player-seat ${statusClass(p)} ${p.user_id===me.id?'me':''} ${justInspected?'fx-inspected':''} ${justResult?'fx-result':''}">
       <div class="seat-head">
         <div class="avatar">${String(p.seat_no||'?')}</div>
         <div><span class="role">NHÀ CON</span><strong>${escapeHTML(p.username)}${p.user_id===me.id?' (Bạn)':''}</strong></div>
-        <em class="seat-status">${escapeHTML(p.status_text||'')}</em>
+        <em class="seat-status ${p.result?statusClass(p):''}">${escapeHTML(statusText)}</em>
       </div>
       <div class="seat-bet"><span>CƯỢC</span><b>${fmt(p.bet)} VNC</b></div>
       <div class="cards">${cards}</div>
       <div class="score">${escapeHTML(p.label||((p.cards||[]).length?'Bài đang úp':''))}</div>
       ${p.can_inspect?`<button class="inspect-btn" data-user-id="${p.user_id}">XÉT BÀI</button>`:''}
-      ${p.result?`<div class="result ${statusClass(p)}">${p.result}</div>`:''}
     </article>`;
   }).join('');
 

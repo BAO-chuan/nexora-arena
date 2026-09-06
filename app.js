@@ -29,7 +29,7 @@ window.adjustNxc=async(id,amount)=>{const reason=prompt("Lý do điều chỉnh 
 window.setSuspended=async(id,suspended)=>{if(!confirm(suspended?"Khóa tài khoản này?":"Mở khóa tài khoản này?"))return;const {error}=await sb.rpc("admin_set_suspended",{target_player_id:id,suspended});if(error){alert(error.message);return}toast(suspended?"Đã khóa tài khoản":"Đã mở khóa tài khoản");await loadPlayers($("playerSearch").value)};
 $("playerSearch").oninput=e=>loadPlayers(e.target.value);
 document.querySelectorAll(".category").forEach(btn=>{btn.onclick=()=>{document.querySelectorAll(".category").forEach(b=>b.classList.remove("active"));btn.classList.add("active");const f=btn.dataset.filter;document.querySelectorAll(".game-card").forEach(card=>card.classList.toggle("hidden",f!=="all"&&card.dataset.category!==f))}});
-document.querySelectorAll(".play-btn").forEach(btn=>{
+document.querySelectorAll("button.play-btn[data-game]").forEach(btn=>{
   btn.onclick=()=>{
     if(btn.dataset.game==="Baccarat"){
       window.location.href="baccarat.html";

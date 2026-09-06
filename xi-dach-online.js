@@ -131,11 +131,13 @@ function render(s){
   const childCannotStand=!isDealer&&my&&myScore<=15&&!special;
   const dealerCannotStand=isDealer&&myScore<15&&!special;
   const canAct=turn&&(s.room.status==='playing'||s.room.status==='dealer_turn');
+  // v2.4.2: sau khi Nhà Cái đã xét ít nhất một Nhà Con thì khóa rút thêm.
+  const dealerHasInspected=isDealer&&(s.players||[]).some(p=>p.dealer_inspected);
 
   $("betBox").classList.toggle("hidden",isDealer||s.room.status!=="waiting"||!!my?.bet);
   $("startBtn").classList.toggle("hidden",!isDealer||s.room.status!=="waiting");
   $("newBtn").classList.toggle("hidden",!isDealer||s.room.status!=="finished");
-  $("hitBtn").classList.toggle("hidden",!canAct);
+  $("hitBtn").classList.toggle("hidden",!canAct||dealerHasInspected);
   $("standBtn").classList.toggle("hidden",!canAct||dealerCannotStand||childCannotStand);
   $("turnText").textContent=s.message||"";
 

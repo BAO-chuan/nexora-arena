@@ -87,7 +87,9 @@ function statusClass(p){
 }
 
 function render(s){
-  if(!s)return;lastState=s;
+  if(!s)return;
+  const prevState=lastState;
+  lastState=s;
   const isDealer=s.dealer.user_id===me.id;
   const my=(s.players||[]).find(p=>p.user_id===me.id);
   const turn=s.turn_user_id===me.id;
@@ -104,25 +106,42 @@ function render(s){
   if(isDealer)$("dealerBalance").textContent=fmt(s.dealer_balance)+" VNC";
 
   $("dealerName").textContent=s.dealer.username+(isDealer?" (Bạn)":"");
-  $("dealerCards").innerHTML=(s.dealer.cards||[]).map(cardHTML).join('');
+  const prevDealerCards=prevState?.dealer?.cards||[];
+  const dealerNewFrom=prevDealerCards.length;
+  $("dealerCards").innerHTML=(s.dealer.cards||[]).map((c,i)=>{
+    const html=cardHTML(c,i);
+    return i>=dealerNewFrom&&prevState ? html.replace('class="card ', 'class="card fx-deal ') : html;
+  }).join('');
   $("dealerScore").textContent=s.dealer.label||"Bài đang úp";
   $("dealerSeat").classList.toggle("active",!!s.dealer.is_turn);
   $("dealerTurnBadge").classList.toggle("hidden",!s.dealer.is_turn);
 
   $("players").dataset.count=String((s.players||[]).length);
-  $("players").innerHTML=(s.players||[]).map(p=>`
-    <article class="seat-card player-seat ${statusClass(p)} ${p.user_id===me.id?'me':''}">
+  $("players").innerHTML=(s.players||[]).map(p=>{
+    const pp=(prevState?.players||[]).find(x=>x.user_id===p.user_id);
+    const justInspected=!!prevState && !pp?.dealer_inspected && !!p.dealer_inspected;
+    const justResult=!!p.result && pp?.result!==p.result;
+    const newFrom=(pp?.cards||[]).length;
+    const cards=(p.cards||[]).map((c,i)=>{
+      let html=cardHTML(c,i);
+      if(prevState && i>=newFrom) html=html.replace('class="card ', 'class="card fx-deal ');
+      if(justInspected) html=html.replace('class="card ', 'class="card fx-flip ');
+      return html;
+    }).join('');
+    return `
+    <article class="seat-card player-seat ${statusClass(p)} ${p.user_id===me.id?'me':''} ${justInspected?'fx-inspected':''} ${justResult?'fx-result':''}">
       <div class="seat-head">
         <div class="avatar">${String(p.seat_no||'?')}</div>
         <div><span class="role">NHÀ CON</span><strong>${escapeHTML(p.username)}${p.user_id===me.id?' (Bạn)':''}</strong></div>
         <em class="seat-status">${escapeHTML(p.status_text||'')}</em>
       </div>
       <div class="seat-bet"><span>CƯỢC</span><b>${fmt(p.bet)} VNC</b></div>
-      <div class="cards">${(p.cards||[]).map(cardHTML).join('')}</div>
+      <div class="cards">${cards}</div>
       <div class="score">${escapeHTML(p.label||((p.cards||[]).length?'Bài đang úp':''))}</div>
       ${p.can_inspect?`<button class="inspect-btn" data-user-id="${p.user_id}">XÉT BÀI</button>`:''}
       ${p.result?`<div class="result ${statusClass(p)}">${p.result}</div>`:''}
-    </article>`).join('');
+    </article>`;
+  }).join('');
 
   document.querySelectorAll(".inspect-btn").forEach(btn=>btn.onclick=()=>runAction(btn,()=>rpc("xidach_inspect_player",{p_room_id:room,p_player_id:btn.dataset.userId})));
 

@@ -159,3 +159,59 @@
   .players[data-count="5"] .player-seat:nth-child(1){bottom:238px}
   .players[data-count="5"] .player-seat:nth-child(5){bottom:238px}
 }
+
+
+/* LS79win Xì Dách v2.5.1 — Mobile Arc + Casino FX */
+.card.fx-deal{animation:fxDeal .42s cubic-bezier(.18,.78,.22,1.18) both}
+.card.fx-flip{animation:fxFlip .55s ease both;transform-style:preserve-3d}
+.player-seat.fx-inspected{animation:fxInspect .7s ease both}
+.player-seat.fx-result.win{animation:fxWin .8s ease both}
+.player-seat.fx-result.lose{animation:fxLose .65s ease both}
+.player-seat.fx-result.tie{animation:fxTie .7s ease both}
+.result{position:relative;overflow:hidden}
+.result.win:after{content:"✦";margin-left:5px;animation:fxSpark 1s ease infinite}
+.dealer-seat.active,.dealer-seat.turn{animation:dealerGlow 1.15s ease-in-out infinite alternate}
+@keyframes fxDeal{0%{opacity:0;filter:blur(2px);transform:translate(0,-75px) rotate(-10deg) scale(.72)}70%{opacity:1;transform:translate(0,4px) rotate(2deg) scale(1.04)}100%{opacity:1;filter:none}}
+@keyframes fxFlip{0%{transform:perspective(500px) rotateY(90deg) scale(.92)}100%{transform:perspective(500px) rotateY(0) scale(1)}}
+@keyframes fxInspect{0%,100%{box-shadow:0 12px 28px rgba(0,0,0,.3)}45%{box-shadow:0 0 0 2px rgba(255,221,117,.7),0 0 30px rgba(255,205,70,.48)}}
+@keyframes fxWin{45%{transform:translateY(-3px) scale(1.025);box-shadow:0 0 30px rgba(75,235,156,.38)}}
+@keyframes fxLose{35%{transform:translateX(-3px)}65%{transform:translateX(3px)}}
+@keyframes fxTie{50%{box-shadow:0 0 26px rgba(255,216,122,.32)}}
+@keyframes fxSpark{50%{opacity:.35;transform:scale(1.4)}}
+@keyframes dealerGlow{to{box-shadow:0 14px 34px rgba(0,0,0,.42),0 0 25px rgba(255,210,85,.34)}}
+
+@media(max-width:720px){
+  .felt{height:455px;min-height:455px;padding:8px 5px 12px}
+  .felt:after{top:47%;height:22%}
+  .felt-title{top:43%;font-size:34px}
+  .dealer-seat{width:62%;max-width:245px;padding:7px;margin:0 auto}
+  .dealer-seat .avatar{width:29px;height:29px}
+  .dealer-seat .seat-head strong{font-size:10px}
+  .dealer-seat .cards{min-height:50px;margin:3px 0 1px}
+  .dealer-seat .card{width:37px;height:53px}
+  .dealer-seat .score{font-size:9px}
+  .dealer-seat:after{bottom:-15px;height:12px}
+  .players .player-seat{width:40%;max-width:155px;padding:6px}
+  .players .cards{min-height:52px}
+  .players[data-count="1"] .player-seat:nth-child(1){bottom:55px}
+  .players[data-count="2"] .player-seat:nth-child(1){left:5%;bottom:75px}
+  .players[data-count="2"] .player-seat:nth-child(2){right:5%;bottom:75px}
+  .players[data-count="3"] .player-seat:nth-child(1){left:1%;bottom:150px}
+  .players[data-count="3"] .player-seat:nth-child(2){bottom:38px}
+  .players[data-count="3"] .player-seat:nth-child(3){right:1%;bottom:150px}
+  .players[data-count="4"] .player-seat:nth-child(1){left:1%;bottom:190px}
+  .players[data-count="4"] .player-seat:nth-child(2){left:5%;bottom:48px}
+  .players[data-count="4"] .player-seat:nth-child(3){right:5%;bottom:48px}
+  .players[data-count="4"] .player-seat:nth-child(4){right:1%;bottom:190px}
+  .players[data-count="5"] .player-seat:nth-child(1){left:0;bottom:205px}
+  .players[data-count="5"] .player-seat:nth-child(2){left:1%;bottom:92px}
+  .players[data-count="5"] .player-seat:nth-child(3){bottom:25px}
+  .players[data-count="5"] .player-seat:nth-child(4){right:1%;bottom:92px}
+  .players[data-count="5"] .player-seat:nth-child(5){right:0;bottom:205px}
+}
+@media(max-width:390px){
+  .felt{height:440px;min-height:440px}
+  .dealer-seat{width:64%;max-width:230px}
+  .players .player-seat{width:41%;max-width:148px}
+}
+@media(prefers-reduced-motion:reduce){.card.fx-deal,.card.fx-flip,.player-seat.fx-inspected,.player-seat.fx-result,.dealer-seat.active,.dealer-seat.turn{animation:none!important}}

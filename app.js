@@ -8,7 +8,7 @@ function setStatus(text,ok=true){$("connectionStatus").textContent=text;$("statu
 function switchTab(type){const login=type==="login";$("loginForm").classList.toggle("hidden",!login);$("signupForm").classList.toggle("hidden",login);$("loginTab").classList.toggle("active",login);$("signupTab").classList.toggle("active",!login);$("loginIntro")?.classList.toggle("hidden",!login);$("signupIntro")?.classList.toggle("hidden",login)}
 $("loginTab").onclick=()=>switchTab("login");$("signupTab").onclick=()=>switchTab("signup");
 function showLoggedOut(){$("authArea").classList.remove("hidden");$("appArea").classList.add("hidden");$("bottomNav").classList.add("hidden");$("walletChip").classList.add("hidden");$("logoutBtn").classList.add("hidden");$("sessionBadge").textContent="Khách"}
-function showLoggedIn(user,p){$("authArea").classList.add("hidden");$("appArea").classList.remove("hidden");$("bottomNav").classList.remove("hidden");$("walletChip").classList.remove("hidden");$("logoutBtn").classList.remove("hidden");const bal=Number(p.balance||0).toLocaleString("vi-VN");$("sessionBadge").textContent=p.username||"Player";if($("v3Username"))$("v3Username").textContent=p.username||"Player";if($("vncRequestUsername"))$("vncRequestUsername").textContent=p.username||"Player";$("headerBalance").textContent=bal;$("heroBalance").textContent=bal+" VNC";$("heroRole").textContent=String(p.role||"player").toUpperCase();$("profileUsername").textContent=p.username||"Player";$("profileEmail").textContent=user.email||"";$("profileBalance").textContent=bal+" VNC";$("profileRole").textContent=String(p.role||"player").toUpperCase();$("profileAvatar").textContent=(p.username||"N").slice(0,1).toUpperCase();$("adminArea").classList.toggle("hidden",p.role!=="admin")}
+function showLoggedIn(user,p){$("authArea").classList.add("hidden");$("appArea").classList.remove("hidden");$("bottomNav").classList.remove("hidden");$("walletChip").classList.remove("hidden");$("logoutBtn").classList.remove("hidden");const bal=Number(p.balance||0).toLocaleString("vi-VN");$("sessionBadge").textContent=p.username||"Player";if($("v3Username"))$("v3Username").textContent=p.username||"Player";if($("vncRequestUsername"))$("vncRequestUsername").textContent=p.username||"Player";if($("withdrawPageBalance"))$("withdrawPageBalance").textContent=bal+" VNC";if($("withdrawProfileLabel"))$("withdrawProfileLabel").textContent=p.username||"Tài khoản LS79win";$("headerBalance").textContent=bal;$("heroBalance").textContent=bal+" VNC";$("heroRole").textContent=String(p.role||"player").toUpperCase();$("profileUsername").textContent=p.username||"Player";$("profileEmail").textContent=user.email||"";$("profileBalance").textContent=bal+" VNC";$("profileRole").textContent=String(p.role||"player").toUpperCase();$("profileAvatar").textContent=(p.username||"N").slice(0,1).toUpperCase();$("adminArea").classList.toggle("hidden",p.role!=="admin")}
 async function getProfile(id){const {data,error}=await sb.from("profiles").select("*").eq("id",id).single();if(error)throw error;return data}
 async function refresh(){try{const {data:{session},error}=await sb.auth.getSession();if(error)throw error;setStatus("Đã kết nối Supabase ✓",true);if(!session){showLoggedOut();return}const p=await getProfile(session.user.id);if(p.is_suspended){await sb.auth.signOut();alert("Tài khoản đang bị khóa.");showLoggedOut();return}showLoggedIn(session.user,p);await loadTransactions(session.user.id);await loadLeaderboard();if(p.role==="admin")await loadPlayers()}catch(err){console.error(err);setStatus("Lỗi kết nối: "+err.message,false)}}
 function authErrorVi(err){const m=String(err?.message||err||"").toLowerCase();if(m.includes("invalid login credentials"))return"Email hoặc mật khẩu chưa đúng.";if(m.includes("email not confirmed"))return"Email chưa được xác nhận. Hãy kiểm tra hộp thư.";if(m.includes("already registered"))return"Email này đã được đăng ký.";if(m.includes("rate limit"))return"Bạn thao tác quá nhanh. Vui lòng thử lại sau.";return err?.message||"Có lỗi xảy ra. Vui lòng thử lại."}
@@ -1244,6 +1244,33 @@ window.addEventListener(
   "pageshow",
   loadPlayerInfo
 );
+
+
+// =========================================
+// WITHDRAW MODERN PAGE UI
+// =========================================
+(function initModernWithdrawUI(){
+  const page=document.querySelector('.withdraw-modern-page');
+  if(!page)return;
+  const tabs=[...page.querySelectorAll('[data-withdraw-tab]')];
+  const panels=[...page.querySelectorAll('[data-withdraw-panel]')];
+  tabs.forEach(tab=>tab.addEventListener('click',()=>{
+    const name=tab.dataset.withdrawTab;
+    tabs.forEach(t=>t.classList.toggle('active',t===tab));
+    panels.forEach(p=>p.classList.toggle('hidden',p.dataset.withdrawPanel!==name));
+    if(name==='history'&&typeof loadNxcWithdrawRequests==='function')loadNxcWithdrawRequests();
+  }));
+  const allBtn=document.getElementById('withdrawAllBtn');
+  if(allBtn)allBtn.addEventListener('click',async()=>{
+    try{
+      const {data:{session}}=await sb.auth.getSession();
+      if(!session)return;
+      const p=await getProfile(session.user.id);
+      const input=document.getElementById('nxcWithdrawAmount');
+      if(input)input.value=Math.max(0,Math.floor(Number(p.balance||0)));
+    }catch(err){console.error('Withdraw all:',err)}
+  });
+})();
 
 // =========================================
 // VNC WITHDRAW

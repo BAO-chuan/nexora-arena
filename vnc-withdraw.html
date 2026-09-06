@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="theme-color" content="#06130f">
   <title>LS79win • Rút VNC ảo</title>
-  <link rel="stylesheet" href="styles.css?v=21">
+  <link rel="stylesheet" href="styles.css?v=27">
   <link rel="stylesheet" href="menu.css?v=3">
   <link rel="stylesheet" href="pages.css?v=1">
 </head>
@@ -50,6 +50,69 @@
 </section>
 
     <section id="appArea" class="hidden">
+
+      <section class="withdraw-modern-page" aria-label="Rút VNC ảo">
+        <div class="withdraw-modern-top">
+          <a class="withdraw-modern-back" href="index.html" aria-label="Quay lại">‹</a>
+          <div class="withdraw-modern-tabs">
+            <button type="button" class="active" data-withdraw-tab="request">Yêu cầu rút VNC</button>
+            <a href="account.html">Tài khoản</a>
+            <button type="button" data-withdraw-tab="history">Lịch sử</button>
+          </div>
+          <span class="withdraw-modern-help">◎</span>
+        </div>
+
+        <div class="withdraw-modern-balance">
+          <span>Số dư</span>
+          <strong id="withdrawPageBalance">0 VNC</strong>
+        </div>
+
+        <div class="withdraw-modern-switch">
+          <button class="active" type="button">Rút VNC ảo</button>
+          <button type="button" disabled>Điểm trong LS79win</button>
+        </div>
+
+        <section class="withdraw-modern-panel" data-withdraw-panel="request">
+          <div class="withdraw-modern-account">
+            <span class="withdraw-modern-account-icon">◆</span>
+            <div><small>TÀI KHOẢN NHẬN</small><strong id="withdrawProfileLabel">Tài khoản LS79win</strong></div>
+            <span class="withdraw-modern-chevron">⌄</span>
+          </div>
+
+          <form id="nxcWithdrawForm" class="withdraw-modern-form">
+            <label for="nxcWithdrawAmount">Số VNC muốn rút</label>
+            <div class="withdraw-modern-amount-wrap">
+              <input id="nxcWithdrawAmount" type="number" min="1" step="1" inputmode="numeric" placeholder="Nhập số VNC" required>
+              <button id="withdrawAllBtn" type="button">TẤT CẢ</button>
+            </div>
+
+            <div class="withdraw-modern-quick">
+              <button type="button" data-withdraw-nxc="1000">1K</button>
+              <button type="button" data-withdraw-nxc="5000">5K</button>
+              <button type="button" data-withdraw-nxc="10000">10K</button>
+              <button type="button" data-withdraw-nxc="50000">50K</button>
+            </div>
+
+            <div class="withdraw-modern-note">
+              <span>ⓘ</span>
+              <p>VNC là điểm ảo trong LS79win. Lệnh rút chỉ làm giảm số điểm VNC trong tài khoản và chờ Admin xét duyệt.</p>
+            </div>
+
+            <button class="withdraw-modern-submit" type="submit">XÁC NHẬN RÚT VNC</button>
+            <p id="nxcWithdrawMessage" class="withdraw-modern-message"></p>
+          </form>
+        </section>
+
+        <section class="withdraw-modern-panel hidden" data-withdraw-panel="history">
+          <div class="withdraw-modern-history-head">
+            <div><small>WITHDRAW HISTORY</small><h2>Lịch sử rút VNC</h2></div>
+            <button id="refreshWithdrawRequests" type="button">↻ Làm mới</button>
+          </div>
+          <div id="nxcWithdrawList"><p class="muted">Đang tải...</p></div>
+        </section>
+
+        <p class="withdraw-modern-disclaimer">VNC là điểm ảo trong LS79win, không phải VND, không có giá trị tiền mặt và không thể quy đổi thành tiền thật.</p>
+      </section>
 
       <div class="route-heading">
         <span class="eyebrow">VIRTUAL VNC</span>
@@ -281,24 +344,24 @@
           <div><span class="eyebrow">VIRTUAL VNC</span><h3>Rút VNC ảo</h3></div>
         </div>
         <p class="muted">VNC sẽ bị trừ khi gửi lệnh. Nếu Admin từ chối, VNC sẽ được hoàn lại.</p>
-        <form id="nxcWithdrawForm">
+        <form id="legacyNxcWithdrawForm">
           <label class="player-info-field"><span>Số VNC muốn rút</span>
-            <input id="nxcWithdrawAmount" type="number" min="1" step="1" inputmode="numeric" placeholder="Ví dụ: 1000" required>
+            <input id="legacyNxcWithdrawAmount" type="number" min="1" step="1" inputmode="numeric" placeholder="Ví dụ: 1000" required>
           </label>
           <div class="nxc-quick-row">
-            <button type="button" class="mini-btn" data-withdraw-nxc="1000">1K</button>
-            <button type="button" class="mini-btn" data-withdraw-nxc="5000">5K</button>
-            <button type="button" class="mini-btn" data-withdraw-nxc="10000">10K</button>
-            <button type="button" class="mini-btn" data-withdraw-nxc="50000">50K</button>
+            <button type="button" class="mini-btn" data-legacy-withdraw-nxc="1000">1K</button>
+            <button type="button" class="mini-btn" data-legacy-withdraw-nxc="5000">5K</button>
+            <button type="button" class="mini-btn" data-legacy-withdraw-nxc="10000">10K</button>
+            <button type="button" class="mini-btn" data-legacy-withdraw-nxc="50000">50K</button>
           </div>
           <button class="primary-btn" type="submit">GỬI LỆNH RÚT VNC ẢO</button>
-          <p id="nxcWithdrawMessage" class="muted"></p>
+          <p id="legacyNxcWithdrawMessage" class="muted"></p>
         </form>
         <div class="nxc-history-head">
           <div><span class="eyebrow">WITHDRAW HISTORY</span><h3>Lịch sử rút VNC</h3></div>
-          <button id="refreshWithdrawRequests" class="mini-btn" type="button">Làm mới</button>
+          <button id="legacyRefreshWithdrawRequests" class="mini-btn" type="button">Làm mới</button>
         </div>
-        <div id="nxcWithdrawList"><p class="muted">Đang tải...</p></div>
+        <div id="legacyNxcWithdrawList"><p class="muted">Đang tải...</p></div>
       </div>
     </details>
   </div>
@@ -492,7 +555,7 @@
     })();
   </script>
 
-  <script src="app.js?v=23"></script>
+  <script src="app.js?v=29"></script>
   <script src="menu.js?v=2"></script>
 </body>
 </html>

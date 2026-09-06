@@ -1055,3 +1055,35 @@ input:focus{border-color:#c9912f;box-shadow:0 0 0 3px rgba(242,196,90,.08)}
 .vnc-confirm-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:18px}.vnc-confirm-actions a{padding:14px 10px;border-radius:14px;text-align:center;font-weight:950}.vnc-confirm-new{background:linear-gradient(135deg,#8c0710,#d90b16)}.vnc-confirm-history{background:#1a0b0b;border:1px solid rgba(242,196,90,.18)}
 .vnc-confirm-disclaimer{margin:18px 4px 0;text-align:center;color:#9d9189;font-size:11px;line-height:1.55}
 @media(max-width:420px){.vnc-confirm-main{padding:10px 12px 78px}.vnc-confirm-card{padding:16px 12px}.vnc-confirm-qr-wrap{width:min(290px,94%)}.vnc-confirm-actions{grid-template-columns:1fr}.vnc-confirm-head h1{font-size:19px}}
+
+
+/* =========================================================
+   LS79win Withdraw Mobile v2 — VNC ảo only
+   Inspired by compact mobile wallet layout; no cash-out rails.
+========================================================= */
+body[data-page="withdraw"]{background:#070202}
+body[data-page="withdraw"] main{width:min(680px,100%);padding:0 0 110px}
+body[data-page="withdraw"] .route-heading,
+body[data-page="withdraw"] #home,
+body[data-page="withdraw"] #nxcWallet,
+body[data-page="withdraw"] #leaderboard,
+body[data-page="withdraw"] #adminArea{display:none!important}
+body[data-page="withdraw"] .connection-bar{margin:10px auto 8px;font-size:11px}
+.withdraw-modern-page{min-height:calc(100vh - 70px);background:#0b0505;border-top:1px solid rgba(242,196,90,.08);padding-bottom:28px}
+.withdraw-modern-top{position:sticky;top:61px;z-index:20;display:grid;grid-template-columns:44px minmax(0,1fr) 44px;align-items:center;gap:4px;padding:12px 10px 0;background:rgba(10,3,3,.97);backdrop-filter:blur(16px);border-bottom:1px solid rgba(255,255,255,.08)}
+.withdraw-modern-back{font-size:42px;line-height:1;color:#f3eee8;display:grid;place-items:center;height:48px}
+.withdraw-modern-help{font-size:26px;color:#f2b238;text-align:center}
+.withdraw-modern-tabs{display:grid;grid-template-columns:1.25fr .85fr .75fr;align-items:end;overflow:hidden}
+.withdraw-modern-tabs button,.withdraw-modern-tabs a{position:relative;min-height:48px;border:0;background:transparent;color:#cfc5bd;font-weight:900;font-size:14px;display:grid;place-items:center;padding:0 8px;white-space:nowrap}
+.withdraw-modern-tabs .active{color:#f2c45a}
+.withdraw-modern-tabs .active:after{content:"";position:absolute;left:10%;right:10%;bottom:0;height:3px;border-radius:5px 5px 0 0;background:linear-gradient(90deg,#d90b16,#f2c45a)}
+.withdraw-modern-balance{display:flex;gap:8px;align-items:center;padding:16px 22px;background:#110707;border-bottom:1px solid rgba(255,255,255,.07)}
+.withdraw-modern-balance span{color:#9f938b;font-size:15px;font-weight:800}.withdraw-modern-balance strong{color:#ffe08b;font-size:20px}
+.withdraw-modern-switch{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:18px 22px;border-bottom:1px solid rgba(255,255,255,.07)}
+.withdraw-modern-switch button{height:54px;border-radius:14px;border:1px solid rgba(242,196,90,.18);background:#120707;color:#d7cdc5;font-weight:950;font-size:15px}.withdraw-modern-switch .active{color:#ffe08b;border-color:#e2a52b;background:linear-gradient(180deg,rgba(217,11,22,.13),rgba(242,196,90,.05))}.withdraw-modern-switch button:disabled{opacity:.62}
+.withdraw-modern-panel{padding:18px 22px 8px}
+.withdraw-modern-account{display:grid;grid-template-columns:42px 1fr 28px;gap:10px;align-items:center;border:1px solid rgba(242,196,90,.18);background:#130808;border-radius:14px;padding:13px 14px;margin-bottom:20px}.withdraw-modern-account-icon{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;background:linear-gradient(145deg,#8d0710,#2a0506);color:#ffe08b}.withdraw-modern-account small{display:block;color:#a79990;font-size:9px;letter-spacing:.8px}.withdraw-modern-account strong{display:block;margin-top:3px;font-size:15px}.withdraw-modern-chevron{font-size:20px;color:#c7b8ad;text-align:center}
+.withdraw-modern-form{display:grid;gap:14px}.withdraw-modern-form>label{font-size:18px;color:#fff8ec;font-weight:950}.withdraw-modern-amount-wrap{display:grid;grid-template-columns:1fr auto;border:1px solid rgba(242,196,90,.22);border-radius:14px;overflow:hidden;background:#0b0404}.withdraw-modern-amount-wrap input{border:0;border-radius:0;background:transparent;min-height:58px;padding:14px 16px;font-size:18px}.withdraw-modern-amount-wrap button{border:0;background:transparent;color:#f2c45a;font-weight:950;padding:0 17px}.withdraw-modern-quick{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.withdraw-modern-quick button{border:1px solid rgba(242,196,90,.16);border-radius:12px;background:#160707;color:#ffe08b;padding:11px 4px;font-weight:950}.withdraw-modern-note{display:flex;gap:10px;padding:13px;border-radius:13px;background:rgba(242,196,90,.06);border:1px solid rgba(242,196,90,.12)}.withdraw-modern-note span{color:#f2c45a}.withdraw-modern-note p{margin:0;color:#c5b9b0;font-size:12px;line-height:1.5}.withdraw-modern-submit{min-height:58px;border:1px solid rgba(255,211,105,.25);border-radius:14px;background:linear-gradient(180deg,#d90b16,#8c0710);color:#fff;font-weight:1000;font-size:16px;box-shadow:0 12px 30px rgba(160,0,10,.22)}.withdraw-modern-submit:disabled{opacity:.55}.withdraw-modern-message{min-height:20px;margin:0;text-align:center;color:#f2c45a;font-weight:850;font-size:13px}
+.withdraw-modern-history-head{display:flex;justify-content:space-between;align-items:end;gap:10px;margin-bottom:12px}.withdraw-modern-history-head small{color:#f2c45a;letter-spacing:1px}.withdraw-modern-history-head h2{margin:4px 0 0}.withdraw-modern-history-head button{border:1px solid rgba(242,196,90,.16);background:#170707;color:#ffe08b;border-radius:11px;padding:9px 11px;font-weight:900}.withdraw-modern-panel .withdraw-request-card{background:#140808;border-color:rgba(242,196,90,.11)}
+.withdraw-modern-disclaimer{margin:14px 22px 0;color:#8f8178;font-size:10px;line-height:1.5;text-align:center}
+@media(max-width:430px){body[data-page="withdraw"] .topbar{padding:10px 12px}.withdraw-modern-top{top:57px}.withdraw-modern-tabs button,.withdraw-modern-tabs a{font-size:12px;padding:0 4px}.withdraw-modern-panel{padding-left:16px;padding-right:16px}.withdraw-modern-switch{padding-left:16px;padding-right:16px}.withdraw-modern-balance{padding-left:16px}.withdraw-modern-quick{grid-template-columns:repeat(4,1fr)}}

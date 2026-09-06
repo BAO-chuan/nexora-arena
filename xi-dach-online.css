@@ -215,4 +215,80 @@
   .players .player-seat{width:41%;max-width:148px}
 }
 @media(prefers-reduced-motion:reduce){.card.fx-deal,.card.fx-flip,.player-seat.fx-inspected,.player-seat.fx-result,.dealer-seat.active,.dealer-seat.turn{animation:none!important}}
-\n\n/* LS79win Xì Dách v2.5.2 — Casino Animation Polish */\n.card.fx-deal,.card.fx-flip{animation-delay:var(--fx-delay,0ms)!important}\n.card.fx-deal{transform-origin:50% 50%}\n.card.fx-flip{backface-visibility:hidden;will-change:transform,opacity}\n.seat-status.win{color:#80f0b6;border-color:rgba(86,226,155,.35);background:rgba(20,105,66,.24);box-shadow:0 0 14px rgba(86,226,155,.10)}\n.seat-status.lose{color:#ff8d95;border-color:rgba(255,78,88,.30);background:rgba(137,15,25,.24)}\n.seat-status.tie{color:#ffe18b;border-color:rgba(255,216,122,.30);background:rgba(125,92,20,.20)}\n.player-seat.fx-result.win:before,.player-seat.fx-result.tie:before{content:"";position:absolute;inset:-1px;border-radius:inherit;pointer-events:none;z-index:5;background:linear-gradient(110deg,transparent 20%,rgba(255,255,255,.42) 45%,transparent 68%);transform:translateX(-130%);animation:fxSweep .8s .08s ease-out both}\n.player-seat.fx-result.lose{animation:fxLoseSoft .52s ease both}\n@keyframes fxSweep{to{transform:translateX(130%)}}\n@keyframes fxLoseSoft{25%{transform:translateX(-2px)}50%{transform:translateX(2px);box-shadow:0 0 24px rgba(255,61,74,.22)}75%{transform:translateX(-1px)}}\n\n@media(max-width:720px){\n  .felt{height:410px;min-height:410px}\n  .felt-title{top:40%;font-size:31px}\n  .dealer-seat{width:58%;max-width:230px;padding:6px}\n  .dealer-seat .cards{min-height:46px}\n  .dealer-seat .card{width:35px;height:50px}\n  .players .player-seat{width:39%;max-width:148px;padding:6px;border-radius:15px}\n  .players .cards{min-height:49px;margin:3px 0 0}\n  .players .score{font-size:9px;margin-top:1px}\n  .players[data-count="1"] .player-seat:nth-child(1){bottom:88px}\n  .players[data-count="2"] .player-seat:nth-child(1){left:5%;bottom:96px}\n  .players[data-count="2"] .player-seat:nth-child(2){right:5%;bottom:96px}\n  .players[data-count="3"] .player-seat:nth-child(1){left:1%;bottom:158px}\n  .players[data-count="3"] .player-seat:nth-child(2){bottom:68px}\n  .players[data-count="3"] .player-seat:nth-child(3){right:1%;bottom:158px}\n  .players[data-count="4"] .player-seat:nth-child(1){left:1%;bottom:174px}\n  .players[data-count="4"] .player-seat:nth-child(2){left:5%;bottom:68px}\n  .players[data-count="4"] .player-seat:nth-child(3){right:5%;bottom:68px}\n  .players[data-count="4"] .player-seat:nth-child(4){right:1%;bottom:174px}\n  .players[data-count="5"] .player-seat:nth-child(1){left:0;bottom:184px}\n  .players[data-count="5"] .player-seat:nth-child(2){left:1%;bottom:105px}\n  .players[data-count="5"] .player-seat:nth-child(3){bottom:58px}\n  .players[data-count="5"] .player-seat:nth-child(4){right:1%;bottom:105px}\n  .players[data-count="5"] .player-seat:nth-child(5){right:0;bottom:184px}\n}\n@media(max-width:390px){\n  .felt{height:395px;min-height:395px}\n  .dealer-seat{width:60%;max-width:220px}\n  .players .player-seat{width:40%;max-width:143px}\n  .players .avatar{width:26px;height:26px}\n  .players .card{width:34px;height:49px}\n}\n@media(prefers-reduced-motion:reduce){.player-seat.fx-result.win:before,.player-seat.fx-result.tie:before{animation:none!important}}\n
+
+
+/* LS79win Xì Dách v2.5.2 — Casino Animation Polish */
+.card.fx-deal,.card.fx-flip{animation-delay:var(--fx-delay,0ms)!important}
+.card.fx-deal{transform-origin:50% 50%}
+.card.fx-flip{backface-visibility:hidden;will-change:transform,opacity}
+.seat-status.win{color:#80f0b6;border-color:rgba(86,226,155,.35);background:rgba(20,105,66,.24);box-shadow:0 0 14px rgba(86,226,155,.10)}
+.seat-status.lose{color:#ff8d95;border-color:rgba(255,78,88,.30);background:rgba(137,15,25,.24)}
+.seat-status.tie{color:#ffe18b;border-color:rgba(255,216,122,.30);background:rgba(125,92,20,.20)}
+.player-seat.fx-result.win:before,.player-seat.fx-result.tie:before{content:"";position:absolute;inset:-1px;border-radius:inherit;pointer-events:none;z-index:5;background:linear-gradient(110deg,transparent 20%,rgba(255,255,255,.42) 45%,transparent 68%);transform:translateX(-130%);animation:fxSweep .8s .08s ease-out both}
+.player-seat.fx-result.lose{animation:fxLoseSoft .52s ease both}
+@keyframes fxSweep{to{transform:translateX(130%)}}
+@keyframes fxLoseSoft{25%{transform:translateX(-2px)}50%{transform:translateX(2px);box-shadow:0 0 24px rgba(255,61,74,.22)}75%{transform:translateX(-1px)}}
+
+@media(max-width:720px){
+  .felt{height:410px;min-height:410px}
+  .felt-title{top:40%;font-size:31px}
+  .dealer-seat{width:58%;max-width:230px;padding:6px}
+  .dealer-seat .cards{min-height:46px}
+  .dealer-seat .card{width:35px;height:50px}
+  .players .player-seat{width:39%;max-width:148px;padding:6px;border-radius:15px}
+  .players .cards{min-height:49px;margin:3px 0 0}
+  .players .score{font-size:9px;margin-top:1px}
+  .players[data-count="1"] .player-seat:nth-child(1){bottom:88px}
+  .players[data-count="2"] .player-seat:nth-child(1){left:5%;bottom:96px}
+  .players[data-count="2"] .player-seat:nth-child(2){right:5%;bottom:96px}
+  .players[data-count="3"] .player-seat:nth-child(1){left:1%;bottom:158px}
+  .players[data-count="3"] .player-seat:nth-child(2){bottom:68px}
+  .players[data-count="3"] .player-seat:nth-child(3){right:1%;bottom:158px}
+  .players[data-count="4"] .player-seat:nth-child(1){left:1%;bottom:174px}
+  .players[data-count="4"] .player-seat:nth-child(2){left:5%;bottom:68px}
+  .players[data-count="4"] .player-seat:nth-child(3){right:5%;bottom:68px}
+  .players[data-count="4"] .player-seat:nth-child(4){right:1%;bottom:174px}
+  .players[data-count="5"] .player-seat:nth-child(1){left:0;bottom:184px}
+  .players[data-count="5"] .player-seat:nth-child(2){left:1%;bottom:105px}
+  .players[data-count="5"] .player-seat:nth-child(3){bottom:58px}
+  .players[data-count="5"] .player-seat:nth-child(4){right:1%;bottom:105px}
+  .players[data-count="5"] .player-seat:nth-child(5){right:0;bottom:184px}
+}
+@media(max-width:390px){
+  .felt{height:395px;min-height:395px}
+  .dealer-seat{width:60%;max-width:220px}
+  .players .player-seat{width:40%;max-width:143px}
+  .players .avatar{width:26px;height:26px}
+  .players .card{width:34px;height:49px}
+}
+@media(prefers-reduced-motion:reduce){.player-seat.fx-result.win:before,.player-seat.fx-result.tie:before{animation:none!important}}
+
+
+/* LS79win Xì Dách v2.5.3 — Strong Deal Animation */
+.deck-shoe{position:absolute;z-index:8;top:58px;right:4.5%;width:46px;height:66px;pointer-events:none;filter:drop-shadow(0 8px 10px rgba(0,0,0,.38))}
+.deck-card{position:absolute;left:5px;top:2px;width:34px;height:49px;border-radius:7px;border:1px solid rgba(255,223,135,.7);background:repeating-linear-gradient(45deg,#260507 0 4px,#750a11 4px 8px);box-shadow:0 3px 0 #421016,0 6px 0 #26080b,0 9px 12px rgba(0,0,0,.4)}
+.deck-card-3{transform:translate(-4px,-4px) rotate(-4deg);opacity:.72}
+.deck-card-2{transform:translate(-2px,-2px) rotate(-2deg);opacity:.86}
+.deck-card-1{display:grid;place-items:center;color:#ffe08e;background:repeating-linear-gradient(45deg,#2b0608 0 4px,#820b14 4px 8px);border:2px solid #e8bd5b}
+.deck-card-1 b{font-size:11px;line-height:1}.deck-card-1 small{position:absolute;bottom:4px;font-size:6px;font-weight:950;letter-spacing:.4px}
+.deck-shoe em{position:absolute;top:54px;left:50%;transform:translateX(-50%);font-style:normal;font-size:6px;font-weight:950;color:rgba(255,226,147,.72);white-space:nowrap;letter-spacing:.7px}
+.deck-shoe.fx-pulse{animation:deckPulse .28s ease}
+.card.fx-deal{animation-name:fxDealStrong!important;animation-duration:.64s!important;animation-timing-function:cubic-bezier(.18,.82,.22,1.08)!important;animation-fill-mode:both!important;animation-play-state:paused;will-change:transform,opacity,filter;z-index:12}
+@keyframes fxDealStrong{
+  0%{opacity:0;filter:blur(1.6px);transform:translate(var(--deal-x,0px),var(--deal-y,-90px)) rotate(-22deg) scale(.54)}
+  58%{opacity:1;filter:none;transform:translate(calc(var(--deal-x,0px)*.17),calc(var(--deal-y,-90px)*.17)) rotate(7deg) scale(1.08)}
+  82%{transform:translate(-2px,2px) rotate(-2deg) scale(.98)}
+  100%{opacity:1;filter:none;transform:translate(0,0) rotate(calc((var(--i) - 2) * 2deg)) scale(1)}
+}
+@keyframes deckPulse{50%{transform:translateY(-2px) scale(1.05);filter:drop-shadow(0 0 12px rgba(255,206,79,.48))}}
+.felt.fx-dealing:after{box-shadow:0 0 45px rgba(255,205,68,.08)}
+
+@media(max-width:720px){
+  .deck-shoe{top:50px;right:3%;width:42px;height:60px}
+  .deck-card{width:31px;height:45px}
+  .deck-shoe em{top:50px;font-size:5.5px}
+}
+@media(max-width:390px){
+  .deck-shoe{top:47px;right:2.5%;transform:scale(.92);transform-origin:top right}
+}
+@media(prefers-reduced-motion:reduce){.card.fx-deal{animation:none!important;opacity:1!important}.deck-shoe.fx-pulse{animation:none!important}}

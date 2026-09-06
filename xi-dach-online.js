@@ -79,6 +79,42 @@ function cardHTML(c,i=0,fxClass="",delayMs=0){
   return `<div class="card ${red?'red':''}${extra}" style="${style}"><b>${c.rank}</b><span>${c.suit}</span></div>`;
 }
 
+function playStrongDealAnimations(){
+  const deck=$("deckShoe");
+  const felt=document.querySelector(".felt");
+  const cards=[...document.querySelectorAll(".card.fx-deal")];
+  if(!deck||!cards.length)return;
+
+  const dr=deck.getBoundingClientRect();
+  const sx=dr.left+dr.width*.48;
+  const sy=dr.top+dr.height*.36;
+  felt?.classList.add("fx-dealing");
+
+  cards.forEach((card,index)=>{
+    const r=card.getBoundingClientRect();
+    const tx=r.left+r.width/2;
+    const ty=r.top+r.height/2;
+    card.style.setProperty("--deal-x",`${Math.round(sx-tx)}px`);
+    card.style.setProperty("--deal-y",`${Math.round(sy-ty)}px`);
+    card.style.animationPlayState="running";
+
+    const rawDelay=getComputedStyle(card).getPropertyValue("--fx-delay").trim();
+    const delay=Math.max(0,parseInt(rawDelay,10)||0);
+    window.setTimeout(()=>{
+      deck.classList.remove("fx-pulse");
+      void deck.offsetWidth;
+      deck.classList.add("fx-pulse");
+    },delay);
+  });
+
+  const maxDelay=Math.max(...cards.map(c=>parseInt(getComputedStyle(c).getPropertyValue("--fx-delay"),10)||0));
+  window.setTimeout(()=>felt?.classList.remove("fx-dealing"),maxDelay+760);
+}
+
+function queueStrongDealAnimations(){
+  requestAnimationFrame(()=>requestAnimationFrame(playStrongDealAnimations));
+}
+
 function statusClass(p){
   if(p.result==="THẮNG")return "win";
   if(p.result==="THUA")return "lose";
@@ -96,6 +132,9 @@ function render(s){
   const my=(s.players||[]).find(p=>p.user_id===me.id);
   const turn=s.turn_user_id===me.id;
   const phaseMap={waiting:"CHỜ CƯỢC",playing:"NHÀ CON",dealer_turn:"NHÀ CÁI",finished:"KẾT QUẢ"};
+  const initialDeal=!!prevState && prevState.room?.status==="waiting" && (s.room.status==="playing"||s.room.status==="dealer_turn");
+  const dealGap=210;
+  const dealCycle=(s.players||[]).length+1;
 
   $("code").textContent=s.room.code;
   $("phase").textContent=phaseMap[s.room.status]||s.room.status;
@@ -114,7 +153,8 @@ function render(s){
   $("dealerCards").innerHTML=(s.dealer.cards||[]).map((c,i)=>{
     const isNew=!!prevState && i>=dealerNewFrom;
     const fx=dealerRevealAll?"fx-flip":isNew?"fx-deal":"";
-    return cardHTML(c,i,fx,(i-(dealerRevealAll?0:dealerNewFrom))*90);
+    const delay=fx==="fx-deal"?(initialDeal?i*dealCycle*dealGap:(i-dealerNewFrom)*120):(i-(dealerRevealAll?0:dealerNewFrom))*90;
+    return cardHTML(c,i,fx,delay);
   }).join('');
   $("dealerScore").textContent=s.dealer.label||"Bài đang úp";
   $("dealerSeat").classList.toggle("active",!!s.dealer.is_turn);
@@ -137,7 +177,7 @@ function render(s){
         delay=(dealerBustFinish?seatIndex*150:seatIndex*70)+i*85;
       }else if(prevState && i>=newFrom){
         fx="fx-deal";
-        delay=(i-newFrom)*90;
+        delay=initialDeal?(i*dealCycle+seatIndex+1)*dealGap:(i-newFrom)*120;
       }
       return cardHTML(c,i,fx,delay);
     }).join('');
@@ -157,6 +197,7 @@ function render(s){
   }).join('');
 
   document.querySelectorAll(".inspect-btn").forEach(btn=>btn.onclick=()=>runAction(btn,()=>rpc("xidach_inspect_player",{p_room_id:room,p_player_id:btn.dataset.userId})));
+  queueStrongDealAnimations();
 
   const myLabel=isDealer?s.dealer.label:my?.label;
   const myScore=Number(isDealer?s.dealer.score:my?.score);

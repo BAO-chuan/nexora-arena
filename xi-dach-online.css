@@ -16,3 +16,146 @@
   .felt{padding-top:10px;padding-bottom:12px}
   .felt-title{font-size:36px}
 }
+
+
+/* =========================================================
+   LS79win Xì Dách v2.5 — BÀN VÒNG CUNG / NHÀ CÁI Ở GIỮA
+   Chỉ thay đổi bố cục & hình ảnh; không đổi luật game.
+   ========================================================= */
+.table-shell{
+  position:relative;
+  overflow:hidden;
+  border-radius:32px 32px 46% 46% / 30px 30px 18% 18%;
+  padding:7px 7px 13px;
+  background:linear-gradient(145deg,#f3ce70 0%,#8c5313 12%,#4b090b 30%,#210405 72%,#d3a33a 100%);
+  box-shadow:0 24px 65px rgba(0,0,0,.52),inset 0 1px 0 rgba(255,239,184,.55);
+}
+.felt{
+  position:relative;
+  min-height:620px;
+  padding:18px 14px 24px;
+  overflow:hidden;
+  border-radius:27px 27px 48% 48% / 24px 24px 20% 20%;
+  background:
+    radial-gradient(ellipse at 50% 44%,rgba(33,154,104,.20),transparent 34%),
+    radial-gradient(ellipse at 50% 15%,rgba(255,220,125,.07),transparent 24%),
+    linear-gradient(180deg,#0b7653 0%,#07533c 42%,#043827 72%,#02251b 100%);
+  border:2px solid rgba(255,224,141,.28);
+  box-shadow:inset 0 0 90px rgba(0,0,0,.55),inset 0 -35px 70px rgba(0,0,0,.22);
+}
+.felt:before{
+  content:"";
+  position:absolute;
+  z-index:0;
+  left:5%;right:5%;top:7%;bottom:8%;
+  border:1px solid rgba(255,231,164,.20);
+  border-radius:46% 46% 50% 50% / 38% 38% 25% 25%;
+  box-shadow:inset 0 0 0 1px rgba(0,0,0,.12);
+}
+.felt:after{
+  content:"XÌ DÁCH • LS79WIN";
+  position:absolute;
+  z-index:0;
+  left:50%;top:48%;
+  transform:translate(-50%,-50%);
+  width:68%;height:30%;
+  display:grid;place-items:center;
+  border:1px solid rgba(255,225,145,.10);
+  border-radius:50%;
+  color:rgba(255,232,170,.10);
+  font-size:clamp(11px,2vw,19px);
+  font-weight:1000;
+  letter-spacing:3px;
+  white-space:nowrap;
+}
+.felt-title{top:42%;font-size:56px;color:rgba(255,230,157,.075)}
+.dealer-seat{
+  position:relative;
+  z-index:5;
+  width:min(360px,58%);
+  margin:0 auto;
+  border-color:rgba(255,218,111,.36);
+  box-shadow:0 15px 35px rgba(0,0,0,.40),0 0 28px rgba(242,196,90,.08);
+}
+.dealer-seat:after{
+  content:"";
+  position:absolute;
+  left:50%;bottom:-22px;
+  transform:translateX(-50%);
+  width:1px;height:18px;
+  background:linear-gradient(rgba(255,220,120,.35),transparent);
+}
+.players{
+  position:absolute;
+  z-index:3;
+  inset:0;
+  display:block;
+  pointer-events:none;
+}
+.players .player-seat{
+  position:absolute;
+  width:clamp(150px,22%,220px);
+  pointer-events:auto;
+  transform-origin:50% 100%;
+}
+/* 1 Nhà Con: chính giữa đáy bàn */
+.players[data-count="1"] .player-seat:nth-child(1){left:50%;bottom:24px;transform:translateX(-50%)}
+/* 2 Nhà Con */
+.players[data-count="2"] .player-seat:nth-child(1){left:15%;bottom:50px;transform:rotate(5deg)}
+.players[data-count="2"] .player-seat:nth-child(2){right:15%;bottom:50px;transform:rotate(-5deg)}
+/* 3 Nhà Con */
+.players[data-count="3"] .player-seat:nth-child(1){left:5%;bottom:112px;transform:rotate(8deg)}
+.players[data-count="3"] .player-seat:nth-child(2){left:50%;bottom:24px;transform:translateX(-50%)}
+.players[data-count="3"] .player-seat:nth-child(3){right:5%;bottom:112px;transform:rotate(-8deg)}
+/* 4 Nhà Con */
+.players[data-count="4"] .player-seat:nth-child(1){left:3%;bottom:175px;transform:rotate(10deg)}
+.players[data-count="4"] .player-seat:nth-child(2){left:23%;bottom:34px;transform:rotate(4deg)}
+.players[data-count="4"] .player-seat:nth-child(3){right:23%;bottom:34px;transform:rotate(-4deg)}
+.players[data-count="4"] .player-seat:nth-child(4){right:3%;bottom:175px;transform:rotate(-10deg)}
+/* 5 Nhà Con: vòng cung đầy đủ */
+.players[data-count="5"] .player-seat:nth-child(1){left:2%;bottom:210px;transform:rotate(11deg)}
+.players[data-count="5"] .player-seat:nth-child(2){left:15%;bottom:65px;transform:rotate(6deg)}
+.players[data-count="5"] .player-seat:nth-child(3){left:50%;bottom:20px;transform:translateX(-50%)}
+.players[data-count="5"] .player-seat:nth-child(4){right:15%;bottom:65px;transform:rotate(-6deg)}
+.players[data-count="5"] .player-seat:nth-child(5){right:2%;bottom:210px;transform:rotate(-11deg)}
+.player-seat.turn{animation:seatGlow 1.25s ease-in-out infinite alternate}
+@keyframes seatGlow{from{box-shadow:0 10px 25px rgba(0,0,0,.32),0 0 0 1px rgba(255,218,110,.15)}to{box-shadow:0 10px 30px rgba(0,0,0,.42),0 0 20px rgba(255,214,94,.38)}}
+
+@media(max-width:720px){
+  .table-shell{border-radius:25px 25px 46% 46% / 22px 22px 12% 12%;padding:5px 5px 10px}
+  .felt{height:535px;min-height:535px;padding:10px 5px 16px;border-radius:21px 21px 48% 48% / 18px 18px 13% 13%}
+  .felt:before{left:4%;right:4%;top:5%;bottom:6%;border-radius:44% 44% 49% 49% / 34% 34% 18% 18%}
+  .felt:after{top:46%;width:72%;height:25%;font-size:9px;letter-spacing:2px}
+  .felt-title{top:42%;font-size:38px}
+  .dealer-seat{width:72%;max-width:285px;margin:0 auto;padding:8px}
+  .dealer-seat .cards{min-height:62px;margin:5px 0 2px}
+  .players:not(:empty){margin-top:0}
+  .players .player-seat{width:42%;max-width:165px;padding:7px}
+  .players .cards{min-height:58px;margin:4px 0 1px}
+  .players .seat-bet{margin-top:4px;padding-top:4px}
+  .players[data-count="1"] .player-seat:nth-child(1){bottom:18px}
+  .players[data-count="2"] .player-seat:nth-child(1){left:5%;bottom:42px}
+  .players[data-count="2"] .player-seat:nth-child(2){right:5%;bottom:42px}
+  .players[data-count="3"] .player-seat:nth-child(1){left:1%;bottom:155px}
+  .players[data-count="3"] .player-seat:nth-child(2){bottom:16px}
+  .players[data-count="3"] .player-seat:nth-child(3){right:1%;bottom:155px}
+  .players[data-count="4"] .player-seat:nth-child(1){left:1%;bottom:205px}
+  .players[data-count="4"] .player-seat:nth-child(2){left:6%;bottom:36px}
+  .players[data-count="4"] .player-seat:nth-child(3){right:6%;bottom:36px}
+  .players[data-count="4"] .player-seat:nth-child(4){right:1%;bottom:205px}
+  .players[data-count="5"] .player-seat:nth-child(1){left:0;bottom:240px}
+  .players[data-count="5"] .player-seat:nth-child(2){left:1%;bottom:91px}
+  .players[data-count="5"] .player-seat:nth-child(3){bottom:8px}
+  .players[data-count="5"] .player-seat:nth-child(4){right:1%;bottom:91px}
+  .players[data-count="5"] .player-seat:nth-child(5){right:0;bottom:240px}
+}
+@media(max-width:390px){
+  .felt{height:520px;min-height:520px;padding-top:8px}
+  .dealer-seat{width:74%;max-width:265px;margin-bottom:0}
+  .players .player-seat{width:43%;max-width:158px;padding:6px}
+  .players .avatar{width:27px;height:27px}
+  .players .card{width:35px;height:51px}
+  .players .card span{font-size:14px}
+  .players[data-count="5"] .player-seat:nth-child(1){bottom:238px}
+  .players[data-count="5"] .player-seat:nth-child(5){bottom:238px}
+}

@@ -109,6 +109,7 @@ function render(s){
   $("dealerSeat").classList.toggle("active",!!s.dealer.is_turn);
   $("dealerTurnBadge").classList.toggle("hidden",!s.dealer.is_turn);
 
+  $("players").dataset.count=String((s.players||[]).length);
   $("players").innerHTML=(s.players||[]).map(p=>`
     <article class="seat-card player-seat ${statusClass(p)} ${p.user_id===me.id?'me':''}">
       <div class="seat-head">
